@@ -9,9 +9,7 @@ import init_api_client
 import swagger_client
 
 
-def main():
-    # Get API Client
-    api_client = init_api_client.get_api_client()
+def main(api_client):
 
     # Create search API client object
     search_api = swagger_client.SearchApi(api_client=api_client)
@@ -43,4 +41,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    args = init_api_client.parse_arguments()
+    api_client = init_api_client.get_api_client(args)
+    main(api_client)

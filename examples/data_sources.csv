@@ -1,0 +1,7 @@
+﻿DataSourceType,IP,Username,Password,NickName,CentralCliEnabled,IPFixEnabled,SwitchType,ParentvCenter
+vcenter,10.197.17.137,administrator@vsphere.local,Admin!23,vcenter,,,,
+vcenter,10.196.74.112,administrator@vsphere.local,InfraSoftwareVN1!,vcenter,,,,
+nsxv,10.197.17.152,admin,default,nsxv,TRUE,FALSE,,10.197.17.137
+nsxt,10.196.74.226,admin,VMware1VMware!,nsxt,,,,10.196.74.112
+panfirewall,10.197.17.249,admin,ca$hc0w,,,,,
+ciscoswitch,,,,,,,,

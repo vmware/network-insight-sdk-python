@@ -1,19 +1,14 @@
+import argparse
 import swagger_client
 
-# TODO: Change IP of vRNI platform
-vRNI_IP = '10.197.17.236'
-USERNAME = 'admin@local'
-PASSWORD = 'admin123'
 
-DOMAIN_TYPE = 'LOCAL'
-
-
-def get_api_client():
+def get_api_client(args):
     config = swagger_client.Configuration()
     config.verify_ssl = False
 
-    api_client = swagger_client.ApiClient(host="https://{}/api/ni".format(vRNI_IP))
-    user_creds = swagger_client.UserCredential(username=USERNAME, password=PASSWORD, domain=dict(domain_type=DOMAIN_TYPE))
+    api_client = swagger_client.ApiClient(host="https://{}/api/ni".format(args.platform_ip))
+    user_creds = swagger_client.UserCredential(username=args.username, password=args.password,
+                                               domain=dict(domain_type=args.domain_type))
 
     auth_api = swagger_client.AuthenticationApi(api_client=api_client)
 
@@ -22,6 +17,20 @@ def get_api_client():
     config.api_key['Authorization'] = auth_token.token
     config.api_key_prefix['Authorization'] = 'NetworkInsight'
     return api_client
+
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(description='Run Public APIs on vRNI Platform')
+    parser.add_argument('--platform_ip', action='store',
+                        help='IP address of vRNI platform. In case of cluster IP address of Platform-1')
+    parser.add_argument('--username', action='store', default='admin@local',
+                        help='user name for authentication')
+    parser.add_argument("--password", action="store",
+                        default='Admin!23', help="password for authentication")
+    parser.add_argument("--domain_type", action="store",
+                        default='LOCAL', help="domain type for authentication")
+    args = parser.parse_args()
+    return args
 
 
 if __name__ == '__main__':
