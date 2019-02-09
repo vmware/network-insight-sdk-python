@@ -103,7 +103,7 @@ def main(api_client, args):
     with open("%s" % args.datasourcesCSV, 'rb') as csvFile:
         datasources = csv.DictReader(csvFile)
         for datasource in datasources:
-            datasource_type = datasource['\xef\xbb\xbfDataSourceType']
+            datasource_type = datasource['DataSourceType']
             vcenter_id = get_vcenter_manager_entity_id(datasource_api, datasource['ParentvCenter'])
             print("Adding: {} {}".format(datasource_type, datasource['IP']))
             datasource_api_name = get_api_function_name(datasource_type)
