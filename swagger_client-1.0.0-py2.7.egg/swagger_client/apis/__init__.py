@@ -7,6 +7,7 @@ from .data_sources_api import DataSourcesApi
 from .entities_api import EntitiesApi
 from .info_api import InfoApi
 from .infrastructure_api import InfrastructureApi
+from .logs_api import LogsApi
 from .metrics_api import MetricsApi
 from .microsegmentation_api import MicrosegmentationApi
 from .path_api import PathApi
