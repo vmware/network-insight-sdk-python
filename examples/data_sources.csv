@@ -4,4 +4,4 @@ vcenter,10.196.74.112,administrator@vsphere.local,InfraSoftwareVN1!,vcenter,,,,
 nsxv_manager,10.197.17.152,admin,default,nsxv,TRUE,FALSE,,10.197.17.137
 nsxt_manager,10.196.74.183,audit,VMware1VMware!,nsxt,,,,10.196.74.112
 panorama_firewall,10.197.17.247,admin,admin,panorama_firewall,,,,
-cisco_switch,10.40.13.36,admin,Vnera655,NEXUS_5K,,,,
+cisco_switch,10.40.13.36,admin,Vnera655,NEXUS_5K,,,NEXUS_5K,

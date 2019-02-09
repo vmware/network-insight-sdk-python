@@ -66,6 +66,8 @@ def get_add_request_body(datasource, proxy_id, vcenter_id):
     }
     if vcenter_id:
         body['vcenter_id'] = vcenter_id
+    if datasource['SwitchType']:
+        body["switch_type"] = datasource['SwitchType']
     return body
 
 def get_node_entity_id(api_client, proxy_ip):
