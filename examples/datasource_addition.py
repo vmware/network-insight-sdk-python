@@ -37,7 +37,8 @@ def get_api_function_name(datasource_type):
                   data_source_type.DataSourceType.PANFIREWALLDATASOURCE: "add_panorama_firewall",
                   data_source_type.DataSourceType.CHECKPOINTFIREWALLDATASOURCE: "add_checkpoint_firewall",
                   data_source_type.DataSourceType.NSXTMANAGERDATASOURCE: "add_nsxt_manager_datasource",
-                  data_source_type.DataSourceType.INFOBLOXMANAGERDATASOURCE: "add_infoblox_manager_datasource"}
+                  data_source_type.DataSourceType.INFOBLOXMANAGERDATASOURCE: "add_infoblox_manager_datasource",
+                  data_source_type.DataSourceType.POLICYMANAGERDATASOURCE: "add_policy_manager_datasource"}
 
     return datasource[datasource_type]
 
@@ -50,9 +51,12 @@ def get_add_request_body(datasource, proxy_id=None, vcenter_id=None):
         "enabled": True,
         "nickname": datasource["NickName"],
         "notes": "added by public api",
-        "credentials": {"username": "%s" % datasource['Username'],
-                        "password": "%s" % datasource['Password']},
     }
+    if datasource['Username']:
+        body["credentials"] = {"username": "%s" % datasource['Username'],
+                        "password": "%s" % datasource['Password']}
+    if datasource['CSPRefreshToken']:
+        body["csp_refresh_token"] = datasource['CSPRefreshToken']
     if datasource['CentralCliEnabled']:
         body["central_cli_enabled"] = datasource['CentralCliEnabled']
     if datasource['IPFixEnabled']:
@@ -63,7 +67,7 @@ def get_add_request_body(datasource, proxy_id=None, vcenter_id=None):
         body["switch_type"] = datasource['SwitchType']
     if datasource['IsVMC']:
         body["is_vmc"] = datasource['IsVMC']
-
+    print("Request body : <{}>".format(body))
     return body
 
 

@@ -41,6 +41,7 @@ class DataSourceType(object):
     NSXTMANAGERDATASOURCE = "NSXTManagerDataSource"
     KUBERNETESDATASOURCE = "KubernetesDataSource"
     INFOBLOXMANAGERDATASOURCE = "InfobloxManagerDataSource"
+    POLICYMANAGERDATASOURCE = "PolicyManagerDataSource"
 
     """
     Attributes:
