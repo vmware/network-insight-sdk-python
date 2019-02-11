@@ -26,9 +26,11 @@ def parse_arguments():
     parser.add_argument('--username', action='store', default='admin@local',
                         help='user name for authentication')
     parser.add_argument("--password", action="store",
-                        default='Admin!23', help="password for authentication")
+                        default='admin', help="password for authentication")
     parser.add_argument("--domain_type", action="store",
                         default='LOCAL', help="domain type for authentication")
+    parser.add_argument("--data_sources_csv", action="store",
+                        default='data_sources.csv', help="domain type for authentication")
     args = parser.parse_args()
     return args
 

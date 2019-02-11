@@ -25,6 +25,9 @@ from .application_member import ApplicationMember
 from .application_request import ApplicationRequest
 from .application_vm_members import ApplicationVMMembers
 from .applied_to import AppliedTo
+from .audit_list_response import AuditListResponse
+from .audit_request import AuditRequest
+from .audit_response import AuditResponse
 from .base_data_source import BaseDataSource
 from .base_data_source_request import BaseDataSourceRequest
 from .base_entity import BaseEntity
@@ -59,6 +62,8 @@ from .ip_numeric_range import IpNumericRange
 from .ip_tag import IpTag
 from .ip_tag_id_list import IpTagIdList
 from .ip_v4_address import IpV4Address
+from .k8_s_credentials import K8SCredentials
+from .kubernetes_source_request import KubernetesSourceRequest
 from .manager import Manager
 from .meta_entity_type import MetaEntityType
 from .metric_response import MetricResponse
@@ -116,6 +121,7 @@ from .base_service import BaseService
 from .base_virtual_machine import BaseVirtualMachine
 from .base_vnic import BaseVnic
 from .cluster import Cluster
+from .container_base_data_source import ContainerBaseDataSource
 from .datastore import Datastore
 from .distributed_virtual_portgroup import DistributedVirtualPortgroup
 from .distributed_virtual_switch import DistributedVirtualSwitch
@@ -125,6 +131,7 @@ from .folder import Folder
 from .group import Group
 from .host import Host
 from .infoblox_manager_data_source_request import InfobloxManagerDataSourceRequest
+from .kubernetes_data_source_request import KubernetesDataSourceRequest
 from .nsxt_manager_data_source_request import NSXTManagerDataSourceRequest
 from .nsxv_manager_data_source import NSXVManagerDataSource
 from .nsxv_manager_data_source_request import NSXVManagerDataSourceRequest
@@ -163,6 +170,8 @@ from .ec2_instance import EC2Instance
 from .ec2_network_interface import EC2NetworkInterface
 from .ec2_sg_firewall_rule import EC2SGFirewallRule
 from .ec2_service import EC2Service
+from .gd_data_source import GDDataSource
+from .gd_data_source_request import GDDataSourceRequest
 from .hp_one_view_manager_data_source import HPOneViewManagerDataSource
 from .hp_one_view_manager_data_source_request import HPOneViewManagerDataSourceRequest
 from .hpvc_manager_data_source import HPVCManagerDataSource
@@ -170,6 +179,7 @@ from .hpvc_manager_data_source_request import HPVCManagerDataSourceRequest
 from .infoblox_manager_data_source import InfobloxManagerDataSource
 from .juniper_switch_data_source import JuniperSwitchDataSource
 from .juniper_switch_data_source_request import JuniperSwitchDataSourceRequest
+from .kubernetes_data_source import KubernetesDataSource
 from .ns_service import NSService
 from .nsx_distributed_firewall import NSXDistributedFirewall
 from .nsx_firewall_rule import NSXFirewallRule

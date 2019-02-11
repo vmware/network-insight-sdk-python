@@ -25,6 +25,9 @@ from .models.application_member import ApplicationMember
 from .models.application_request import ApplicationRequest
 from .models.application_vm_members import ApplicationVMMembers
 from .models.applied_to import AppliedTo
+from .models.audit_list_response import AuditListResponse
+from .models.audit_request import AuditRequest
+from .models.audit_response import AuditResponse
 from .models.base_data_source import BaseDataSource
 from .models.base_data_source_request import BaseDataSourceRequest
 from .models.base_entity import BaseEntity
@@ -59,6 +62,8 @@ from .models.ip_numeric_range import IpNumericRange
 from .models.ip_tag import IpTag
 from .models.ip_tag_id_list import IpTagIdList
 from .models.ip_v4_address import IpV4Address
+from .models.k8_s_credentials import K8SCredentials
+from .models.kubernetes_source_request import KubernetesSourceRequest
 from .models.manager import Manager
 from .models.meta_entity_type import MetaEntityType
 from .models.metric_response import MetricResponse
@@ -116,6 +121,7 @@ from .models.base_service import BaseService
 from .models.base_virtual_machine import BaseVirtualMachine
 from .models.base_vnic import BaseVnic
 from .models.cluster import Cluster
+from .models.container_base_data_source import ContainerBaseDataSource
 from .models.datastore import Datastore
 from .models.distributed_virtual_portgroup import DistributedVirtualPortgroup
 from .models.distributed_virtual_switch import DistributedVirtualSwitch
@@ -125,6 +131,7 @@ from .models.folder import Folder
 from .models.group import Group
 from .models.host import Host
 from .models.infoblox_manager_data_source_request import InfobloxManagerDataSourceRequest
+from .models.kubernetes_data_source_request import KubernetesDataSourceRequest
 from .models.nsxt_manager_data_source_request import NSXTManagerDataSourceRequest
 from .models.nsxv_manager_data_source import NSXVManagerDataSource
 from .models.nsxv_manager_data_source_request import NSXVManagerDataSourceRequest
@@ -163,6 +170,8 @@ from .models.ec2_instance import EC2Instance
 from .models.ec2_network_interface import EC2NetworkInterface
 from .models.ec2_sg_firewall_rule import EC2SGFirewallRule
 from .models.ec2_service import EC2Service
+from .models.gd_data_source import GDDataSource
+from .models.gd_data_source_request import GDDataSourceRequest
 from .models.hp_one_view_manager_data_source import HPOneViewManagerDataSource
 from .models.hp_one_view_manager_data_source_request import HPOneViewManagerDataSourceRequest
 from .models.hpvc_manager_data_source import HPVCManagerDataSource
@@ -170,6 +179,7 @@ from .models.hpvc_manager_data_source_request import HPVCManagerDataSourceReques
 from .models.infoblox_manager_data_source import InfobloxManagerDataSource
 from .models.juniper_switch_data_source import JuniperSwitchDataSource
 from .models.juniper_switch_data_source_request import JuniperSwitchDataSourceRequest
+from .models.kubernetes_data_source import KubernetesDataSource
 from .models.ns_service import NSService
 from .models.nsx_distributed_firewall import NSXDistributedFirewall
 from .models.nsx_firewall_rule import NSXFirewallRule
@@ -209,6 +219,7 @@ from .apis.data_sources_api import DataSourcesApi
 from .apis.entities_api import EntitiesApi
 from .apis.info_api import InfoApi
 from .apis.infrastructure_api import InfrastructureApi
+from .apis.logs_api import LogsApi
 from .apis.metrics_api import MetricsApi
 from .apis.microsegmentation_api import MicrosegmentationApi
 from .apis.path_api import PathApi

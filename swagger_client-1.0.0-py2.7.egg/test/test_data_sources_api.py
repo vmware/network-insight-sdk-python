@@ -71,6 +71,14 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_add_f5_bigip(self):
+        """
+        Test case for add_f5_bigip
+
+        Add a F5 BIG-IP as data source
+        """
+        pass
+
     def test_add_hpov_manager(self):
         """
         Test case for add_hpov_manager
@@ -87,6 +95,14 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_add_huawei(self):
+        """
+        Test case for add_huawei
+
+        Add a Huawei as data source
+        """
+        pass
+
     def test_add_infoblox_manager_datasource(self):
         """
         Test case for add_infoblox_manager_datasource
@@ -100,6 +116,14 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for add_juniper_switch
 
         Add a juniper switch as data source
+        """
+        pass
+
+    def test_add_kubernetes_datasource(self):
+        """
+        Test case for add_kubernetes_datasource
+
+        Create an kubernetes cluster data source
         """
         pass
 
@@ -191,6 +215,14 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_delete_f5_bigip(self):
+        """
+        Test case for delete_f5_bigip
+
+        Delete a F5 BIG-IP data source
+        """
+        pass
+
     def test_delete_hpov_manager(self):
         """
         Test case for delete_hpov_manager
@@ -207,6 +239,14 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_delete_huawei(self):
+        """
+        Test case for delete_huawei
+
+        Delete a Huawei data source
+        """
+        pass
+
     def test_delete_infoblox_manager(self):
         """
         Test case for delete_infoblox_manager
@@ -220,6 +260,14 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for delete_juniper_switch
 
         Delete a juniper switch data source
+        """
+        pass
+
+    def test_delete_kubernetes_cluster(self):
+        """
+        Test case for delete_kubernetes_cluster
+
+        Delete an kubernetes cluster data source
         """
         pass
 
@@ -311,6 +359,14 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_disable_f5_bigip(self):
+        """
+        Test case for disable_f5_bigip
+
+        Disable a F5 BIG-IP data source
+        """
+        pass
+
     def test_disable_hpov_manager(self):
         """
         Test case for disable_hpov_manager
@@ -327,6 +383,14 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_disable_huawei(self):
+        """
+        Test case for disable_huawei
+
+        Disable a Huawei data source
+        """
+        pass
+
     def test_disable_infoblox_manager(self):
         """
         Test case for disable_infoblox_manager
@@ -340,6 +404,14 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for disable_juniper_switch
 
         Disable a juniper switch data source
+        """
+        pass
+
+    def test_disable_kubernetes_cluster(self):
+        """
+        Test case for disable_kubernetes_cluster
+
+        Disable an kubernetes cluster data source
         """
         pass
 
@@ -431,6 +503,14 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_enable_f5_bigip(self):
+        """
+        Test case for enable_f5_bigip
+
+        Enable a F5 BIG-IP data source
+        """
+        pass
+
     def test_enable_hpov_manager(self):
         """
         Test case for enable_hpov_manager
@@ -447,6 +527,14 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_enable_huawei(self):
+        """
+        Test case for enable_huawei
+
+        Enable a Huawei data source
+        """
+        pass
+
     def test_enable_infoblox_manager(self):
         """
         Test case for enable_infoblox_manager
@@ -460,6 +548,14 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for enable_juniper_switch
 
         Enable a juniper switch data source
+        """
+        pass
+
+    def test_enable_kubernetes_cluster(self):
+        """
+        Test case for enable_kubernetes_cluster
+
+        Enable an kubernetes cluster data source
         """
         pass
 
@@ -583,6 +679,22 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_get_f5_bigip(self):
+        """
+        Test case for get_f5_bigip
+
+        Show F5 BIG-IP data source details
+        """
+        pass
+
+    def test_get_f5_bigip_snmp_config(self):
+        """
+        Test case for get_f5_bigip_snmp_config
+
+        Show snmp config for F5 BIG-IP data source
+        """
+        pass
+
     def test_get_hpov_manager(self):
         """
         Test case for get_hpov_manager
@@ -596,6 +708,22 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for get_hpvc_manager
 
         Show hpvc data source details
+        """
+        pass
+
+    def test_get_huawei(self):
+        """
+        Test case for get_huawei
+
+        Show Huawei data source details
+        """
+        pass
+
+    def test_get_huawei_snmp_config(self):
+        """
+        Test case for get_huawei_snmp_config
+
+        Show snmp config for Huawei data source
         """
         pass
 
@@ -620,6 +748,14 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for get_juniper_switch_snmp_config
 
         Show snmp config for juniper switch data source
+        """
+        pass
+
+    def test_get_kubernetes_cluster(self):
+        """
+        Test case for get_kubernetes_cluster
+
+        Show kubernetes cluster data source details
         """
         pass
 
@@ -727,6 +863,14 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_list_f5_bigip(self):
+        """
+        Test case for list_f5_bigip
+
+        List F5 BIG-IP data sources
+        """
+        pass
+
     def test_list_hpov_managers(self):
         """
         Test case for list_hpov_managers
@@ -743,6 +887,14 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_list_huawei(self):
+        """
+        Test case for list_huawei
+
+        List Huawei data sources
+        """
+        pass
+
     def test_list_infoblox_managers(self):
         """
         Test case for list_infoblox_managers
@@ -756,6 +908,14 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for list_juniper_switches
 
         List juniper switch data sources
+        """
+        pass
+
+    def test_list_kubernetes_clusters(self):
+        """
+        Test case for list_kubernetes_clusters
+
+        List kubernetes cluster data sources
         """
         pass
 
@@ -879,6 +1039,22 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_update_f5_bigip(self):
+        """
+        Test case for update_f5_bigip
+
+        Update a F5 BIG-IP data source
+        """
+        pass
+
+    def test_update_f5_bigip_snmp_config(self):
+        """
+        Test case for update_f5_bigip_snmp_config
+
+        Update snmp config for a F5 BIG-IP data source
+        """
+        pass
+
     def test_update_hpov_manager(self):
         """
         Test case for update_hpov_manager
@@ -892,6 +1068,22 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for update_hpvc_manager
 
         Update a hpvc manager data source
+        """
+        pass
+
+    def test_update_huawei(self):
+        """
+        Test case for update_huawei
+
+        Update a Huawei data source
+        """
+        pass
+
+    def test_update_huawei_snmp_config(self):
+        """
+        Test case for update_huawei_snmp_config
+
+        Update snmp config for a Huawei data source
         """
         pass
 
@@ -916,6 +1108,14 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for update_juniper_switch_snmp_config
 
         Update snmp config for a juniper switch data source
+        """
+        pass
+
+    def test_update_kubernetes_cluster(self):
+        """
+        Test case for update_kubernetes_cluster
+
+        Update an kubernetes cluster data source
         """
         pass
 

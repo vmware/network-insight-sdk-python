@@ -15,6 +15,7 @@ swagger_client/apis/data_sources_api.py
 swagger_client/apis/entities_api.py
 swagger_client/apis/info_api.py
 swagger_client/apis/infrastructure_api.py
+swagger_client/apis/logs_api.py
 swagger_client/apis/metrics_api.py
 swagger_client/apis/microsegmentation_api.py
 swagger_client/apis/path_api.py
@@ -36,6 +37,9 @@ swagger_client/models/application_vm_members.py
 swagger_client/models/applied_to.py
 swagger_client/models/arista_switch_data_source.py
 swagger_client/models/arista_switch_data_source_request.py
+swagger_client/models/audit_list_response.py
+swagger_client/models/audit_request.py
+swagger_client/models/audit_response.py
 swagger_client/models/base_data_source.py
 swagger_client/models/base_data_source_request.py
 swagger_client/models/base_entity.py
@@ -67,6 +71,7 @@ swagger_client/models/cisco_switch_data_source.py
 swagger_client/models/cisco_switch_data_source_request.py
 swagger_client/models/cisco_switch_type.py
 swagger_client/models/cluster.py
+swagger_client/models/container_base_data_source.py
 swagger_client/models/data_source_entity_id.py
 swagger_client/models/data_source_list_response.py
 swagger_client/models/data_source_type.py
@@ -103,6 +108,8 @@ swagger_client/models/flow_summary.py
 swagger_client/models/flow_tag.py
 swagger_client/models/flow_traffic_type.py
 swagger_client/models/folder.py
+swagger_client/models/gd_data_source.py
+swagger_client/models/gd_data_source_request.py
 swagger_client/models/group.py
 swagger_client/models/group_entry.py
 swagger_client/models/group_membership_criteria.py
@@ -121,6 +128,10 @@ swagger_client/models/ip_tag_id_list.py
 swagger_client/models/ip_v4_address.py
 swagger_client/models/juniper_switch_data_source.py
 swagger_client/models/juniper_switch_data_source_request.py
+swagger_client/models/k8_s_credentials.py
+swagger_client/models/kubernetes_data_source.py
+swagger_client/models/kubernetes_data_source_request.py
+swagger_client/models/kubernetes_source_request.py
 swagger_client/models/manager.py
 swagger_client/models/meta_entity_type.py
 swagger_client/models/metric_response.py
@@ -225,6 +236,9 @@ test/test_applications_api.py
 test/test_applied_to.py
 test/test_arista_switch_data_source.py
 test/test_arista_switch_data_source_request.py
+test/test_audit_list_response.py
+test/test_audit_request.py
+test/test_audit_response.py
 test/test_authentication_api.py
 test/test_base_data_source.py
 test/test_base_data_source_request.py
@@ -257,6 +271,7 @@ test/test_cisco_switch_data_source.py
 test/test_cisco_switch_data_source_request.py
 test/test_cisco_switch_type.py
 test/test_cluster.py
+test/test_container_base_data_source.py
 test/test_data_source_entity_id.py
 test/test_data_source_list_response.py
 test/test_data_source_type.py
@@ -295,6 +310,8 @@ test/test_flow_summary.py
 test/test_flow_tag.py
 test/test_flow_traffic_type.py
 test/test_folder.py
+test/test_gd_data_source.py
+test/test_gd_data_source_request.py
 test/test_group.py
 test/test_group_entry.py
 test/test_group_membership_criteria.py
@@ -315,6 +332,11 @@ test/test_ip_tag_id_list.py
 test/test_ip_v4_address.py
 test/test_juniper_switch_data_source.py
 test/test_juniper_switch_data_source_request.py
+test/test_k8_s_credentials.py
+test/test_kubernetes_data_source.py
+test/test_kubernetes_data_source_request.py
+test/test_kubernetes_source_request.py
+test/test_logs_api.py
 test/test_manager.py
 test/test_meta_entity_type.py
 test/test_metric_response.py
