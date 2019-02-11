@@ -53,12 +53,17 @@ def get_add_request_body(datasource, proxy_id=None, vcenter_id=None):
         "credentials": {"username": "%s" % datasource['Username'],
                         "password": "%s" % datasource['Password']},
     }
+    if datasource['CentralCliEnabled']:
+        body["central_cli_enabled"] = datasource['CentralCliEnabled']
+    if datasource['IPFixEnabled']:
+        body["ipfix_enabled"] = datasource['IPFixEnabled']
     if vcenter_id:
         body['vcenter_id'] = vcenter_id
     if datasource['SwitchType']:
         body["switch_type"] = datasource['SwitchType']
     if datasource['IsVMC']:
         body["is_vmc"] = datasource['IsVMC']
+
     return body
 
 
