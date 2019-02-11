@@ -52,12 +52,13 @@ def get_add_request_body(datasource, proxy_id=None, vcenter_id=None):
         "notes": "added by public api",
         "credentials": {"username": "%s" % datasource['Username'],
                         "password": "%s" % datasource['Password']},
-        "is_vmc": False
     }
     if vcenter_id:
         body['vcenter_id'] = vcenter_id
     if datasource['SwitchType']:
         body["switch_type"] = datasource['SwitchType']
+    if datasource['IsVMC']:
+        body["is_vmc"] = datasource['IsVMC']
     return body
 
 
@@ -89,9 +90,9 @@ def main(api_client, args):
         for data_source in data_sources:
             data_source_type = data_source['DataSourceType']
             # Get the Proxy ID from Proxy IP
-            proxy_id = get_node_entity_id(api_client, data_source['proxy_ip'])
+            proxy_id = get_node_entity_id(api_client, data_source['ProxyIP'])
             if not proxy_id:
-                print("Incorrect Proxy IP {}".format(data_source['proxy_ip']))
+                print("Incorrect Proxy IP {}".format(data_source['ProxyIP']))
                 continue
             # Get vCenter ID for vCenter manager required for adding NSX
             vcenter_id = get_vcenter_manager_entity_id(data_source_api, data_source['ParentvCenter'])

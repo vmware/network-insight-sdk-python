@@ -1,7 +1,7 @@
 DataSourceType,IP,Username,Password,NickName,CentralCliEnabled,IPFixEnabled,SwitchType,ParentvCenter,IsVMC,ProxyIP
-VCenterDataSource,10.197.17.137,administrator@vsphere.local,Admin!23,vcenter,,,,,,
-VCenterDataSource,10.196.74.112,administrator@vsphere.local,InfraSoftwareVN1!,vcenter,,,,,,
-NSXVManagerDataSource,10.197.17.152,admin,default,nsxv,TRUE,FALSE,,10.197.17.137,,
-NSXTManagerDataSource,10.196.74.183,audit,VMware1VMware!,nsxt,,,,10.196.74.112,,
-PanFirewallDataSource,10.197.17.247,admin,admin,panorama_firewall,,,,,,
-CiscoSwitchDataSource,10.40.13.36,admin,Vnera655,NEXUS_5K,,,NEXUS_5K,,,
+VCenterDataSource,10.197.17.137,administrator@vsphere.local,Admin!23,vcenter,,,,,,10.197.52.65
+VCenterDataSource,10.196.74.112,administrator@vsphere.local,InfraSoftwareVN1!,vcenter,,,,,,10.197.52.65
+NSXVManagerDataSource,10.197.17.152,admin,default,nsxv,TRUE,FALSE,,10.197.17.137,,10.197.52.65
+NSXTManagerDataSource,10.196.74.183,audit,VMware1VMware!,nsxt,,,,10.196.74.112,,10.197.52.65
+PanFirewallDataSource,10.197.17.247,admin,admin,panorama_firewall,,,,,,10.197.52.65
+CiscoSwitchDataSource,10.40.13.36,admin,Vnera655,NEXUS_5K,,,NEXUS_5K,,,10.197.52.65
