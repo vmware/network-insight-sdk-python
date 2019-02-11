@@ -44,31 +44,31 @@ def get_api_function_name(datasource_type):
 
 
 def get_add_request_body(datasource, proxy_id=None, vcenter_id=None):
-    body = {
-        "ip": "%s" % datasource['IP'],
+    api_request_body = {
+        "ip": "{}".format(datasource['IP']),
         "fqdn": "",
-        "proxy_id": "%s" % proxy_id,
+        "proxy_id": "{}".format(proxy_id),
         "enabled": True,
         "nickname": datasource["NickName"],
         "notes": "added by public api",
     }
     if datasource['Username']:
-        body["credentials"] = {"username": "%s" % datasource['Username'],
-                        "password": "%s" % datasource['Password']}
+        api_request_body["credentials"] = {"username": "{}".format(datasource['Username']),
+                               "password": "{}".format(datasource['Password'])}
     if datasource['CSPRefreshToken']:
-        body["csp_refresh_token"] = datasource['CSPRefreshToken']
+        api_request_body["csp_refresh_token"] = datasource['CSPRefreshToken']
     if datasource['CentralCliEnabled']:
-        body["central_cli_enabled"] = datasource['CentralCliEnabled']
+        api_request_body["central_cli_enabled"] = datasource['CentralCliEnabled']
     if datasource['IPFixEnabled']:
-        body["ipfix_enabled"] = datasource['IPFixEnabled']
+        api_request_body["ipfix_enabled"] = datasource['IPFixEnabled']
     if vcenter_id:
-        body['vcenter_id'] = vcenter_id
+        api_request_body['vcenter_id'] = vcenter_id
     if datasource['SwitchType']:
-        body["switch_type"] = datasource['SwitchType']
+        api_request_body["switch_type"] = datasource['SwitchType']
     if datasource['IsVMC']:
-        body["is_vmc"] = datasource['IsVMC']
-    print("Request body : <{}>".format(body))
-    return body
+        api_request_body["is_vmc"] = datasource['IsVMC']
+    print("Request body : <{}>".format(api_request_body))
+    return api_request_body
 
 
 def get_node_entity_id(api_client, proxy_ip=None):
@@ -94,7 +94,7 @@ def main(api_client, args):
 
     # Create data source API client object
     data_source_api = swagger_client.DataSourcesApi(api_client=api_client)
-    with open("%s" % args.data_sources_csv, 'rb') as csvFile:
+    with open("{}".format(args.data_sources_csv), 'rb') as csvFile:
         data_sources = csv.DictReader(csvFile)
         for data_source in data_sources:
             data_source_type = data_source['DataSourceType']
@@ -113,7 +113,7 @@ def main(api_client, args):
                 response = add_data_source_api_fn(body=get_add_request_body(data_source, proxy_id, vcenter_id))
                 print("Successfully added: {} {} : Response : {}".format(data_source_type, data_source['IP'], response))
             except ApiException as e:
-                print("Failed adding data source: %s : Error : %s " % (data_source['IP'], json.loads(e.body)))
+                print("Failed adding data source: {} : Error : {} ".format(data_source['IP'], json.loads(e.body)))
 
 if __name__ == '__main__':
     args = init_api_client.parse_arguments()
