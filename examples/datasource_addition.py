@@ -37,7 +37,7 @@ def get_api_function_name(datasource_type):
                   data_source_type.DataSourceType.PANFIREWALLDATASOURCE: "add_panorama_firewall",
                   data_source_type.DataSourceType.CHECKPOINTFIREWALLDATASOURCE: "add_checkpoint_firewall",
                   data_source_type.DataSourceType.NSXTMANAGERDATASOURCE: "add_nsxt_manager_datasource",
-                  data_source_type.DataSourceType.INFOBLOXMANAGERDATASOURCE: "add_infoblox_manager_datasource",
+                  data_source_type.DataSourceType.KUBERNETESDATASOURCE: 'add_kubernetes_datasource',
                   data_source_type.DataSourceType.POLICYMANAGERDATASOURCE: "add_policy_manager_datasource"}
 
     return datasource[datasource_type]
