@@ -1,7 +1,8 @@
 # Python SDK Examples
 
-# Script will fetch VMs through a call to search API. Search API returns uuids for all VMs.
-# Script will then fetch every single VM's complete information.
+# Script will fetch Flows matching certain search criteria
+# Along with the flow information it will fetch relevant VM, Security group information and dump it to
+# CSV file
 
 import time
 import csv
