@@ -1,0 +1,97 @@
+# Python SDK Examples
+
+# Script will fetch VMs through a call to search API. Search API returns uuids for all VMs.
+# Script will then fetch every single VM's complete information.
+
+import time
+import csv
+
+import init_api_client
+import swagger_client
+from swagger_client.rest import ApiException
+
+id_to_name_map = dict()
+
+def get_referenced_entity_name(entity_id=None, entity_type=None, entities_api=None):
+    print("Fetching id = {} of type = {}".format(entity_id, entity_type))
+    if entity_id in id_to_name_map:
+        return id_to_name_map[entity_id]
+
+    if entity_type == swagger_client.AllEntityType.VIRTUALMACHINE:
+        entity_fn = entities_api.get_vm
+    elif entity_type == swagger_client.AllEntityType.NSXSECURITYGROUP:
+        entity_fn = entities_api.get_security_group
+    else:
+        raise ValueError("API not assigned to type {}".format(entity_type))
+
+    entity_name = None
+    try:
+        entity_name = entity_fn(id=entity_id).name
+    except ApiException, e:
+        # This means referenced entity might be deleted
+        print(e)
+    id_to_name_map[entity_id] = entity_name
+    return entity_name
+
+
+def main(api_client):
+
+    # Create search API client object
+    search_api = swagger_client.SearchApi(api_client=api_client)
+
+    # TODO: Add/Change filter to get valid results
+    filter_string = "((flow_tag = TAG_INTERNET_TRAFFIC) and (source_datacenter.name = 'HaaS-1'))"
+    # Create request parameters required for search APIs
+    public_api_search_request_params = dict(entity_type=swagger_client.EntityType.FLOW,
+                                            filter=filter_string,
+                                            size=100)
+    print("Get all VMs with filter = [{}]".format(filter_string))
+
+    # Create payload from search parameters required for calling the search API
+    search_payload = swagger_client.SearchRequest(**public_api_search_request_params)
+
+    f_csv = open('flows_to_internet.csv', 'w')
+    fields = ['src_ip', 'dst_ip', 'src_vm', 'src_security_groups', 'port']
+    writer = csv.DictWriter(f_csv, fieldnames=fields, delimiter=":")
+    writer.writeheader()
+
+    while True:
+        # Call the search API
+        api_response = search_api.search_entities(body=search_payload)
+        print("Response attributes: Total Count: {} "
+              "Time: {}".format(api_response.total_count,
+                                time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(api_response.end_time))))
+        for result in api_response.results:
+            entities_api = swagger_client.EntitiesApi(api_client=api_client)
+
+            internet_flow = entities_api.get_flow(id=result.entity_id)
+            print("Flow: {}".format(internet_flow.name))
+
+            # Get Source VM Name
+            src_vm_name = get_referenced_entity_name(entity_id=internet_flow.source_vm.entity_id,
+                                                     entity_type=internet_flow.source_vm.entity_type,
+                                                     entities_api=entities_api)
+            # Get Source security groups
+            sec_group_names = []
+            for src_sec_group in internet_flow.source_security_groups:
+                name = get_referenced_entity_name(entity_id=src_sec_group.entity_id,
+                                                  entity_type=src_sec_group.entity_type,
+                                                  entities_api=entities_api)
+                if name: sec_group_names.append(name)
+            # Write it to csv file
+            flow_fields = dict(src_ip=internet_flow.source_ip.ip_address,
+                               dst_ip=internet_flow.destination_ip.ip_address,
+                               port=internet_flow.port.iana_port_display,
+                               src_vm=src_vm_name,
+                               src_security_groups=",".join(sec_group_names))
+            writer.writerow(flow_fields)
+
+        if not api_response.cursor:
+            break
+        search_payload.cursor = api_response.cursor
+    f_csv.close()
+
+if __name__ == '__main__':
+    args = init_api_client.parse_arguments()
+    api_client = init_api_client.get_api_client(args)
+    main(api_client)
