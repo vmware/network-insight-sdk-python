@@ -1,7 +1,7 @@
 # Python SDK Examples
 
 # Script will fetch Flows matching certain search criteria
-# Along with the flow information it will fetch relevant VM, Security group information and dump it to
+# Along with the flow information it will fetch appropriate VM, Security group information and dump it to
 # CSV file
 
 import time
@@ -12,6 +12,7 @@ import swagger_client
 from swagger_client.rest import ApiException
 
 id_to_name_map = dict()
+
 
 def get_referenced_entity_name(entity_id=None, entity_type=None, entities_api=None):
     print("Fetching id = {} of type = {}".format(entity_id, entity_type))
@@ -28,7 +29,7 @@ def get_referenced_entity_name(entity_id=None, entity_type=None, entities_api=No
     entity_name = None
     try:
         entity_name = entity_fn(id=entity_id).name
-    except ApiException, e:
+    except ApiException as e:
         # This means referenced entity might be deleted
         print(e)
     id_to_name_map[entity_id] = entity_name
