@@ -36,4 +36,5 @@ def parse_arguments():
 
 
 if __name__ == '__main__':
-    get_api_client()
+    args = parse_arguments()
+    api_client = get_api_client(args)
