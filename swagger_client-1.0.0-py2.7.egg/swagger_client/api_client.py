@@ -267,7 +267,7 @@ class ApiClient(object):
             else:
                 if klass in ['BaseVirtualMachine', 'BaseNSXManager', 'BaseL2Network', 'BaseFirewallRule',
                              'BaseSecurityGroup', 'BaseIPSet', 'BaseVnic', 'BaseService', 'BaseServiceGroup',
-                             'BaseFirewallManager']:
+                             'BaseFirewallManager', 'BaseEntity']:
                     klass = data['entity_type']
                 klass = getattr(models, klass)
 
