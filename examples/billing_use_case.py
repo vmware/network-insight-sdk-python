@@ -10,10 +10,10 @@ import utilities
 def main(api_client):
     search_api = swagger_client.SearchApi(api_client=api_client)
 
-    # TODO: Add/Change filter to get valid results
-    filter_string = "destination_ip.ip_address = '192.168.21.20'"
-    filter_string = "port = 123"
-    filter_string = "source_cluster.name = 'HaaS-Cluster-6'"
+    # TODO: Add/Change filter to get valid results. Examples are shown below
+    # filter_string = "destination_ip.ip_address = '192.168.21.20'"
+    # filter_string = "port = 123"
+    # filter_string = "source_cluster.name = 'HaaS-Cluster-6'"
     filter_string = "destination_l2_network.name = 'vlan-1014'"
 
     aggregation = swagger_client.Aggregation(field="flow.totalBytes.delta.summation.bytes",
@@ -28,7 +28,7 @@ def main(api_client):
 
     api_response = search_api.aggregate_search_results(body=aggregation_request)
     # Value of sum bytes
-    print api_response.aggregations[0].value
+    print(api_response.aggregations[0].value)
 
 
 if __name__ == '__main__':
