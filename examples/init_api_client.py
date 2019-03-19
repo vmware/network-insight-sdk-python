@@ -16,6 +16,7 @@ def get_api_client(args):
 
     config.api_key['Authorization'] = auth_token.token
     config.api_key_prefix['Authorization'] = 'NetworkInsight'
+    config.api_client = api_client
     return api_client
 
 
