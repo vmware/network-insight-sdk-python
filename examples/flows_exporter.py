@@ -9,37 +9,13 @@ import csv
 
 import init_api_client
 import swagger_client
-from swagger_client.rest import ApiException
-
-id_to_name_map = dict()
+from sdk_utilities import get_referenced_entity_name
 
 
-def get_referenced_entity_name(entity_id=None, entity_type=None, entities_api=None):
-    print("Fetching id = {} of type = {}".format(entity_id, entity_type))
-    if entity_id in id_to_name_map:
-        return id_to_name_map[entity_id]
-
-    if entity_type == swagger_client.AllEntityType.VIRTUALMACHINE:
-        entity_fn = entities_api.get_vm
-    elif entity_type == swagger_client.AllEntityType.NSXSECURITYGROUP:
-        entity_fn = entities_api.get_security_group
-    else:
-        raise ValueError("API not assigned to type {}".format(entity_type))
-
-    entity_name = None
-    try:
-        entity_name = entity_fn(id=entity_id).name
-    except ApiException as e:
-        # This means referenced entity might be deleted
-        print(e)
-    id_to_name_map[entity_id] = entity_name
-    return entity_name
-
-
-def main(api_client):
+def main():
 
     # Create search API client object
-    search_api = swagger_client.SearchApi(api_client=api_client)
+    search_api = swagger_client.SearchApi()
 
     # TODO: Add/Change filter to get valid results
     filter_string = "((flow_tag = TAG_INTERNET_TRAFFIC) and (source_datacenter.name = 'HaaS-1'))"
@@ -64,22 +40,20 @@ def main(api_client):
               "Time: {}".format(api_response.total_count,
                                 time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(api_response.end_time))))
         for result in api_response.results:
-            entities_api = swagger_client.EntitiesApi(api_client=api_client)
+            entities_api = swagger_client.EntitiesApi()
 
             internet_flow = entities_api.get_flow(id=result.entity_id)
             print("Flow: {}".format(internet_flow.name))
 
             # Get Source VM Name
-            src_vm_name = get_referenced_entity_name(entity_id=internet_flow.source_vm.entity_id,
-                                                     entity_type=internet_flow.source_vm.entity_type,
-                                                     entities_api=entities_api)
+            src_vm_name = get_referenced_entity_name(referenced_entity=internet_flow.source_vm)
+
             # Get Source security groups
             sec_group_names = []
             for src_sec_group in internet_flow.source_security_groups:
-                name = get_referenced_entity_name(entity_id=src_sec_group.entity_id,
-                                                  entity_type=src_sec_group.entity_type,
-                                                  entities_api=entities_api)
+                name = get_referenced_entity_name(referenced_entity=src_sec_group)
                 if name: sec_group_names.append(name)
+
             # Write it to csv file
             flow_fields = dict(src_ip=internet_flow.source_ip.ip_address,
                                dst_ip=internet_flow.destination_ip.ip_address,
@@ -93,7 +67,8 @@ def main(api_client):
         search_payload.cursor = api_response.cursor
     f_csv.close()
 
+
 if __name__ == '__main__':
     args = init_api_client.parse_arguments()
     api_client = init_api_client.get_api_client(args)
-    main(api_client)
+    main()
