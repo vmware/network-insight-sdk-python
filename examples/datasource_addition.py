@@ -71,6 +71,20 @@ def get_add_request_body(datasource, proxy_id=None, vcenter_id=None):
     print("Request body : <{}>".format(api_request_body))
     return api_request_body
 
+def get_snmp_request_body(datasource, proxy_id=None, vcenter_id=None):
+    api_request_body = {
+            "snmp_enabled": True,
+            "snmp_version": "{}".format(datasource['snmp_version']),
+            "config_snmp_3": {
+            "username": "{}".format(datasource['snmp_username']),
+            "authentication_password": "{}".format(datasource['snmp_password']),
+            "context_name": "",
+            "authentication_type": "{}".format(datasource['snmp_auth_type']),
+            "privacy_type": "{}".format(datasource['snmp_privacy_type'])
+          }
+        }
+    print("Request body : <{}>".format(api_request_body))
+    return api_request_body
 
 def get_node_entity_id(api_client, proxy_ip=None):
     infrastructure_api = swagger_client.InfrastructureApi(api_client=api_client)
@@ -113,6 +127,10 @@ def main(api_client, args):
             try:
                 response = add_data_source_api_fn(body=get_add_request_body(data_source, proxy_id, vcenter_id))
                 print("Successfully added: {} {} : Response : {}".format(data_source_type, data_source['IP'], response))
+                if data_source['snmp_version']:
+                    add_snmp_api_fn = getattr(data_source_api, "update_cisco_switch_snmp_config")
+                    response = add_snmp_api_fn(id=response.entity_id, body=get_snmp_request_body(data_source, proxy_id, vcenter_id))
+                    print("Successfully added: {} {} snmp : Response : {}".format(data_source_type, data_source['IP'], response))
             except ApiException as e:
                 print("Failed adding data source: {} : Error : {} ".format(data_source['IP'], json.loads(e.body)))
 
