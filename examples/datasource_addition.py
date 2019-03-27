@@ -25,24 +25,29 @@ import json
 
 
 def get_api_function_name(datasource_type):
-    datasource = {data_source_type.DataSourceType.CISCOSWITCHDATASOURCE: "add_cisco_switch",
-                  data_source_type.DataSourceType.DELLSWITCHDATASOURCE: "add_dell_switch",
-                  data_source_type.DataSourceType.ARISTASWITCHDATASOURCE: "add_arista_switch",
-                  data_source_type.DataSourceType.BROCADESWITCHDATASOURCE: "add_brocade_switch",
-                  data_source_type.DataSourceType.JUNIPERSWITCHDATASOURCE: "add_juniper_switch",
-                  data_source_type.DataSourceType.VCENTERDATASOURCE: "add_vcenter_datasource",
-                  data_source_type.DataSourceType.NSXVMANAGERDATASOURCE: "add_nsxv_manager_datasource",
-                  data_source_type.DataSourceType.UCSMANAGERDATASOURCE: "add_ucs_manager",
-                  data_source_type.DataSourceType.HPVCMANAGERDATASOURCE: "add_hpvc_manager",
-                  data_source_type.DataSourceType.HPONEVIEWDATASOURCE: "add_hpov_manager",
-                  data_source_type.DataSourceType.PANFIREWALLDATASOURCE: "add_panorama_firewall",
-                  data_source_type.DataSourceType.CHECKPOINTFIREWALLDATASOURCE: "add_checkpoint_firewall",
-                  data_source_type.DataSourceType.NSXTMANAGERDATASOURCE: "add_nsxt_manager_datasource",
-                  data_source_type.DataSourceType.KUBERNETESDATASOURCE: 'add_kubernetes_datasource',
-                  data_source_type.DataSourceType.POLICYMANAGERDATASOURCE: "add_policy_manager_datasource"}
+    datasource = {data_source_type.DataSourceType.CISCOSWITCHDATASOURCE: {"snmp_config": "update_cisco_switch_snmp_config",
+                                                                          "add": "add_cisco_switch"},
+                  data_source_type.DataSourceType.DELLSWITCHDATASOURCE: {"snmp_config": "update_dell_switch_snmp_config",
+                                                                          "add": "add_dell_switch"},
+                  data_source_type.DataSourceType.ARISTASWITCHDATASOURCE: {"snmp_config": "list_vcenters",
+                                                                          "add": "update_arista_switch_snmp_config"},
+                  data_source_type.DataSourceType.BROCADESWITCHDATASOURCE: {"snmp_config": "update_brocade_switch_snmp_config",
+                                                                          "add": "add_brocade_switch"},
+                  data_source_type.DataSourceType.JUNIPERSWITCHDATASOURCE: {"snmp_config": "update_juniper_switch_snmp_config",
+                                                                          "add": "add_juniper_switch"},
+                  data_source_type.DataSourceType.VCENTERDATASOURCE: {"add": "add_vcenter_datasource"},
+                  data_source_type.DataSourceType.NSXVMANAGERDATASOURCE: {"add": "add_nsxv_manager_datasource"},
+                  data_source_type.DataSourceType.UCSMANAGERDATASOURCE: {"snmp_config": "update_ucs_snmp_config",
+                                                                          "add": "add_ucs_manager"},
+                  data_source_type.DataSourceType.HPVCMANAGERDATASOURCE: {"add": "add_hpvc_manager"},
+                  data_source_type.DataSourceType.HPONEVIEWDATASOURCE: {"add": "add_hpov_manager"},
+                  data_source_type.DataSourceType.PANFIREWALLDATASOURCE: {"add": "add_panorama_firewall"},
+                  data_source_type.DataSourceType.CHECKPOINTFIREWALLDATASOURCE: {"add": "add_panorama_firewall"},
+                  data_source_type.DataSourceType.NSXTMANAGERDATASOURCE: {"add": "add_nsxt_manager_datasource"},
+                  data_source_type.DataSourceType.KUBERNETESDATASOURCE: {"add": "add_kubernetes_datasource"},
+                  data_source_type.DataSourceType.POLICYMANAGERDATASOURCE: {"add": "add_policy_manager_datasource"}}
 
     return datasource[datasource_type]
-
 
 def get_add_request_body(datasource, proxy_id=None, vcenter_id=None):
     api_request_body = {
@@ -123,12 +128,12 @@ def main(api_client, args):
             print("Adding: <{}> <{}>".format(data_source_type, data_source['IP']))
             # Get the Data source add api fn
             data_source_api_name = get_api_function_name(data_source_type)
-            add_data_source_api_fn = getattr(data_source_api, data_source_api_name)
+            add_data_source_api_fn = getattr(data_source_api, data_source_api_name['add'])
             try:
                 response = add_data_source_api_fn(body=get_add_request_body(data_source, proxy_id, vcenter_id))
                 print("Successfully added: {} {} : Response : {}".format(data_source_type, data_source['IP'], response))
                 if data_source['snmp_version']:
-                    add_snmp_api_fn = getattr(data_source_api, "update_cisco_switch_snmp_config")
+                    add_snmp_api_fn = getattr(data_source_api, data_source_api_name['snmp_config'])
                     response = add_snmp_api_fn(id=response.entity_id, body=get_snmp_request_body(data_source, proxy_id, vcenter_id))
                     print("Successfully added: {} {} snmp : Response : {}".format(data_source_type, data_source['IP'], response))
             except ApiException as e:
