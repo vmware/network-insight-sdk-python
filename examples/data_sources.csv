@@ -6,4 +6,4 @@ NSXTManagerDataSource,10.196.74.183,audit,VMware1VMware!,,nsxt,,,,10.196.74.112,
 PanFirewallDataSource,10.197.17.247,admin,admin,,panorama_firewall,,,,,,,,,,,,10.197.52.65
 CiscoSwitchDataSource,10.40.13.36,admin,Vnera655,,NEXUS_5K,,,NEXUS_5K,,,,,,,,,10.197.52.65
 VCenterDataSource,10.70.59.196,cloudadmin@vmc.local,OwhXt5U*eU*Tp7R,,vmc,,,,,True,,,,,,,10.197.52.65
-PolicyManagerDataSource,10.70.57.131,,,e2e58ac5-e4b5-4cd8-b490-08fab730aca1,policy_manager,True,False,,10.70.59.196,,,,,,,,10.197.52.65
+PolicyManagerDataSource,10.70.59.131,,,e2e58ac5-e4b5-4cd8-b490-08fab730aca1,policy_manager,True,False,,10.70.59.196,,,,,,,,10.197.52.65
