@@ -49,6 +49,7 @@ def get_api_function_name(datasource_type):
 
     return datasource[datasource_type]
 
+
 def get_add_request_body(datasource, proxy_id=None, vcenter_id=None):
     api_request_body = {
         "ip": "{}".format(datasource['IP']),
@@ -76,20 +77,31 @@ def get_add_request_body(datasource, proxy_id=None, vcenter_id=None):
     print("Request body : <{}>".format(api_request_body))
     return api_request_body
 
-def get_snmp_request_body(datasource, proxy_id=None, vcenter_id=None):
+
+def get_snmp_request_body(datasource):
     api_request_body = {
             "snmp_enabled": True,
             "snmp_version": "{}".format(datasource['snmp_version']),
-            "config_snmp_3": {
-            "username": "{}".format(datasource['snmp_username']),
-            "authentication_password": "{}".format(datasource['snmp_password']),
-            "context_name": "",
-            "authentication_type": "{}".format(datasource['snmp_auth_type']),
-            "privacy_type": "{}".format(datasource['snmp_privacy_type'])
-          }
         }
+
+    snmp_config = dict()
+    if datasource['snmp_version'] == 'v2c':
+        snmp_config = dict(config_snmp_2c=dict(community_string='{}'.format(datasource['snmp_community_string'])))
+
+    elif datasource['snmp_version'] == 'v3':
+        snmp_config = dict(config_snmp_3=dict(
+            username="{}".format(datasource['snmp_username']),
+            authentication_password="{}".format(datasource['snmp_password']),
+            context_name="",
+            authentication_type="{}".format(datasource['snmp_auth_type']),
+            privacy_type="{}".format(datasource['snmp_privacy_type'])
+        ))
+
+    api_request_body.update(snmp_config)
+
     print("Request body : <{}>".format(api_request_body))
     return api_request_body
+
 
 def get_node_entity_id(api_client, proxy_ip=None):
     infrastructure_api = swagger_client.InfrastructureApi(api_client=api_client)
@@ -109,6 +121,7 @@ def get_vcenter_manager_entity_id(data_source_api, vcenter_ip=None):
         if ds.ip == vcenter_ip:
             return entity.entity_id
     return None
+
 
 def main(api_client, args):
 
@@ -134,8 +147,9 @@ def main(api_client, args):
                 print("Successfully added: {} {} : Response : {}".format(data_source_type, data_source['IP'], response))
                 if data_source['snmp_version']:
                     add_snmp_api_fn = getattr(data_source_api, data_source_api_name['snmp_config'])
-                    response = add_snmp_api_fn(id=response.entity_id, body=get_snmp_request_body(data_source, proxy_id, vcenter_id))
-                    print("Successfully added: {} {} snmp : Response : {}".format(data_source_type, data_source['IP'], response))
+                    response = add_snmp_api_fn(id=response.entity_id, body=get_snmp_request_body(data_source))
+                    print("Successfully added: {} {} snmp : Response : {}".format(data_source_type, data_source['IP'],
+                                                                                  response))
             except ApiException as e:
                 print("Failed adding data source: {} : Error : {} ".format(data_source['IP'], json.loads(e.body)))
 
