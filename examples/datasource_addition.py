@@ -123,6 +123,9 @@ def get_vcenter_manager_entity_id(data_source_api, vcenter_ip=None):
     return None
 
 
+proxy_ip_to_id = dict()
+
+
 def main(api_client, args):
 
     # Create data source API client object
@@ -131,11 +134,17 @@ def main(api_client, args):
         data_sources = csv.DictReader(csvFile)
         for data_source in data_sources:
             data_source_type = data_source['DataSourceType']
+
             # Get the Proxy ID from Proxy IP
-            proxy_id = get_node_entity_id(api_client, data_source['ProxyIP'])
-            if not proxy_id:
-                print("Incorrect Proxy IP {}".format(data_source['ProxyIP']))
-                continue
+            if data_source['ProxyIP'] not in proxy_ip_to_id:
+                proxy_id = get_node_entity_id(api_client, data_source['ProxyIP'])
+                if not proxy_id:
+                    print("Incorrect Proxy IP {}".format(data_source['ProxyIP']))
+                    continue
+                proxy_ip_to_id[data_source['ProxyIP']] = proxy_id
+            else:
+                proxy_id = proxy_ip_to_id[data_source['ProxyIP']]
+
             # Get vCenter ID for vCenter manager required for adding NSX
             vcenter_id = get_vcenter_manager_entity_id(data_source_api, data_source['ParentvCenter'])
             print("Adding: <{}> <{}>".format(data_source_type, data_source['IP']))
