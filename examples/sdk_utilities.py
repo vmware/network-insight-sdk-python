@@ -1,5 +1,6 @@
 import swagger_client
 from swagger_client.rest import ApiException
+import logging
 
 entity_map_to_fn = dict()
 entity_map_to_fn[swagger_client.AllEntityType.CLUSTER] = "get_cluster"
@@ -32,6 +33,7 @@ entity_map_to_fn[swagger_client.AllEntityType.VMKNIC] = "get_vmknic"
 entity_map_to_fn[swagger_client.AllEntityType.VNIC] = "get_vnic"
 
 id_to_name_map = dict()
+logger = logging.getLogger("vrni_sdk")
 
 
 def get_fn_for_entity_type(entity_type, entities_api=None):
@@ -52,7 +54,7 @@ def get_entity(reference_entity):
 
 
 def get_referenced_entity_name(referenced_entity):
-    print("Fetching id = {} of type = {}".format(referenced_entity.entity_id, referenced_entity.entity_type))
+    logger.info("Fetching id = {} of type = {}".format(referenced_entity.entity_id, referenced_entity.entity_type))
     if referenced_entity.entity_id in id_to_name_map:
         return id_to_name_map[referenced_entity.entity_id]
     entity_name = None
@@ -60,6 +62,6 @@ def get_referenced_entity_name(referenced_entity):
         entity_name = get_entity(referenced_entity).name
     except AttributeError as e:
         # This means referenced entity might be deleted
-        print(e)
+        logger.error(e)
     id_to_name_map[referenced_entity.entity_id] = entity_name
     return entity_name

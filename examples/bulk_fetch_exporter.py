@@ -7,16 +7,19 @@
 
 import time
 import csv
+import logging
 
 import init_api_client
 import swagger_client
 from swagger_client.rest import ApiException
+import utilities
 
+logger = logging.getLogger("vrni_sdk")
 id_to_name_map = dict()
 
 
 def get_referenced_entity_name(entity_id=None, entity_type=None, entities_api=None):
-    print("Fetching id = {} of type = {}".format(entity_id, entity_type))
+    logger.info("Fetching id = {} of type = {}".format(entity_id, entity_type))
     if entity_id in id_to_name_map:
         return id_to_name_map[entity_id]
 
@@ -32,15 +35,15 @@ def get_referenced_entity_name(entity_id=None, entity_type=None, entities_api=No
         entity_name = entity_fn(id=entity_id).name
     except ApiException as e:
         # This means referenced entity might be deleted
-        print(e)
+        logger.exception(e)
     id_to_name_map[entity_id] = entity_name
     return entity_name
 
 
-def main(api_client):
+def main():
 
     # Create search API client object
-    search_api = swagger_client.SearchApi(api_client=api_client)
+    search_api = swagger_client.SearchApi()
 
     # TODO: Add/Change filter to get valid results
     filter_string = "((source_datacenter.name = 'washington-dc-delta-1'))"
@@ -48,7 +51,7 @@ def main(api_client):
     # Create request parameters required for search APIs
     public_api_search_request_params = dict(entity_type=swagger_client.EntityType.FLOW,
                                             size=3)
-    print("Get all VMs with filter = [{}]".format(filter_string))
+    logger.info("Get all VMs with filter = [{}]".format(filter_string))
 
     # Create payload from search parameters required for calling the search API
     search_payload = swagger_client.SearchRequest(**public_api_search_request_params)
@@ -61,15 +64,15 @@ def main(api_client):
     while True:
         # Call the search API
         api_response = search_api.search_entities(body=search_payload)
-        print("Response attributes: Total Count: {} "
+        logger.info("Response attributes: Total Count: {} "
               "Time: {}".format(api_response.total_count,
                                 time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(api_response.end_time))))
-        print("Result list : {} ".format(api_response.results))
+        logger.info("Result list : {} ".format(api_response.results))
 
-        #payload for bulk fetch
+        # payload for bulk fetch
         payload ={"entity_ids" : api_response.results}
         entities_api = swagger_client.EntitiesApi(api_client=api_client)
-        #bulk fetching the entities
+        # bulk fetching the entities
         api_response = entities_api.entities_fetch_post(body=payload)
 
         for result in api_response.results:
@@ -97,7 +100,9 @@ def main(api_client):
         search_payload.cursor = api_response.cursor
     f_csv.close()
 
+
 if __name__ == '__main__':
     args = init_api_client.parse_arguments()
+    utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
-    main(api_client)
+    main()

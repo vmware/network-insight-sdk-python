@@ -5,9 +5,12 @@
 import init_api_client
 import swagger_client
 import utilities
+import logging
+
+logger = logging.getLogger("vrni_sdk")
 
 
-def main(api_client):
+def main():
     search_api = swagger_client.SearchApi(api_client=api_client)
 
     # TODO: Add/Change filter to get valid results. Examples are shown below
@@ -19,6 +22,7 @@ def main(api_client):
     aggregation = swagger_client.Aggregation(field="flow.totalBytes.delta.summation.bytes",
                                              aggregation_type="SUM")
 
+    logger.info("Getting total bytes for {} in last 15 days".format(filter_string))
     # Time range is last 15 days
     time_range = swagger_client.TimeRange(start_time=utilities.get_start_time(15), end_time=utilities.get_end_time())
 
@@ -28,10 +32,11 @@ def main(api_client):
 
     api_response = search_api.aggregate_search_results(body=aggregation_request)
     # Value of sum bytes
-    print(api_response.aggregations[0].value)
+    logger.info(api_response.aggregations[0].value)
 
 
 if __name__ == '__main__':
     args = init_api_client.parse_arguments()
+    utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
-    main(api_client)
+    main()

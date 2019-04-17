@@ -6,16 +6,19 @@
 
 import time
 import csv
+import logging
 
 import init_api_client
 import swagger_client
 from sdk_utilities import get_referenced_entity_name
+import utilities
 
 
 def main():
 
     # Create search API client object
     search_api = swagger_client.SearchApi()
+    logger = logging.getLogger("vrni_sdk")
 
     # TODO: Add/Change filter to get valid results
     filter_string = "((flow_tag = TAG_INTERNET_TRAFFIC) and (source_datacenter.name = 'HaaS-1'))"
@@ -23,7 +26,7 @@ def main():
     public_api_search_request_params = dict(entity_type=swagger_client.EntityType.FLOW,
                                             filter=filter_string,
                                             size=100)
-    print("Get all VMs with filter = [{}]".format(filter_string))
+    logger.info("Get all VMs with filter = [{}]".format(filter_string))
 
     # Create payload from search parameters required for calling the search API
     search_payload = swagger_client.SearchRequest(**public_api_search_request_params)
@@ -36,14 +39,14 @@ def main():
     while True:
         # Call the search API
         api_response = search_api.search_entities(body=search_payload)
-        print("Response attributes: Total Count: {} "
+        logger.info("Response attributes: Total Count: {} "
               "Time: {}".format(api_response.total_count,
                                 time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(api_response.end_time))))
         for result in api_response.results:
             entities_api = swagger_client.EntitiesApi()
 
             internet_flow = entities_api.get_flow(id=result.entity_id)
-            print("Flow: {}".format(internet_flow.name))
+            logger.info("Flow: {}".format(internet_flow.name))
 
             # Get Source VM Name
             src_vm_name = get_referenced_entity_name(referenced_entity=internet_flow.source_vm)
@@ -70,5 +73,6 @@ def main():
 
 if __name__ == '__main__':
     args = init_api_client.parse_arguments()
+    utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
     main()

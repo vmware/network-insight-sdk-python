@@ -1,11 +1,15 @@
 import argparse
 import swagger_client
+import utilities
+import logging
 
 
 def get_api_client(args):
     config = swagger_client.Configuration()
     config.verify_ssl = False
+    logger = logging.getLogger('vrni_sdk')
 
+    logger.info("Getting api client for IP <{}>".format(args.platform_ip))
     api_client = swagger_client.ApiClient(host="https://{}/api/ni".format(args.platform_ip))
     user_creds = swagger_client.UserCredential(username=args.username, password=args.password,
                                                domain=dict(domain_type=args.domain_type))
@@ -38,4 +42,5 @@ def parse_arguments():
 
 if __name__ == '__main__':
     args = parse_arguments()
+    utilities.configure_logging("/tmp")
     api_client = get_api_client(args)

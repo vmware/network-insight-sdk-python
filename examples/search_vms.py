@@ -7,12 +7,15 @@ import time
 
 import init_api_client
 import swagger_client
+import logging
+import utilities
+logger = logging.getLogger("vrni_sdk")
 
 
-def main(api_client):
+def main():
 
     # Create search API client object
-    search_api = swagger_client.SearchApi(api_client=api_client)
+    search_api = swagger_client.SearchApi()
 
     # TODO: Add/Change filter to get valid results
     filter_string = "vcenter_manager.name = '10.197.17.51'"
@@ -20,7 +23,7 @@ def main(api_client):
     public_api_search_request_params = dict(entity_type=swagger_client.EntityType.VIRTUALMACHINE,
                                             filter=filter_string,
                                             size=100)
-    print("Get all VMs with filter = [{}]".format(filter_string))
+    logger.info("Get all VMs with filter = [{}]".format(filter_string))
 
     # Create payload from search parameters required for calling the search API
     search_payload = swagger_client.SearchRequest(**public_api_search_request_params)
@@ -28,12 +31,12 @@ def main(api_client):
     while True:
         # Call the search API
         api_response = search_api.search_entities(body=search_payload)
-        print("Response attributes: Total Count: {} "
+        logger.info("Response attributes: Total Count: {} "
               "Time: {}".format(api_response.total_count,
                                 time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(api_response.end_time))))
         for result in api_response.results:
             entities_api = swagger_client.EntitiesApi(api_client=api_client)
-            print("VM Name: {}".format(entities_api.get_vm(id=result.entity_id).name))
+            logger.info("VM Name: {}".format(entities_api.get_vm(id=result.entity_id).name))
             # print result
         if not api_response.cursor:
             break
@@ -42,5 +45,6 @@ def main(api_client):
 
 if __name__ == '__main__':
     args = init_api_client.parse_arguments()
+    utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
-    main(api_client)
+    main()

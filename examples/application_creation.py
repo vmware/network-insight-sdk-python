@@ -6,11 +6,17 @@
 import init_api_client
 import swagger_client
 
+import utilities
+import logging
+
+logger = logging.getLogger("vrni_sdk")
+
 
 def create_appication_and_tiers(application_api, application_name):
     app_name = "{}".format(application_name)
     body = {"name": app_name}
     app = application_api.add_application(body)
+    logger.info("Application {} created".format(app_name))
     create_tiers(app_name, application_api, app)
 
 
@@ -30,6 +36,7 @@ def create_tiers(app_name, application_api, app):
     tier1.group_membership_criteria = [grp_membership_criteria]
 
     application_api.add_tier(app.entity_id, tier1)
+    logger.info("Tier 1 created")
 
     # create tier using json
     tier_2 = {
@@ -45,6 +52,7 @@ def create_tiers(app_name, application_api, app):
         ]
     }
     application_api.add_tier(app.entity_id, tier_2)
+    logger.info("Tier 2 created")
 
     tier_3 = {
         "name": "%s_t3" % app_name,
@@ -59,6 +67,7 @@ def create_tiers(app_name, application_api, app):
         ]
     }
     application_api.add_tier(app.entity_id, tier_3)
+    logger.info("Tier 3 created")
 
 
 def delete_application(application_api, application_name):
@@ -73,14 +82,15 @@ def delete_application(application_api, application_name):
             break
 
 
-def main(api_client):
+def main():
     # Create application API client object
-    application_api = swagger_client.ApplicationsApi(api_client=api_client)
+    application_api = swagger_client.ApplicationsApi()
     create_appication_and_tiers(application_api, "demo_app_1")
     # delete_application(application_api, "demo_app_1")
 
 
 if __name__ == '__main__':
     args = init_api_client.parse_arguments()
+    utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
-    main(api_client)
+    main()
