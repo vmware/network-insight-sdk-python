@@ -55,6 +55,14 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_add_cisco_aci(self):
+        """
+        Test case for add_cisco_aci
+
+        Create a Cisco ACI data source
+        """
+        pass
+
     def test_add_cisco_switch(self):
         """
         Test case for add_cisco_switch
@@ -151,11 +159,35 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_add_pks_datasource(self):
+        """
+        Test case for add_pks_datasource
+
+        Create an pks data source
+        """
+        pass
+
     def test_add_policy_manager_datasource(self):
         """
         Test case for add_policy_manager_datasource
 
         Create a vmc nsx manager data source
+        """
+        pass
+
+    def test_add_service_now_datasource(self):
+        """
+        Test case for add_service_now_datasource
+
+        Create an ServiceNow instance data source
+        """
+        pass
+
+    def test_add_uani(self):
+        """
+        Test case for add_uani
+
+        Create UANI as data source
         """
         pass
 
@@ -196,6 +228,14 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for delete_checkpoint_firewall
 
         Delete a checkpoint firewall data source
+        """
+        pass
+
+    def test_delete_cisco_aci(self):
+        """
+        Test case for delete_cisco_aci
+
+        Delete a Cisco ACI data source
         """
         pass
 
@@ -295,11 +335,35 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_delete_pks(self):
+        """
+        Test case for delete_pks
+
+        Delete an pks data source
+        """
+        pass
+
     def test_delete_policy_manager(self):
         """
         Test case for delete_policy_manager
 
         Delete a vmc nsx manager data source
+        """
+        pass
+
+    def test_delete_service_now_instance(self):
+        """
+        Test case for delete_service_now_instance
+
+        Delete an ServiceNow instance data source
+        """
+        pass
+
+    def test_delete_uani(self):
+        """
+        Test case for delete_uani
+
+        Delete Uani data source
         """
         pass
 
@@ -340,6 +404,14 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for disable_checkpoint_firewall
 
         Disable a checkpoint firewall data source
+        """
+        pass
+
+    def test_disable_cisco_aci(self):
+        """
+        Test case for disable_cisco_aci
+
+        Disable a Cisco ACI data source
         """
         pass
 
@@ -439,11 +511,35 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_disable_pks(self):
+        """
+        Test case for disable_pks
+
+        Disable an pks data source
+        """
+        pass
+
     def test_disable_policy_manager(self):
         """
         Test case for disable_policy_manager
 
         Disable a vmc nsx manager data source
+        """
+        pass
+
+    def test_disable_service_now_instance(self):
+        """
+        Test case for disable_service_now_instance
+
+        Disable an ServiceNow instance data source
+        """
+        pass
+
+    def test_disable_uani(self):
+        """
+        Test case for disable_uani
+
+        Disable UANI data source
         """
         pass
 
@@ -484,6 +580,14 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for enable_checkpoint_firewall
 
         Enable a checkpoint firewall data source
+        """
+        pass
+
+    def test_enable_cisco_aci(self):
+        """
+        Test case for enable_cisco_aci
+
+        Enable a Cisco ACI data source
         """
         pass
 
@@ -583,11 +687,35 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_enable_pks(self):
+        """
+        Test case for enable_pks
+
+        Enable an pks data source
+        """
+        pass
+
     def test_enable_policy_manager(self):
         """
         Test case for enable_policy_manager
 
         Enable a vmc nsx manager data source
+        """
+        pass
+
+    def test_enable_service_now_instance(self):
+        """
+        Test case for enable_service_now_instance
+
+        Enable an ServiceNow instance data source
+        """
+        pass
+
+    def test_enable_uani(self):
+        """
+        Test case for enable_uani
+
+        Enable UANI data source
         """
         pass
 
@@ -644,6 +772,22 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for get_checkpoint_firewall
 
         Show checkpoint firewall data source details
+        """
+        pass
+
+    def test_get_cisco_aci(self):
+        """
+        Test case for get_cisco_aci
+
+        Show Cisco ACI data source details
+        """
+        pass
+
+    def test_get_cisco_aci_snmp_config(self):
+        """
+        Test case for get_cisco_aci_snmp_config
+
+        Show snmp config for Cisco ACI
         """
         pass
 
@@ -791,11 +935,35 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_get_pks(self):
+        """
+        Test case for get_pks
+
+        Show pks data source details
+        """
+        pass
+
     def test_get_policy_manager(self):
         """
         Test case for get_policy_manager
 
         Show vmc nsx manager data source details
+        """
+        pass
+
+    def test_get_service_now_instance(self):
+        """
+        Test case for get_service_now_instance
+
+        Show ServiceNow instance data source details
+        """
+        pass
+
+    def test_get_uani(self):
+        """
+        Test case for get_uani
+
+        Show UANI data source details
         """
         pass
 
@@ -844,6 +1012,14 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for list_checkpoint_firewalls
 
         List checkpoint firewall data sources
+        """
+        pass
+
+    def test_list_cisco_aci(self):
+        """
+        Test case for list_cisco_aci
+
+        List Cisco ACI data sources
         """
         pass
 
@@ -943,11 +1119,35 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_list_pks(self):
+        """
+        Test case for list_pks
+
+        List pks data sources
+        """
+        pass
+
     def test_list_policy_managers(self):
         """
         Test case for list_policy_managers
 
         List vmc nsx manager data sources
+        """
+        pass
+
+    def test_list_service_now_instances(self):
+        """
+        Test case for list_service_now_instances
+
+        List ServiceNow instance data sources
+        """
+        pass
+
+    def test_list_uani(self):
+        """
+        Test case for list_uani
+
+        List UANI data sources
         """
         pass
 
@@ -1004,6 +1204,22 @@ class TestDataSourcesApi(unittest.TestCase):
         Test case for update_checkpoint_firewall
 
         Update a checkpoint firewall data source
+        """
+        pass
+
+    def test_update_cisco_aci_manager(self):
+        """
+        Test case for update_cisco_aci_manager
+
+        Update a cisco aci data source
+        """
+        pass
+
+    def test_update_cisco_aci_snmp_config(self):
+        """
+        Test case for update_cisco_aci_snmp_config
+
+        Update snmp config for Cisco ACI
         """
         pass
 
@@ -1151,11 +1367,35 @@ class TestDataSourcesApi(unittest.TestCase):
         """
         pass
 
+    def test_update_pks(self):
+        """
+        Test case for update_pks
+
+        Update an pks data source
+        """
+        pass
+
     def test_update_policy_manager(self):
         """
         Test case for update_policy_manager
 
         Update a vmc nsx manager data source
+        """
+        pass
+
+    def test_update_service_now_instance(self):
+        """
+        Test case for update_service_now_instance
+
+        Update an ServiceNow instance data source
+        """
+        pass
+
+    def test_update_uani(self):
+        """
+        Test case for update_uani
+
+        Update UANI data source
         """
         pass
 

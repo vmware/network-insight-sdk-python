@@ -39,11 +39,27 @@ class TestAuthenticationApi(unittest.TestCase):
         """
         pass
 
+    def test_create_vidm_user_token(self):
+        """
+        Test case for create_vidm_user_token
+
+        Create an auth token for user mapped through VMware Identity Manager
+        """
+        pass
+
     def test_delete(self):
         """
         Test case for delete
 
         Delete an auth token.
+        """
+        pass
+
+    def test_get_vidm_oauth_clien_id(self):
+        """
+        Test case for get_vidm_oauth_clien_id
+
+        Get the client-id for making user access-token request to VMware Identity Manager
         """
         pass
 
