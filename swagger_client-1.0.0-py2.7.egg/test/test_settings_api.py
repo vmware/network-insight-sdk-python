@@ -39,6 +39,22 @@ class TestSettingsApi(unittest.TestCase):
         """
         pass
 
+    def test_add_vidm_user(self):
+        """
+        Test case for add_vidm_user
+
+        Add a VMware Identity manager user to vRealize Network Insight
+        """
+        pass
+
+    def test_add_vidm_user_group(self):
+        """
+        Test case for add_vidm_user_group
+
+        Add a VMware Identity Manager user-group to vRealize Network Insight
+        """
+        pass
+
     def test_create_subnet_mapping(self):
         """
         Test case for create_subnet_mapping
@@ -52,6 +68,46 @@ class TestSettingsApi(unittest.TestCase):
         Test case for delete_subnet_mapping
 
         Delete subnet mapping
+        """
+        pass
+
+    def test_delete_user(self):
+        """
+        Test case for delete_user
+
+        Delete an existing user.
+        """
+        pass
+
+    def test_delete_user_group(self):
+        """
+        Test case for delete_user_group
+
+        Delete an existing user-group
+        """
+        pass
+
+    def test_delete_vidm_configuration(self):
+        """
+        Test case for delete_vidm_configuration
+
+        Delete VMware Identity Manager configuration
+        """
+        pass
+
+    def test_disable_vidm(self):
+        """
+        Test case for disable_vidm
+
+        Disable VMware Identity Manager integration
+        """
+        pass
+
+    def test_enable_vidm(self):
+        """
+        Test case for enable_vidm
+
+        Enable VMware Identity Manager integration
         """
         pass
 
@@ -79,6 +135,46 @@ class TestSettingsApi(unittest.TestCase):
         """
         pass
 
+    def test_get_user(self):
+        """
+        Test case for get_user
+
+        Get details of a user
+        """
+        pass
+
+    def test_get_user_group(self):
+        """
+        Test case for get_user_group
+
+        Get details of a user-group
+        """
+        pass
+
+    def test_get_user_groups(self):
+        """
+        Test case for get_user_groups
+
+        List user-groups
+        """
+        pass
+
+    def test_get_users(self):
+        """
+        Test case for get_users
+
+        List the users
+        """
+        pass
+
+    def test_get_vidm_configuration(self):
+        """
+        Test case for get_vidm_configuration
+
+        Get configuration details of VMware Identity Manager
+        """
+        pass
+
     def test_remove_ip_tag(self):
         """
         Test case for remove_ip_tag
@@ -87,11 +183,43 @@ class TestSettingsApi(unittest.TestCase):
         """
         pass
 
+    def test_save_vidm_configuration(self):
+        """
+        Test case for save_vidm_configuration
+
+        Configure VMware Identity Manager
+        """
+        pass
+
     def test_update_subnet_mapping(self):
         """
         Test case for update_subnet_mapping
 
         Update subnet mapping
+        """
+        pass
+
+    def test_update_vidm_configuration(self):
+        """
+        Test case for update_vidm_configuration
+
+        Update VMware Identity Manager configuration
+        """
+        pass
+
+    def test_update_vidm_user_group_role(self):
+        """
+        Test case for update_vidm_user_group_role
+
+        Update role for user-group mapped through VMware Identity Manager
+        """
+        pass
+
+    def test_update_vidm_user_role(self):
+        """
+        Test case for update_vidm_user_role
+
+        Update role for user mapped through VMware Identity Manager
         """
         pass
 
