@@ -1,7 +1,10 @@
 # Python SDK Examples
-
+#
 # Script will create one application and three tiers in it
 # Delete application snippet also included
+#
+# Copyright 2019 VMware, Inc.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import init_api_client
 import swagger_client

@@ -1,3 +1,6 @@
+# Copyright 2019 VMware, Inc.
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 import swagger_client
 from swagger_client.rest import ApiException
 import logging

@@ -9,12 +9,15 @@
 # DataSourceType in data_sources.csv is taken from swagger_client.models.data_source_type.py
 # For reference here are the data source types that can be used in CSV
 # CiscoSwitchDataSource, DellSwitchDataSource, AristaSwitchDataSource, BrocadeSwitchDataSource, JuniperSwitchDataSource,
-# GDDataSource, VCenterDataSource, NSXVManagerDataSource, UCSManagerDataSource, HPVCManagerDataSource, 
+# GDDataSource, VCenterDataSource, NSXVManagerDataSource, UCSManagerDataSource, HPVCManagerDataSource,
 # HPOneViewDataSource, PanFirewallDataSource, CheckpointFirewallDataSource, NSXTManagerDataSource, KubernetesDataSource,
 # InfobloxManagerDataSource
 
 # Cisco Switch type can be taken from from swagger_client.models.cisco_switch_type.py -
 # CATALYST_3000, CATALYST_4500, CATALYST_6500, NEXUS_5K, NEXUS_7K, NEXUS_9K
+#
+# Copyright 2019 VMware, Inc.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import csv
 import json

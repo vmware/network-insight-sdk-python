@@ -4,6 +4,9 @@
 # It will take this fetch flows result and bulk fetch to get all flows information
 # Along with the flow information it will fetch appropriate VM, Security group information and dump it to
 # CSV file
+#
+# Copyright 2019 VMware, Inc.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import time
 import csv

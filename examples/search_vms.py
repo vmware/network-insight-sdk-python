@@ -1,7 +1,10 @@
 # Python SDK Examples
-
+#
 # Script will fetch VMs through a call to search API. Search API returns uuids for all VMs.
 # Script will then fetch every single VM's complete information.
+#
+# Copyright 2019 VMware, Inc.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import time
 

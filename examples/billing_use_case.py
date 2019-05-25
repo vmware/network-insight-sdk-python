@@ -1,6 +1,9 @@
 # Python SDK Examples
 # Script will get total bytes transferred for a specific IP or group of IPs
 # or the scope can be any l2 network, security group, etc.
+#
+# Copyright 2019 VMware, Inc.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import init_api_client
 import swagger_client
