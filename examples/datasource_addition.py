@@ -63,28 +63,31 @@ def get_api_function_name(datasource_type):
 
 def get_add_request_body(datasource, proxy_id=None, vcenter_id=None):
     api_request_body = {
-        "ip": "{}".format(datasource['IP']),
-        "fqdn": "",
         "proxy_id": "{}".format(proxy_id),
         "enabled": True,
         "nickname": datasource["NickName"],
         "notes": "added by public api",
     }
+    if datasource['fqdn']:
+        api_request_body['fqdn'] = "{}".format(datasource['fqdn'])
+    else:
+        api_request_body['ip'] = "{}".format(datasource['IP'])
+
     if datasource['Username']:
         api_request_body["credentials"] = {"username": "{}".format(datasource['Username']),
                                "password": "{}".format(datasource['Password'])}
     if datasource['CSPRefreshToken']:
         api_request_body["csp_refresh_token"] = datasource['CSPRefreshToken']
     if datasource['CentralCliEnabled']:
-        api_request_body["central_cli_enabled"] = datasource['CentralCliEnabled']
+        api_request_body["central_cli_enabled"] = bool(datasource['CentralCliEnabled'])
     if datasource['IPFixEnabled']:
-        api_request_body["ipfix_enabled"] = datasource['IPFixEnabled']
+        api_request_body["ipfix_enabled"] = bool(datasource['IPFixEnabled'])
     if vcenter_id:
         api_request_body['vcenter_id'] = vcenter_id
     if datasource['SwitchType']:
         api_request_body["switch_type"] = datasource['SwitchType']
     if datasource['IsVMC']:
-        api_request_body["is_vmc"] = datasource['IsVMC']
+        api_request_body["is_vmc"] = bool(datasource['IsVMC'])
     logger.info("Request body : <{}>".format(api_request_body))
     return api_request_body
 

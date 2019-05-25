@@ -1,9 +1,8 @@
-DataSourceType,IP,Username,Password,CSPRefreshToken,NickName,CentralCliEnabled,IPFixEnabled,SwitchType,ParentvCenter,IsVMC,snmp_version,snmp_community_string,snmp_username,snmp_password,snmp_auth_type,snmp_privacy_type,ProxyIP
-VCenterDataSource,10.197.17.137,administrator@vsphere.local,Admin!23,,vcenter,,,,,,,,,,,,10.197.52.65
-VCenterDataSource,10.196.74.112,administrator@vsphere.local,InfraSoftwareVN1!,,vcenter,,,,,,,,,,,,10.197.52.65
-NSXVManagerDataSource,10.197.17.152,admin,default,,nsxv,True,False,,10.197.17.137,,,,,,,,10.197.52.65
-NSXTManagerDataSource,10.196.74.183,audit,VMware1VMware!,,nsxt,,,,10.196.74.112,,,,,,,,10.197.52.65
-PanFirewallDataSource,10.197.17.247,admin,admin,,panorama_firewall,,,,,,,,,,,,10.197.52.65
-CiscoSwitchDataSource,10.40.13.36,admin,Vnera655,,NEXUS_5K,,,NEXUS_5K,,,v3,,admin,Vnera655,MD5,NO_PRIV,10.197.52.65
-VCenterDataSource,10.70.59.196,cloudadmin@vmc.local,OwhXt5U*eU*Tp7R,,vmc,,,,,True,,,,,,,10.197.52.65
-PolicyManagerDataSource,10.70.59.131,,,e2e58ac5-e4b5-4cd8-b490-08fab730aca1,policy_manager,True,False,,10.70.59.196,,,,,,,,10.197.52.65
+DataSourceType,IP,fqdn,Username,Password,CSPRefreshToken,NickName,CentralCliEnabled,IPFixEnabled,SwitchType,ParentvCenter,IsVMC,snmp_version,snmp_community_string,snmp_username,snmp_password,snmp_auth_type,snmp_privacy_type,ProxyIP
+VCenterDataSource,192.168.0.10,,administrator@vsphere.local,MyPassword,,vcenter,,,,,,,,,,,,192.168.0.5
+NSXVManagerDataSource,,nsxv.lab,admin,MyPassword,,nsxv,TRUE,FALSE,,192.168.0.10,,,,,,,,192.168.0.5
+NSXTManagerDataSource,192.168.0.12,,audit,MyPassword,,nsxt,,,,192.168.0.10,,,,,,,,192.168.0.5
+PanFirewallDataSource,192.168.0.13,,admin,MyPassword,,panorama_firewall,,,,,,,,,,,,192.168.0.5
+CiscoSwitchDataSource,192.168.0.14,,admin,MyPassword,,NEXUS_5K,,,NEXUS_5K,,,v3,,admin,MyPassword,MD5,NO_PRIV,192.168.0.5
+VCenterDataSource,192.168.0.15,,cloudadmin@vmc.local,MyPassword,,vmc,,,,,TRUE,,,,,,,192.168.0.5
+PolicyManagerDataSource,192.168.0.16,,,,LongString,policy_manager,TRUE,FALSE,,192.168.0.10,,,,,,,,192.168.0.5
