@@ -13,10 +13,8 @@ You are ready to go.
 The **examples/** directory is full of examples that use the Network Insight Python SDK and inspire you.
 
 ## Contributing
-The network-insight-sdk-python project team welcomes contributions from the community. Before you start working with network-insight-sdk-python, please
-read our [Developer Certificate of Origin](https://cla.vmware.com/dco). All contributions to this repository must be
-signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on
-as an open-source patch. For more detailed information, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
+
+The network-insight-sdk-python project team welcomes contributions from the community. If you wish to contribute code and you have not signed our contributor license agreement (CLA), our bot will update the issue when you open a Pull Request. For any questions about the CLA process, please refer to our [FAQ](https://cla.vmware.com/faq). For more detailed information, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 Network Insight Python SDK is licensed under GPL v2
