@@ -3,7 +3,7 @@
 # If application_backup_action = save : All the applications will be dump to yaml
 # If application_backup_action = restore : Applications and Tiers which are created only using Public API restored succesfully.
 # e.g Tier with filter criteria for Virtual machine is given as security_groups.name='security_group_scale_100' will be restore correctly since it is done through public APIs
-# while Tier with filter criteria for virtual machine as security_groups='security_group_scale_100' cannot be configured through public APIs.
+# while manually created Tier with filter criteria for virtual machine as security groups='security_group_scale_100' cannot be configured through public APIs.
 
 import init_api_client
 import argparse
