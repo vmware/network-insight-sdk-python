@@ -216,7 +216,7 @@ class Configuration(object):
                 },
 
         }
-        if self.deployment_type == "niaas":
+        if self.deployment_type == "on_saas":
             authorization_settings = {
                 'ApiKeyAuth':
                     {
