@@ -1,3 +1,6 @@
+# Copyright 2019 VMware, Inc.
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 import argparse
 import swagger_client
 import requests
@@ -10,7 +13,7 @@ def get_api_client(args):
     if args.deployment_type == "onprem":
         return get_onsaas_api_client(args)
     else:
-        return get_niaas_api_client(args)
+         return get_niaas_api_client(args)
 
 def get_onsaas_api_client(args):
     config = swagger_client.Configuration()
@@ -29,7 +32,7 @@ def get_onsaas_api_client(args):
     return api_client
 
 def get_niaas_api_client(args):
-    public_api_url = "{}/ni/api/ni".format(args.nias_setup_url,)
+    public_api_url = "https://api.mgmt.cloud.vmware.com/ni/api/ni"
     public_api_client = swagger_client.ApiClient(host=public_api_url)
     config = swagger_client.Configuration()
     config.verify_ssl = False
@@ -39,7 +42,8 @@ def get_niaas_api_client(args):
     return public_api_client
 
 def get_niaas_csp_auth_token(args, api_client):
-    authorize_api_url = "{}/am/api/auth/api-tokens/authorize?refresh_token={}".format(args.csp_url, args.refresh_token)
+    authorize_api_url = "https://console.cloud.vmware.com/csp/gateway/am/api/auth/api-tokens/authorize" \
+                        "?refresh_token={}".format(args.refresh_token)
     response = requests.post(authorize_api_url)
     response = json.loads(str(response.text))
     csp_auth_token = response['access_token']
@@ -48,6 +52,8 @@ def get_niaas_csp_auth_token(args, api_client):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Run Public APIs on vRNI Platform')
+    parser.add_argument("--deployment_type", action="store",
+                     help="Setup deployment type: onprem or niaas", required=True)
     parser.add_argument('--platform_ip', action='store',
                         help='IP address of vRNI platform. In case of cluster IP address of Platform-1')
     parser.add_argument('--username', action='store', default='admin@local',
@@ -58,14 +64,8 @@ def parse_arguments():
                         default='LOCAL', help="domain type for authentication")
     parser.add_argument("--data_sources_csv", action="store",
                         default='data_sources.csv', help="domain type for authentication")
-    parser.add_argument("--deployment_type", action="store",
-                     help="Setup deployment type: onprem or niaas")
 
     # Network Insight as a service (NIAAS) parameters
-    parser.add_argument('--csp_url', action='store',
-                        help='Provide niaas test envirnoment')
-    parser.add_argument('--nias_setup_url', action='store',
-                        help='Provide niaas test envirnoment')
     parser.add_argument('--refresh_token', action='store',
                         help='Provide niaas refresh token')
 

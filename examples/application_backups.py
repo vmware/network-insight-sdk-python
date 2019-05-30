@@ -59,6 +59,8 @@ def main(args):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Run Public APIs on vRNI Platform')
+    parser.add_argument("--deployment_type", action="store",
+                     help="Setup deployment type: onprem or niaas", required=True)
     parser.add_argument('--platform_ip', action='store',
                         help='IP address of vRNI platform. In case of cluster IP address of Platform-1')
     parser.add_argument('--username', action='store', default='admin@local',
@@ -71,6 +73,10 @@ def parse_arguments():
                         default='application_backup.yml', help="Applications and tiers are saved in this csv")
     parser.add_argument("--application_backup_action", action="store",
                         default='save', help="Action can be 'save' or 'restore'")
+
+    # Network Insight as a service (NIAAS) parameters
+    parser.add_argument('--refresh_token', action='store',
+                        help='Provide niaas refresh token')
 
     args = parser.parse_args()
     return args
