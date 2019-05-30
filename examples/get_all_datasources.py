@@ -15,33 +15,46 @@
 
 import swagger_client
 import init_api_client
+import logging
+
 import csv
 from swagger_client.rest import ApiException
 import swagger_client.models.data_source_type as data_source_type
 import json
+logger = logging.getLogger("vrni_sdk")
+
 
 
 DATASOURCES_LIST = ["VCenterDataSource","CiscoSwitchDataSource","NSXVManagerDataSource","NSXTManagerDataSource",
                    "PolicyManagerDataSource", "PanFirewallDataSource"]
 
+SNMP_CONFIG_LIST = ["CiscoSwitchDataSource","DellSwitchDataSource", "AristaSwitchDataSource", "BrocadeSwitchDataSource",
+                    "JuniperSwitchDataSource", "UCSManagerDataSource"]
+
 
 def get_api_function_name(datasource_type):
     datasource = {data_source_type.DataSourceType.CISCOSWITCHDATASOURCE: {"list" : "list_cisco_switches",
-                                                                          "get": "get_cisco_switch"},
+                                                                          "get": "get_cisco_switch",
+                                                                          "snmp_config": "get_cisco_switch_snmp_config"},
                   data_source_type.DataSourceType.DELLSWITCHDATASOURCE: {"list": "list_dell_switches",
-                                                                         "get": "get_dell_switch"},
+                                                                         "get": "get_dell_switch",
+                                                                          "snmp_config": "get_dell_switch_snmp_config"},
                   data_source_type.DataSourceType.ARISTASWITCHDATASOURCE: {"list": "list_arista_switches",
-                                                                           "get": "get_arista_switch"},
+                                                                           "get": "get_arista_switch",
+                                                                          "snmp_config": "get_arista_switch_snmp_config"},
                   data_source_type.DataSourceType.BROCADESWITCHDATASOURCE: {"list": "list_brocade_switches",
                                                                             "get": "get_brocade_switch"},
+                                                                          "snmp_config": "get_brocade_switch_snmp_config",
                   data_source_type.DataSourceType.JUNIPERSWITCHDATASOURCE: {"list": "list_juniper_switches",
-                                                                            "get": "get_juniper_switch"},
+                                                                            "get": "get_juniper_switch",
+                                                                          "snmp_config": "get_juniper_switch_snmp_config"},
                   data_source_type.DataSourceType.VCENTERDATASOURCE: {"list": "list_vcenters",
                                                                       "get": "get_vcenter"},
                   data_source_type.DataSourceType.NSXVMANAGERDATASOURCE: {"list": "list_nsxv_managers",
                                                                           "get": "get_nsxv_manager"},
                   data_source_type.DataSourceType.UCSMANAGERDATASOURCE: {"list": "list_ucs_managers",
-                                                                         "get": "get_ucs_manager"},
+                                                                         "get": "get_ucs_manager",
+                                                                          "snmp_config": "get_ucs_snmp_config"},
                   data_source_type.DataSourceType.HPVCMANAGERDATASOURCE: {"list": "list_hpvc_managers",
                                                                           "get": "get_hpvc_manager"},
                   data_source_type.DataSourceType.HPONEVIEWDATASOURCE: {"list": "list_hpov_managers",
@@ -61,13 +74,14 @@ def get_api_function_name(datasource_type):
 
     return datasource[datasource_type]
 
-def get_data(datasource_api, datasource):
+def get_data(api_client, datasource_api, datasource):
     data = {}
     if hasattr(datasource, "vcenter_id"):
         vcenter_ip = datasource_api.get_vcenter(id=datasource.vcenter_id).ip
         data["ParentvCenter"] = "{}".format(vcenter_ip)
     data["DataSourceType"] = "{}".format(datasource.entity_type)
     data["IP"] = "{}".format(datasource.ip)
+    data["ProxyIP"] = "{}".format(get_proxy_ip(api_client, datasource.proxy_id))
     if hasattr(datasource, "credentials"):
         data["Username"] = "{}".format(datasource.credentials.username)
     data["NickName"] = "{}".format(datasource.nickname)
@@ -79,13 +93,18 @@ def get_data(datasource_api, datasource):
         data["CentralCliEnabled"] = "{}".format(datasource.central_cli_enabled)
     return data
 
+def get_proxy_ip(api_client, entity_id):
+    infrastructure_api = swagger_client.InfrastructureApi(api_client=api_client)
+    node = infrastructure_api.get_node(id=entity_id)
+    return node.ip_address
+
 def main(api_client, args):
 
     # Create data source API client object
     datasource_api = swagger_client.DataSourcesApi(api_client=api_client)
     with open("{}".format(args.data_sources_csv), 'w') as csvFile:
-        fields = ["DataSourceType","IP","Username","Password","CSPRefreshToken","NickName","CentralCliEnabled",
-           "IPFixEnabled","SwitchType","ParentvCenter","IsVMC"]
+        fields = ["DataSourceType","IP","fqdn", "Username","Password","CSPRefreshToken","NickName","CentralCliEnabled",
+           "IPFixEnabled","SwitchType","ParentvCenter","IsVMC","snmp_version","snmp_community_string", "ProxyIP"]
         writer = csv.DictWriter(csvFile, fieldnames=fields)
         writer.writeheader()
         data =[]
@@ -96,11 +115,19 @@ def main(api_client, args):
             get_datasource_fn = getattr(datasource_api, data_source_api_name["get"])
             try:
                 data_source_list = list_datasource_api_fn()
-                print("Successfully got list of: {} : Response : {}".format(data_source_type, data_source_list))
+                logger.info("Successfully got list of: {} : Response : {}".format(data_source_type, data_source_list))
                 for data_source in  data_source_list.results:
                     datasource = get_datasource_fn(id=data_source.entity_id)
-                    print("Successfully got {} : Response : {}".format(data_source_type, datasource))
-                    data.append(get_data(datasource_api, datasource))
+                    logger.info("Successfully got {} : Response : {}".format(data_source_type, datasource))
+                    data_dict = get_data(api_client, datasource_api, datasource)
+                    if data_source_type in SNMP_CONFIG_LIST:
+                        get_snmp_api_fn = getattr(datasource_api, data_source_api_name['snmp_config'])
+                        response = get_snmp_api_fn(id=datasource.entity_id)
+                        if response.snmp_version == 'v2c':
+                            data_dict['snmp_version'] = response.snmp_version
+                            logger.info("Successfully got: {} {} snmp : Response : {}".format(data_source_type, datasource.ip,
+                                                                                          response))
+                    data.append(data_dict)
             except ApiException as e:
                 print("Failed getting list of data source type: {} : Error : {} ".format(data_source_type, json.loads(e.body)))
         writer.writerows(data)
