@@ -3,22 +3,33 @@
 
 import argparse
 import swagger_client
-import requests
 import json
+import sys
+import utilities
+import logging
+import requests
 from swagger_client.api_client import ApiClient
 
+logger = logging.getLogger('vrni_sdk')
 
 
 def get_api_client(args):
     if args.deployment_type == "onprem":
+        if not args.platform_ip:
+            logger.error("Please provide platform_ip of onprem setup !!!")
+            sys.exit()
         return get_onprem_api_client(args)
     else:
-         return get_niaas_api_client(args)
+        if not args.refresh_token:
+            logger.error("Please provide refresh token for niaas setup !!!")
+            sys.exit()
+        return get_niaas_api_client(args)
 
 def get_onprem_api_client(args):
     config = swagger_client.Configuration()
     config.verify_ssl = False
 
+    logger.info("Getting api client for IP <{}>".format(args.platform_ip))
     api_client = swagger_client.ApiClient(host="https://{}/api/ni".format(args.platform_ip))
     user_creds = swagger_client.UserCredential(username=args.username, password=args.password,
                                                domain=dict(domain_type=args.domain_type))
@@ -37,6 +48,9 @@ def get_niaas_api_client(args):
     public_api_client = swagger_client.ApiClient(host=public_api_url)
     config = swagger_client.Configuration()
     config.verify_ssl = False
+    logger = logging.getLogger('vrni_sdk')
+
+    logger.info("Getting api client for NIAAS")
     config.api_client = ApiClient()
     config.api_key['csp-auth-token'] = get_niaas_csp_auth_token(args, config.api_client)
     config.deployment_type = args.deployment_type
@@ -58,7 +72,7 @@ def parse_arguments():
                      help="Setup deployment type: onprem or niaas", required=True)
     parser.add_argument('--platform_ip', action='store',
                         help='IP address of vRNI platform. In case of cluster IP address of Platform-1')
-    parser.add_argument('--username', action='store', default='admin@local',
+    parser.add_argument('--username', action='store', default='admin@loca',
                         help='user name for authentication')
     parser.add_argument("--password", action="store",
                         default='admin', help="password for authentication")
@@ -73,4 +87,6 @@ def parse_arguments():
 
 
 if __name__ == '__main__':
-    api_client_onprem = get_api_client(parse_arguments())
+    parser = parse_arguments()
+    utilities.configure_logging("/tmp")
+    api_client_onprem = get_api_client(parser.parse_args())

@@ -140,7 +140,7 @@ def get_vcenter_manager_entity_id(data_source_api, vcenter_ip=None):
 proxy_ip_to_id = dict()
 
 
-def main(args):
+def main(api_client, args):
 
     # Create data source API client object
     data_source_api = swagger_client.DataSourcesApi(api_client=api_client)
@@ -190,4 +190,4 @@ if __name__ == '__main__':
     args = parse_arguments()
     utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
-    main(args)
+    main(api_client, args)
