@@ -8,7 +8,6 @@ import sys
 import utilities
 import logging
 import requests
-from swagger_client.api_client import ApiClient
 
 logger = logging.getLogger('vrni_sdk')
 
@@ -51,7 +50,6 @@ def get_niaas_api_client(args):
     logger = logging.getLogger('vrni_sdk')
 
     logger.info("Getting api client for NIAAS")
-    config.api_client = ApiClient()
     config.api_key['csp-auth-token'] = get_niaas_csp_auth_token(args, config.api_client)
     config.deployment_type = args.deployment_type
     config.api_client = public_api_client
