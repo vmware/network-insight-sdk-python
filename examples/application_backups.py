@@ -18,8 +18,8 @@ from swagger_client.rest import ApiException
 logger = logging.getLogger("vrni_sdk")
 
 
-def main(args):
-    application_api = swagger_client.ApplicationsApi()
+def main(api_client, args):
+    application_api = swagger_client.ApplicationsApi(api_client=api_client)
 
     if args.application_backup_action == 'save':
         all_apps = []
@@ -80,4 +80,4 @@ if __name__ == '__main__':
     args = parse_arguments()
     utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
-    main(args)
+    main(api_client, args)
