@@ -85,9 +85,9 @@ def delete_application(application_api, application_name):
             break
 
 
-def main():
+def main(api_client):
     # Create application API client object
-    application_api = swagger_client.ApplicationsApi()
+    application_api = swagger_client.ApplicationsApi(api_client=api_client)
     create_appication_and_tiers(application_api, "demo_app_1")
     # delete_application(application_api, "demo_app_1")
 
@@ -96,4 +96,4 @@ if __name__ == '__main__':
     args = init_api_client.parse_arguments()
     utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
-    main()
+    main(api_client)
