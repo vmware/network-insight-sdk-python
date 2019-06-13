@@ -65,10 +65,10 @@ def main(args):
             ip_tag_ids = settings_api.get_ip_tag_ids()
             data = []
             for tag_id in ip_tag_ids.tag_ids:
-                data_dict = {}
                 ip_tags = settings_api.get_ip_tag(tag_id)
-                data_dict['TAG_ID'] = ip_tags.tag_id
                 for ip_tag in ip_tags.ip_address_ranges:
+                    data_dict = {}
+                    data_dict['TAG_ID'] = ip_tags.tag_id
                     if ip_tag.start_ip == ip_tag.end_ip:
                         data_dict['IP_Addresses'] = ip_tag.start_ip
                         data.append(data_dict)
@@ -76,6 +76,8 @@ def main(args):
                         data_dict['IP_Addresses'] = "{}-{}".format(ip_tag.start_ip, ip_tag.end_ip)
                         data.append(data_dict)
                 for subnet in ip_tags.subnets:
+                    data_dict = {}
+                    data_dict['TAG_ID'] = ip_tags.tag_id
                     data_dict['IP_Addresses'] = subnet
                     data.append(data_dict)
             writer.writerows(data)
