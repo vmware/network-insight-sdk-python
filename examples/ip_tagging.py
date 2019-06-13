@@ -10,6 +10,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import csv
+import ipaddress
 import json
 import init_api_client
 import argparse
@@ -74,11 +75,7 @@ def main(args):
                     else:
                         data_dict['IP_Addresses'] = "{}-{}".format(ip_tag.start_ip, ip_tag.end_ip)
                         data.append(data_dict)
-                for subnet in ip_tags.subnets:
-                    data_dict = {}
-                    data_dict['TAG_ID'] = ip_tags.tag_id
-                    data_dict['IP_Addresses'] = subnet
-                    data.append(data_dict)
+                data = data + [{"IP_Addresses" : subnet, 'TAG_ID':ip_tags.tag_id} for subnet in ip_tags.subnets]
             writer.writerows(data)
         for value in data:
             logger.info("Got {} with {} Tag".format(value['IP_Addresses'], value['TAG_ID']))
@@ -98,7 +95,6 @@ def get_body(ip_address, tag_id):
         body["ip_address_ranges"] = [{"start_ip": "{}".format(ip_address),
                                       "end_ip": "{}".format(ip_address)}]
     return body
-
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Run Public APIs on vRNI Platform')
