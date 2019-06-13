@@ -70,7 +70,7 @@ def parse_arguments():
                      help="Setup deployment type: onprem or niaas", required=True)
     parser.add_argument('--platform_ip', action='store',
                         help='IP address of vRNI platform. In case of cluster IP address of Platform-1')
-    parser.add_argument('--username', action='store', default='admin@loca',
+    parser.add_argument('--username', action='store', default='admin@local',
                         help='user name for authentication')
     parser.add_argument("--password", action="store",
                         default='admin', help="password for authentication")
