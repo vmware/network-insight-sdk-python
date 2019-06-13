@@ -4,7 +4,7 @@
 # To add or remove IP addresses to EAST-WEST or INTERNET Tags vRealize Network Insight Data Sources.
 # Modify ip_tags ip_tags.csv to contain your own data sources
 
-# This script also get added IP address with respective and write in an input CSV (example: ip_tags.csv)
+# The script also retrieves EAST-WEST and INTERNET IPs configured in vRNI and export as CSV
 
 # Copyright 2019 VMware, Inc.
 # SPDX-License-Identifier: GPL-2.0-or-later
@@ -18,7 +18,6 @@ import utilities
 import logging
 from swagger_client.rest import ApiException
 
-
 logger = logging.getLogger("vrni_sdk")
 
 
@@ -27,7 +26,7 @@ def main(args):
 
     if args.action == 'add':
         logger.info("Adding IP-Addresses to EAST_WEST/INTERNET Tag")
-        with open("{}".format(args.ip_tags_csv), 'rb') as csvFile:
+        with open("{}".format(args.ip_tags_csv), 'r') as csvFile:
             ip_tags = csv.DictReader(csvFile)
             for ip_tag in ip_tags:
                 ip_addresses = ip_tag['IP_Addresses']
@@ -42,7 +41,7 @@ def main(args):
                                                                                json.loads(e.body)))
     if args.action == 'remove':
         logger.info("Removing IP-Addresses from EAST_WEST/INTERNET Tag")
-        with open("{}".format(args.ip_tags_csv), 'rb') as csvFile:
+        with open("{}".format(args.ip_tags_csv), 'r') as csvFile:
             ip_tags = csv.DictReader(csvFile)
             for ip_tag in ip_tags:
                 ip_addresses = ip_tag['IP_Addresses']
@@ -54,7 +53,7 @@ def main(args):
                 except ApiException as e:
                     logger.exception(
                             "Failed removing {} from tag: {} : Error : {} ".format(ip_addresses, tag_id,
-                                                                                 json.loads(e.body)))
+                                                                                   json.loads(e.body)))
 
     if args.action == 'get':
         logger.info("Getting IP-Addresses with EAST_WEST/INTERNET Tag")
@@ -101,10 +100,9 @@ def get_body(ip_address, tag_id):
     return body
 
 
-
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Run Public APIs on vRNI Platform')
-    parser.add_argument('--platform_ip', action='store',
+    parser.add_argument('--platform_ip', action='store', required=True,
                         help='IP address of vRNI platform. In case of cluster IP address of Platform-1')
     parser.add_argument('--username', action='store', default='admin@local',
                         help='user name for authentication')
@@ -113,7 +111,7 @@ def parse_arguments():
     parser.add_argument("--domain_type", action="store",
                         default='LOCAL', help="domain type for authentication")
     parser.add_argument("--ip_tags_csv", action="store",
-                        default='ip_tags.csv', help="ip addresses/subnets/ip ranges with tag type csv")
+                        default='ip_tags.csv', help="Name of csv file")
     parser.add_argument("--action", action="store",
                         default='get', help="Action can be 'add' 'get' or 'remove'")
 
