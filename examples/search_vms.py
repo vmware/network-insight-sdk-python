@@ -21,7 +21,7 @@ def main():
     search_api = swagger_client.SearchApi()
 
     # TODO: Add/Change filter to get valid results
-    filter_string = "vcenter_manager.name = '10.197.17.51'"
+    filter_string = "vcenter_manager.name = '10.196.75.109'"
     # Create request parameters required for search APIs
     public_api_search_request_params = dict(entity_type=swagger_client.EntityType.VIRTUALMACHINE,
                                             filter=filter_string,
@@ -45,9 +45,13 @@ def main():
             break
         search_payload.cursor = api_response.cursor
 
+def parse_arguments():
+    parser = init_api_client.parse_arguments()
+    args = parser.parse_args()
+    return args
 
 if __name__ == '__main__':
-    args = init_api_client.parse_arguments()
+    args = parse_arguments()
     utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
     main()

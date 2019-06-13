@@ -43,10 +43,10 @@ def get_referenced_entity_name(entity_id=None, entity_type=None, entities_api=No
     return entity_name
 
 
-def main():
+def main(api_client):
 
     # Create search API client object
-    search_api = swagger_client.SearchApi()
+    search_api = swagger_client.SearchApi(api_client=api_client)
 
     # TODO: Add/Change filter to get valid results
     filter_string = "((source_datacenter.name = 'washington-dc-delta-1'))"
@@ -103,9 +103,13 @@ def main():
         search_payload.cursor = api_response.cursor
     f_csv.close()
 
+def parse_arguments():
+    parser = init_api_client.parse_arguments()
+    args = parser.parse_args()
+    return args
 
 if __name__ == '__main__':
-    args = init_api_client.parse_arguments()
+    args = parse_arguments()
     utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
-    main()
+    main(api_client)

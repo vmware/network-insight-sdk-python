@@ -91,9 +91,13 @@ def main():
     create_appication_and_tiers(application_api, "demo_app_1")
     # delete_application(application_api, "demo_app_1")
 
+def parse_arguments():
+    parser = init_api_client.parse_arguments()
+    args = parser.parse_args()
+    return args
 
 if __name__ == '__main__':
-    args = init_api_client.parse_arguments()
+    args = parse_arguments()
     utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
     main()

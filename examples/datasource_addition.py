@@ -140,7 +140,7 @@ def get_vcenter_manager_entity_id(data_source_api, vcenter_ip=None):
 proxy_ip_to_id = dict()
 
 
-def main(api_client, args):
+def main(args):
 
     # Create data source API client object
     data_source_api = swagger_client.DataSourcesApi(api_client=api_client)
@@ -179,9 +179,15 @@ def main(api_client, args):
                 logger.exception(
                     "Failed adding data source: {} : Error : {} ".format(data_source['IP'], json.loads(e.body)))
 
+def parse_arguments():
+    parser = init_api_client.parse_arguments()
+    parser.add_argument("--data_sources_csv", action="store",
+                        default='data_sources.csv', help="csv file with your own data sources")
+    args = parser.parse_args()
+    return args
 
 if __name__ == '__main__':
-    args = init_api_client.parse_arguments()
+    args = parse_arguments()
     utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
-    main(api_client, args)
+    main(args)

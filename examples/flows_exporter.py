@@ -73,9 +73,13 @@ def main():
         search_payload.cursor = api_response.cursor
     f_csv.close()
 
+def parse_arguments():
+    parser = init_api_client.parse_arguments()
+    args = parser.parse_args()
+    return args
 
 if __name__ == '__main__':
-    args = init_api_client.parse_arguments()
+    args = parse_arguments()
     utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
     main()

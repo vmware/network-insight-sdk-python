@@ -1,8 +1,5 @@
-DataSourceType,IP,fqdn,Username,Password,CSPRefreshToken,NickName,CentralCliEnabled,IPFixEnabled,SwitchType,ParentvCenter,IsVMC,snmp_version,snmp_community_string,snmp_username,snmp_password,snmp_auth_type,snmp_privacy_type,ProxyIP
-VCenterDataSource,192.168.0.10,,administrator@vsphere.local,MyPassword,,vcenter,,,,,,,,,,,,192.168.0.5
-NSXVManagerDataSource,,nsxv.lab,admin,MyPassword,,nsxv,TRUE,FALSE,,192.168.0.10,,,,,,,,192.168.0.5
-NSXTManagerDataSource,192.168.0.12,,audit,MyPassword,,nsxt,,,,192.168.0.10,,,,,,,,192.168.0.5
-PanFirewallDataSource,192.168.0.13,,admin,MyPassword,,panorama_firewall,,,,,,,,,,,,192.168.0.5
-CiscoSwitchDataSource,192.168.0.14,,admin,MyPassword,,NEXUS_5K,,,NEXUS_5K,,,v3,,admin,MyPassword,MD5,NO_PRIV,192.168.0.5
-VCenterDataSource,192.168.0.15,,cloudadmin@vmc.local,MyPassword,,vmc,,,,,TRUE,,,,,,,192.168.0.5
-PolicyManagerDataSource,192.168.0.16,,,,LongString,policy_manager,TRUE,FALSE,,192.168.0.10,,,,,,,,192.168.0.5
+DataSourceType,IP,fqdn,Username,Password,CSPRefreshToken,NickName,CentralCliEnabled,IPFixEnabled,SwitchType,ParentvCenter,IsVMC,snmp_version,snmp_community_string,ProxyIP
+VCenterDataSource,10.196.74.140,,readonly@vsphere.local,,,jumbo,,,,,,,,10.79.46.71
+VCenterDataSource,10.196.75.109,,administrator@vsphere.local,,,vcenter,,,,,,,,10.79.46.71
+CiscoSwitchDataSource,None,,root,,,NEXUS_5K_3100,,,,,,,,10.79.46.71
+NSXVManagerDataSource,10.196.74.135,,admin,,,jumbo,True,False,,10.196.74.140,,,,10.79.46.71

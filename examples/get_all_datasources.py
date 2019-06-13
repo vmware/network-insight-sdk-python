@@ -132,7 +132,14 @@ def main(api_client, args):
                 print("Failed getting list of data source type: {} : Error : {} ".format(data_source_type, json.loads(e.body)))
         writer.writerows(data)
 
+def parse_arguments():
+    parser = init_api_client.parse_arguments()
+    parser.add_argument("--data_sources_csv", action="store",
+                        default='data_sources.csv', help="csv file with your own data sources")
+    args = parser.parse_args()
+    return args
+
 if __name__ == '__main__':
-    args = init_api_client.parse_arguments()
+    args = parse_arguments()
     api_client = init_api_client.get_api_client(args)
     main(api_client, args)
