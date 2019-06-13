@@ -1,4 +1,5 @@
-#
+# swagger Examples - Getting added datasources in bulk
+
 # This script write the added datasource in an input CSV (example: list_data_sources.csv)
 # To list added vRealize Network Insight Data Sources, run this script with the param --data_sources_csv with new csv file name.
 
