@@ -67,7 +67,7 @@ def get_niaas_csp_auth_token(args, api_client):
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Run Public APIs on vRNI Platform')
     parser.add_argument("--deployment_type", action="store",
-                     help="Setup deployment type: onprem or niaas", default='onprem')
+                        help="Setup deployment type: onprem or niaas", default='onprem')
     parser.add_argument('--platform_ip', action='store',
                         help='IP address of vRNI platform. In case of cluster IP address of Platform-1')
     parser.add_argument('--username', action='store', default='admin@local',
