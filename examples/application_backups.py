@@ -58,15 +58,7 @@ def main(args):
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description='Run Public APIs on vRNI Platform')
-    parser.add_argument('--platform_ip', action='store',
-                        help='IP address of vRNI platform. In case of cluster IP address of Platform-1')
-    parser.add_argument('--username', action='store', default='admin@local',
-                        help='user name for authentication')
-    parser.add_argument("--password", action="store",
-                        default='admin', help="password for authentication")
-    parser.add_argument("--domain_type", action="store",
-                        default='LOCAL', help="domain type for authentication")
+    parser = init_api_client.parse_arguments()
     parser.add_argument("--application_backup_yaml", action="store",
                         default='application_backup.yml', help="Applications and tiers are saved in this csv")
     parser.add_argument("--application_backup_action", action="store",
