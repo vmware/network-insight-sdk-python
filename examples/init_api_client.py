@@ -19,7 +19,7 @@ def get_api_client(args):
             sys.exit()
         return get_onprem_api_client(args)
     else:
-        if not args.refresh_token:
+        if not args.api_token:
             logger.error("Please provide refresh token for niaas setup !!!")
             sys.exit()
         return get_niaas_api_client(args)
@@ -57,7 +57,7 @@ def get_niaas_api_client(args):
 
 def get_niaas_csp_auth_token(args, api_client):
     authorize_api_url = "https://console.cloud.vmware.com/csp/gateway/am/api/auth/api-tokens/authorize" \
-                        "?refresh_token={}".format(args.refresh_token)
+                        "?refresh_token={}".format(args.api_token)
     response = requests.post(authorize_api_url)
     response = json.loads(str(response.text))
     csp_auth_token = response['access_token']
@@ -77,11 +77,13 @@ def parse_arguments():
     parser.add_argument("--domain_type", action="store",
                         default='LOCAL', help="domain type for authentication")
 
-    # Network Insight as a service (NIAAS) parameters
-    # To obtain org-scoped refresh token from NetworkInsight UI refer API documentation.
-    # https://vdc-download.vmware.com/vmwb-repository/dcr-public/e6fbbf75-fa7c-4cb2-b71b-0aa899c6d0ad/eed49fce-d8dc-48cb-b92a-2a5b252be673/vRealize-Network-Insight-API-Guide.pdf
-    parser.add_argument('--refresh_token', action='store',
-                        help='Provide niaas refresh token')
+    # Network Insight as a service (NIAAS) parameters.
+    # Procedure to generate api token
+    #    1. On the VMware Cloud Services toolbar, click your user name and select My Account > API Tokens.
+    #    2. Click on Generate Token.
+    #    3. Define Scopes : Check organistion member and Network Insight Administrator Roles or All roles.
+    #    4. Click on generate and then Copy button on Token generated popup and pass it as input parameter to api_token
+    parser.add_argument('--api_token', action='store', help='Provide niaas api token')
 
     return parser
 
