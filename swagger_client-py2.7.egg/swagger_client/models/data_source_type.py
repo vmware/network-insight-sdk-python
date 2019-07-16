@@ -42,6 +42,7 @@ class DataSourceType(object):
     KUBERNETESDATASOURCE = "KubernetesDataSource"
     PKSDATASOURCE = "PKSDataSource"
     INFOBLOXMANAGERDATASOURCE = "InfobloxManagerDataSource"
+    POLICYMANAGERDATASOURCE = "PolicyManagerDataSource"
     CISCOACIDATASOURCE = "CiscoACIDataSource"
     SERVICENOWDATASOURCE = "ServiceNowDataSource"
 
