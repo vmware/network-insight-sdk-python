@@ -60,6 +60,8 @@ def main(api_client, args):
             logger.info(
                     "Successfully added: {} {} : Response : {}".format(data_source_type, args.device_ip, response))
         data_source_api.file_upload(id=response.entity_id, file=args.zip_file_path)
+        logger.info(
+                "Successfully uploaded zip file: {}".format(args.zip_file_path))
     except ApiException as e:
         logger.exception(
                 "Failed adding data source: {} : Error : {} ".format(args.device_ip, json.loads(e.body)))
