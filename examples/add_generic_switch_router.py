@@ -22,9 +22,9 @@ logger = logging.getLogger("vrni_sdk")
 
 def get_add_request_body(args, proxy_id):
     api_request_body = {"proxy_id": "{}".format(proxy_id),
-                        "ip": "{}".format(args.device_ip),
+                        "ip": "{}".format(args.device_ip_or_fqdn),
                         "entity_type": "UANIDataSource",
-                        "nickname": "{}".format(args.device_ip)}
+                        "nickname": "{}".format(args.device_ip_or_fqdn)}
     return api_request_body
 
 
@@ -54,17 +54,17 @@ def main(api_client, args):
     data_source_api = swagger_client.DataSourcesApi(api_client=api_client)
     proxy_id = get_node_entity_id(api_client, args.proxy_ip)
     try:
-        response = get_uani_datasource(data_source_api, args.device_ip)
+        response = get_uani_datasource(data_source_api, args.device_ip_or_fqdn)
         if not response:
             response = data_source_api.add_uani(body=get_add_request_body(args, proxy_id))
             logger.info(
-                    "Successfully added: {} {} : Response : {}".format(data_source_type, args.device_ip, response))
+                    "Successfully added: {} {} : Response : {}".format(data_source_type, args.device_ip_or_fqdn, response))
         data_source_api.file_upload(id=response.entity_id, file=args.zip_file_path)
         logger.info(
                 "Successfully uploaded zip file: {}".format(args.zip_file_path))
     except ApiException as e:
         logger.exception(
-                "Failed adding data source: {} : Error : {} ".format(args.device_ip, json.loads(e.body)))
+                "Failed adding data source: {} : Error : {} ".format(args.device_ip_or_fqdn, json.loads(e.body)))
 
 def parse_arguments():
     parser = init_api_client.parse_arguments()
