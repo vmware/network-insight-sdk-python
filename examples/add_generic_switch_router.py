@@ -2,7 +2,8 @@
 #
 # This script uses an input ZIP file to add generic router/switch
 # To add generic router/switch data source for currently unsupported switch/router.
-# run this script with the param --zip_file_path (path for ZIP file created using network-insight-sdk-generic-datasources) .
+# run this script with the param --zip_file_path (path for ZIP file created using network-insight-sdk-generic-datasources)
+# proxy_ip and ip or fqdn of physical device.
 
 
 import json
