@@ -10,7 +10,6 @@ from .infrastructure_api import InfrastructureApi
 from .logs_api import LogsApi
 from .metrics_api import MetricsApi
 from .microsegmentation_api import MicrosegmentationApi
-from .path_api import PathApi
 from .schema_api import SchemaApi
 from .search_api import SearchApi
 from .settings_api import SettingsApi

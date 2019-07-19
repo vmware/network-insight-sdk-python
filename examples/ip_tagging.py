@@ -101,7 +101,7 @@ def parse_arguments():
     parser.add_argument("--ip_tags_csv", action="store",
                         default='ip_tags.csv', help="Name of csv file")
     parser.add_argument("--action", action="store",
-                        default='add', help="Action can be 'add' 'get' or 'remove'")
+                        default='get', help="Action can be 'add' 'get' or 'remove'")
 
     args = parser.parse_args()
     return args

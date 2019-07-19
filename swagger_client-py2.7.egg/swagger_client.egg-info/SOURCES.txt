@@ -19,7 +19,6 @@ swagger_client/apis/infrastructure_api.py
 swagger_client/apis/logs_api.py
 swagger_client/apis/metrics_api.py
 swagger_client/apis/microsegmentation_api.py
-swagger_client/apis/path_api.py
 swagger_client/apis/schema_api.py
 swagger_client/apis/search_api.py
 swagger_client/apis/settings_api.py
@@ -105,12 +104,13 @@ swagger_client/models/fetch_request.py
 swagger_client/models/fetch_request_entity_ids.py
 swagger_client/models/firewall_action.py
 swagger_client/models/firewall_direction.py
-swagger_client/models/firewall_rule_set.py
 swagger_client/models/flow.py
 swagger_client/models/flow_summary.py
 swagger_client/models/flow_tag.py
 swagger_client/models/flow_traffic_type.py
 swagger_client/models/folder.py
+swagger_client/models/fortinet_firewall_data_source.py
+swagger_client/models/fortinet_firewall_data_source_request.py
 swagger_client/models/gd_data_source.py
 swagger_client/models/gd_data_source_request.py
 swagger_client/models/group.py
@@ -175,8 +175,6 @@ swagger_client/models/paged_user_list_response.py
 swagger_client/models/pan_firewall_data_source.py
 swagger_client/models/pan_firewall_data_source_request.py
 swagger_client/models/password_credentials.py
-swagger_client/models/path_firewall_rules.py
-swagger_client/models/path_firewall_rules_request.py
 swagger_client/models/pks_data_source.py
 swagger_client/models/pks_data_source_request.py
 swagger_client/models/pks_source_request.py
@@ -328,12 +326,13 @@ test/test_fetch_request.py
 test/test_fetch_request_entity_ids.py
 test/test_firewall_action.py
 test/test_firewall_direction.py
-test/test_firewall_rule_set.py
 test/test_flow.py
 test/test_flow_summary.py
 test/test_flow_tag.py
 test/test_flow_traffic_type.py
 test/test_folder.py
+test/test_fortinet_firewall_data_source.py
+test/test_fortinet_firewall_data_source_request.py
 test/test_gd_data_source.py
 test/test_gd_data_source_request.py
 test/test_group.py
@@ -403,9 +402,6 @@ test/test_paged_user_list_response.py
 test/test_pan_firewall_data_source.py
 test/test_pan_firewall_data_source_request.py
 test/test_password_credentials.py
-test/test_path_api.py
-test/test_path_firewall_rules.py
-test/test_path_firewall_rules_request.py
 test/test_pks_data_source.py
 test/test_pks_data_source_request.py
 test/test_pks_source_request.py
