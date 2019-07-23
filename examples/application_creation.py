@@ -33,7 +33,7 @@ def create_tiers(app_name, application_api, app, vm_names):
     filter = "name={}".format(vms[0])
     if len(vms) > 1:
         for vm in vms[1:]:
-            filter = filter+ "or name".format(vm)
+            filter = filter + " " + "or name={}".format(vm)
 
     grp_membership_criteria = swagger_client.GroupMembershipCriteria()
     grp_membership_criteria.membership_type = "SearchMembershipCriteria"
