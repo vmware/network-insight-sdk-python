@@ -45,6 +45,7 @@ class DataSourceType(object):
     POLICYMANAGERDATASOURCE = "PolicyManagerDataSource"
     CISCOACIDATASOURCE = "CiscoACIDataSource"
     SERVICENOWDATASOURCE = "ServiceNowDataSource"
+    F5BIGIPDATASOURCE = "F5BIGIPDataSource"
 
     """
     Attributes:

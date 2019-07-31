@@ -88,7 +88,12 @@ def get_api_function_name(datasource_type):
                                                                 "list": "list_nsxt_managers"},
         data_source_type.DataSourceType.KUBERNETESDATASOURCE: {"update": "update_kubernetes_datasource",
                                                                "get": "get_kubernetes_cluster",
-                                                               "list": "list_infoblox_managers"},
+                                                               "list": "list_kubernetes_clusters"},
+        data_source_type.DataSourceType.F5BIGIPDATASOURCE: {"update_snmp_config": "update_f5_bigip_snmp_config",
+                                                            "get_snmp_config": "get_f5_bigip_snmp_config",
+                                                            "update": "update_f5_bigip",
+                                                            "get": "get_f5_bigip",
+                                                            "list": "list_f5_bigip"},
         data_source_type.DataSourceType.POLICYMANAGERDATASOURCE: {"update": "update_policy_manager",
                                                                   "get": "get_policy_manager",
                                                                   "list": "list_policy_managers"}}
