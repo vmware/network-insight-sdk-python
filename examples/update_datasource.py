@@ -97,10 +97,13 @@ def get_api_function_name(datasource_type):
 
 
 def get_update_request_body(response, data_source):
-    response.credentials.username = data_source['Username']
-    response.credentials.password = data_source['Password']
+    if hasattr(response, "credentials"):
+        response.credentials.username = data_source['Username']
+        response.credentials.password = data_source['Password']
+    if hasattr(response, "csp_refresh_token"):
+        response.csp_refresh_token = data_source['CSPRefreshToken']
+    response.nickname = data_source['NickName']
     return response
-
 
 def update_snmp_config(entity_id, data_source_api, data_source_api_name, data_source):
     try:
