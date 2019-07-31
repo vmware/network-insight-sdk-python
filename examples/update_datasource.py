@@ -1,7 +1,7 @@
 # swagger Examples - update datasources in bulk
 #
 # This script uses an input CSV (example: update_data_sources.csv)
-# To update multiple vRealize Network Insight Data Sources. Modify data_sources.csv to contain your own data sources
+# To update multiple vRealize Network Insight Data Sources. Modify update_data_sources.csv to contain your own data sources
 # (vCenters, NSX, switches, firewalls)
 # and run this script with the param --data_sources_csv to your CSV.
 
