@@ -1,0 +1,3 @@
+DataSourceType,IP,fqdn,Username,Password,CSPRefreshToken,NickName,CentralCliEnabled,IPFixEnabled,SwitchType,ParentvCenter,IsVMC,snmp_version,snmp_community_string,snmp_username,snmp_password,snmp_auth_type,snmp_privacy_type
+VCenterDataSource,10.197.17.51,,sbhagwat@vmware.com,S@n23S0n54321,,vcenter,,,,,,,,,,,
+CiscoSwitchDataSource,10.40.13.36,,admin,Vnera655,,NEXUS_5K,,,NEXUS_5K,,,v2,public,,,,
