@@ -107,32 +107,35 @@ def update_snmp_config(entity_id, data_source_api, data_source_api_name, data_so
         update_snmp_api_fn = getattr(data_source_api, data_source_api_name['update_snmp_config'])
         get_snmp_api_fn = getattr(data_source_api, data_source_api_name['get_snmp_config'])
         response = get_snmp_api_fn(id=entity_id)
-
         if data_source['snmp_version'] == 'v2c':
-            response.config_snmp_2c.community_string = data_source['snmp_community_string']
+            if  response.snmp_version == 'v2c':
+                response.config_snmp_2c.community_string = data_source['snmp_community_string']
+            else: # updating to v2c from v3
+                response = {"snmp_enabled": True,
+                    "snmp_version": "{}".format(data_source['snmp_version'])}
+                snmp_config = dict(
+                    config_snmp_2c=dict(community_string='{}'.format(data_source['snmp_community_string'])))
+                response.update(snmp_config)
         elif data_source['snmp_version'] == 'v3':
-            response
+            if response.snmp_version == 'v3':
+                response.config_snmp_3.username = data_source['snmp_username']
+                response.config_snmp_3.authentication_password = data_source['snmp_password']
+                response.config_snmp_3.authentication_type = data_source['snmp_auth_type']
+                response.config_snmp_3.privacy_type = data_source['snmp_privacy_type']
+            else:  # updating to v3 from v2c
+                response = {"snmp_enabled": True,
+                            "snmp_version": "{}".format(data_source['snmp_version']),
+                            }
+                snmp_config = dict(config_snmp_3=dict(
+                        username="{}".format(data_source['snmp_username']),
+                        authentication_password="{}".format(data_source['snmp_password']),
+                        context_name="",
+                        authentication_type="{}".format(data_source['snmp_auth_type']),
+                        privacy_type="{}".format(data_source['snmp_privacy_type'])))
+                response.update(snmp_config)
         update_snmp_api_fn(id=entity_id, body=response)
     except ApiException as e:
-        print("Failed updating of data source type: {} : Error : {} ".format(data_source_type, json.loads(e.body)))
-        print "here"
-
-    if data_source['snmp_version'] == 'v2c':
-        snmp_config = dict(config_snmp_2c=dict(community_string='{}'.format(data_source['snmp_community_string'])))
-
-    elif data_source['snmp_version'] == 'v3':
-        snmp_config = dict(config_snmp_3=dict(
-            username="{}".format(datasource['snmp_username']),
-            authentication_password="{}".format(datasource['snmp_password']),
-            context_name="",
-            authentication_type="{}".format(datasource['snmp_auth_type']),
-            privacy_type="{}".format(datasource['snmp_privacy_type'])
-        ))
-
-    api_request_body.update(snmp_config)
-
-    logger.info("Request body : <{}>".format(api_request_body))
-    return api_request_body
+        print("Failed updating of snmp config: Error : {} ".format(json.loads(e.body)))
 
 def get_data_source_entity_id(data_source_api, get_datasource_fn, data_source_list, data_source):
     for entity in data_source_list.results:
@@ -140,7 +143,6 @@ def get_data_source_entity_id(data_source_api, get_datasource_fn, data_source_li
         if ds.ip == data_source['IP'] or ds.fqdn == data_source['fqdn']:
             return entity.entity_id
     return None
-
 
 def main(api_client, args):
 
