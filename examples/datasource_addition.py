@@ -53,7 +53,7 @@ def get_api_function_name(datasource_type):
         data_source_type.DataSourceType.HPVCMANAGERDATASOURCE: {"add": "add_hpvc_manager"},
         data_source_type.DataSourceType.HPONEVIEWDATASOURCE: {"add": "add_hpov_manager"},
         data_source_type.DataSourceType.PANFIREWALLDATASOURCE: {"add": "add_panorama_firewall"},
-        data_source_type.DataSourceType.CHECKPOINTFIREWALLDATASOURCE: {"add": "add_panorama_firewall"},
+        data_source_type.DataSourceType.CHECKPOINTFIREWALLDATASOURCE: {"add": "add_checkpoint_firewall"},
         data_source_type.DataSourceType.NSXTMANAGERDATASOURCE: {"add": "add_nsxt_manager_datasource"},
         data_source_type.DataSourceType.KUBERNETESDATASOURCE: {"add": "add_kubernetes_datasource"},
         data_source_type.DataSourceType.POLICYMANAGERDATASOURCE: {"add": "add_policy_manager_datasource"}}
