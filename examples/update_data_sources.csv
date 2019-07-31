@@ -6,4 +6,4 @@ VCenterDataSource,192.168.0.15,,cloudadmin@vmc.local,MyPassword,,VMC,,,,,,
 PolicyManagerDataSource,192.168.0.16,,,,LongString,policy_manager,,,,,,
 F5BIGIPDataSource,,f5-v2.abc.com,admin,MyPassword,,BIGF5,v2c,VMware1!,,,,
 PanFirewallDataSource,192.168.0.19,,admin,MyPassword,,NEXUS_5K,,,,,,
-
+NSXTManagerDataSource,192.168.0.22,,admin,MyPassword,,NSXT,,,,,,
