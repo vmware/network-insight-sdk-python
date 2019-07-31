@@ -40,7 +40,7 @@ def get_api_function_name(datasource_type):
                                                                 "add": "add_cisco_switch"},
         data_source_type.DataSourceType.DELLSWITCHDATASOURCE: {"snmp_config": "update_dell_switch_snmp_config",
                                                                "add": "add_dell_switch"},
-        data_source_type.DataSourceType.ARISTASWITCHDATASOURCE: {"snmp_config": "list_vcenters",
+        data_source_type.DataSourceType.ARISTASWITCHDATASOURCE: {"snmp_config": "update_arista_switch_snmp_config",
                                                                  "add": "add_arista_switch"},
         data_source_type.DataSourceType.BROCADESWITCHDATASOURCE: {"snmp_config": "update_brocade_switch_snmp_config",
                                                                   "add": "add_brocade_switch"},
