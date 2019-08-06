@@ -7,6 +7,8 @@ Included SDK is compatible with vRNI 4.0, 4.1.1, and 4.2.
 ## Installing Python SDK [python 2.7]
 Checkout repo and add **swagger_client-py2.7.egg** in PYTHONPATH.
 
+Then install the prerequisites with: pip install -r requirements.txt
+
 You are ready to go.
 
 ## Examples
