@@ -60,6 +60,8 @@ def main(api_client, args):
             logger.info(
                     "Successfully added: {} {} : Response : {}".format(data_source_type, args.device_ip_or_fqdn, response))
         data_source_api.file_upload(id=response.entity_id, file=args.zip_file_path)
+        auth_api = swagger_client.AuthenticationApi(api_client=api_client)
+        auth_token = auth_api.create(api_client.cookie)
         logger.info(
                 "Successfully uploaded zip file: {}".format(args.zip_file_path))
     except ApiException as e:
