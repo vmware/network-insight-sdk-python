@@ -50,9 +50,11 @@ def main():
 
             internet_flow = entities_api.get_flow(id=result.entity_id)
             logger.info("Flow: {}".format(internet_flow.name))
+            time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
 
             # Get Source VM Name
             src_vm_name = get_referenced_entity_name(referenced_entity=internet_flow.source_vm)
+            time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
 
             # Get Source security groups
             sec_group_names = []

@@ -12,6 +12,7 @@ import utilities
 import logging
 import yaml
 import json
+import time
 from swagger_client.rest import ApiException
 
 
@@ -32,6 +33,7 @@ def main(args):
                 tiers = application_api.list_application_tiers(id=app.entity_id)
                 app_to_save = dict(name=app.name, no_of_tiers=len(tiers.results), tiers=tiers.to_dict())
                 all_apps.append(app_to_save)
+                time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
             if not apps.cursor:
                 break
             params['cursor'] = apps.cursor
@@ -53,6 +55,7 @@ def main(args):
                     tier.pop('entity_id')
                     logger.info("\tRestoring tier '{}'".format(tier['name']))
                     application_api.add_tier(created_application.entity_id, tier)
+                time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
             except ApiException as e:
                 logger.error("{}".format(json.loads(e.body)))
 

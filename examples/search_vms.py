@@ -40,7 +40,7 @@ def main():
         for result in api_response.results:
             entities_api = swagger_client.EntitiesApi(api_client=api_client)
             logger.info("VM Name: {}".format(entities_api.get_vm(id=result.entity_id).name))
-            time.sleep(0.025)
+            time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
         if not api_response.cursor:
             break
         search_payload.cursor = api_response.cursor
