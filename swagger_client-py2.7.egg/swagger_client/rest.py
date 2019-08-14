@@ -11,7 +11,7 @@
 """
 
 
-from __future__ import absolute_import
+
 
 import io
 import json
@@ -140,7 +140,7 @@ class RESTClientObject(object):
 
         timeout = None
         if _request_timeout:
-            if isinstance(_request_timeout, (int, ) if PY3 else (int, long)):
+            if isinstance(_request_timeout, (int, ) if PY3 else (int, int)):
                 timeout = urllib3.Timeout(total=_request_timeout)
             elif isinstance(_request_timeout, tuple) and len(_request_timeout) == 2:
                 timeout = urllib3.Timeout(connect=_request_timeout[0], read=_request_timeout[1])

@@ -6,10 +6,10 @@
 # Copyright 2019 VMware, Inc.
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-import init_api_client
+from . import init_api_client
 import swagger_client
 
-import utilities
+from . import utilities
 import logging
 
 logger = logging.getLogger("vrni_sdk")

@@ -5,10 +5,10 @@
 # e.g Tier with filter criteria for Virtual machine is given as security_groups.name='security_group_scale_100' will be restore correctly since it is done through public APIs
 # while manually created Tier with filter criteria for virtual machine as security groups='security_group_scale_100' cannot be configured through public APIs.
 
-import init_api_client
+from . import init_api_client
 import argparse
 import swagger_client
-import utilities
+from . import utilities
 import logging
 import yaml
 import json

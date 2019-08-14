@@ -12,10 +12,10 @@ import time
 import csv
 import logging
 
-import init_api_client
+from . import init_api_client
 import swagger_client
 from swagger_client.rest import ApiException
-import utilities
+from . import utilities
 
 logger = logging.getLogger("vrni_sdk")
 id_to_name_map = dict()

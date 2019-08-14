@@ -28,8 +28,8 @@ import swagger_client
 from swagger_client.rest import ApiException
 import swagger_client.models.data_source_type as data_source_type
 
-import init_api_client
-import utilities
+from . import init_api_client
+from . import utilities
 
 logger = logging.getLogger("vrni_sdk")
 

@@ -12,10 +12,10 @@
 import csv
 import ipaddress
 import json
-import init_api_client
+from . import init_api_client
 import argparse
 import swagger_client
-import utilities
+from . import utilities
 import logging
 from swagger_client.rest import ApiException
 

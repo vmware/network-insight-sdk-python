@@ -5,7 +5,7 @@ import argparse
 import swagger_client
 import json
 import sys
-import utilities
+from . import utilities
 import logging
 import requests
 

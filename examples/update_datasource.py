@@ -28,8 +28,8 @@ import swagger_client
 from swagger_client.rest import ApiException
 import swagger_client.models.data_source_type as data_source_type
 
-import init_api_client
-import utilities
+from . import init_api_client
+from . import utilities
 
 logger = logging.getLogger("vrni_sdk")
 
@@ -144,7 +144,7 @@ def update_snmp_config(entity_id, data_source_api, data_source_api_name, data_so
                 response.update(snmp_config)
         update_snmp_api_fn(id=entity_id, body=response)
     except ApiException as e:
-        print("Failed updating of snmp config: Error : {} ".format(json.loads(e.body)))
+        print(("Failed updating of snmp config: Error : {} ".format(json.loads(e.body))))
 
 def get_data_source_entity_id(data_source_api, get_datasource_fn, data_source_list, data_source):
     for entity in data_source_list.results:
@@ -179,7 +179,7 @@ def main(api_client, args):
                 if data_source['snmp_version']:
                     update_snmp_config(entity_id, data_source_api, data_source_api_name, data_source)
             except ApiException as e:
-                print("Failed updating of data source type: {} : Error : {} ".format(data_source_type, json.loads(e.body)))
+                print(("Failed updating of data source type: {} : Error : {} ".format(data_source_type, json.loads(e.body))))
 
 
 def parse_arguments():

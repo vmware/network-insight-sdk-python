@@ -11,10 +11,10 @@ import time
 import csv
 import logging
 
-import init_api_client
+from . import init_api_client
 import swagger_client
-from sdk_utilities import get_referenced_entity_name
-import utilities
+from .sdk_utilities import get_referenced_entity_name
+from . import utilities
 
 
 def main():

@@ -8,10 +8,10 @@
 
 import time
 
-import init_api_client
+from . import init_api_client
 import swagger_client
 import logging
-import utilities
+from . import utilities
 logger = logging.getLogger("vrni_sdk")
 
 
