@@ -109,6 +109,7 @@ def get_update_request_body(response, data_source):
     if hasattr(response, "csp_refresh_token"):
         response.csp_refresh_token = data_source['CSPRefreshToken']
     response.nickname = data_source['NickName']
+    response.notes = data_source['Notes']
     return response
 
 def update_snmp_config(entity_id, data_source_api, data_source_api_name, data_source):
@@ -172,6 +173,9 @@ def main(api_client, args):
                 data_source_list = list_datasource_api_fn()
                 logger.info("Successfully got list of: {} : Response : {}".format(data_source_type, data_source_list))
                 entity_id = get_data_source_entity_id(data_source_api, get_datasource_fn, data_source_list, data_source)
+                if not entity_id:
+                    print("Failed getting data source type : {}: {}".format(data_source_type, data_source['IP']))
+                    return
                 response = get_datasource_fn(id=entity_id)
                 update_request_body = get_update_request_body(response, data_source)
                 update_datasource_fn(id=entity_id, body=update_request_body)
