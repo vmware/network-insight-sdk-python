@@ -40,7 +40,7 @@ def get_node_entity_id(api_client, proxy_ip=None):
 
 def get_uani_datasource(data_source_api, ip=None):
     if not ip: return None
-    data_source_list = data_source_api.list_uani()
+    data_source_list = data_source_api.list_generic_switch()
     for datasource in data_source_list.results:
         ds = data_source_api.get_uani(id=datasource.entity_id)
         if ds.ip == ip or ds.fqdn == ip:
@@ -56,7 +56,7 @@ def main(api_client, args):
     try:
         response = get_uani_datasource(data_source_api, args.device_ip_or_fqdn)
         if not response:
-            response = data_source_api.add_uani(body=get_add_request_body(args, proxy_id))
+            response = data_source_api.add_generic_switch(body=get_add_request_body(args, proxy_id))
             logger.info(
                     "Successfully added: {} {} : Response : {}".format(data_source_type, args.device_ip_or_fqdn, response))
         data_source_api.file_upload(id=response.entity_id, file=args.zip_file_path)
