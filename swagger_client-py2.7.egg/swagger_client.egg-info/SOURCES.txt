@@ -40,6 +40,13 @@ swagger_client/models/arista_switch_data_source_request.py
 swagger_client/models/audit_list_response.py
 swagger_client/models/audit_request.py
 swagger_client/models/audit_response.py
+swagger_client/models/azure_asg.py
+swagger_client/models/azure_credentials.py
+swagger_client/models/azure_data_source.py
+swagger_client/models/azure_data_source_request.py
+swagger_client/models/azure_nsg.py
+swagger_client/models/azure_nsg_rule.py
+swagger_client/models/azure_vm.py
 swagger_client/models/base_data_source.py
 swagger_client/models/base_data_source_request.py
 swagger_client/models/base_entity.py
@@ -72,6 +79,7 @@ swagger_client/models/cisco_aci_data_source_request.py
 swagger_client/models/cisco_switch_data_source.py
 swagger_client/models/cisco_switch_data_source_request.py
 swagger_client/models/cisco_switch_type.py
+swagger_client/models/cloud_network.py
 swagger_client/models/cluster.py
 swagger_client/models/container_base_data_source.py
 swagger_client/models/data_source_entity_id.py
@@ -100,6 +108,8 @@ swagger_client/models/entity_name.py
 swagger_client/models/entity_type.py
 swagger_client/models/entity_with_time.py
 swagger_client/models/error_detail.py
+swagger_client/models/f5_bigip_data_source.py
+swagger_client/models/f5_bigip_data_source_request.py
 swagger_client/models/fetch_request.py
 swagger_client/models/fetch_request_entity_ids.py
 swagger_client/models/firewall_action.py
@@ -113,6 +123,8 @@ swagger_client/models/fortinet_firewall_data_source.py
 swagger_client/models/fortinet_firewall_data_source_request.py
 swagger_client/models/gd_data_source.py
 swagger_client/models/gd_data_source_request.py
+swagger_client/models/generic_switch_data_source.py
+swagger_client/models/generic_switch_data_source_request.py
 swagger_client/models/group.py
 swagger_client/models/group_entry.py
 swagger_client/models/group_membership_criteria.py
@@ -121,6 +133,8 @@ swagger_client/models/hp_one_view_manager_data_source.py
 swagger_client/models/hp_one_view_manager_data_source_request.py
 swagger_client/models/hpvc_manager_data_source.py
 swagger_client/models/hpvc_manager_data_source_request.py
+swagger_client/models/huawei_switch_data_source.py
+swagger_client/models/huawei_switch_data_source_request.py
 swagger_client/models/infoblox_manager_data_source.py
 swagger_client/models/infoblox_manager_data_source_request.py
 swagger_client/models/ip_address_membership_criteria.py
@@ -134,6 +148,7 @@ swagger_client/models/juniper_switch_data_source_request.py
 swagger_client/models/k8_s_credentials.py
 swagger_client/models/kubernetes_data_source.py
 swagger_client/models/kubernetes_data_source_request.py
+swagger_client/models/kubernetes_service.py
 swagger_client/models/kubernetes_source_request.py
 swagger_client/models/manager.py
 swagger_client/models/meta_entity_type.py
@@ -220,10 +235,13 @@ swagger_client/models/user_group_response.py
 swagger_client/models/user_group_type.py
 swagger_client/models/user_response.py
 swagger_client/models/user_type.py
+swagger_client/models/user_update_request.py
 swagger_client/models/v_center_data_source.py
 swagger_client/models/v_center_data_source_request.py
 swagger_client/models/v_center_manager.py
 swagger_client/models/vc_datacenter.py
+swagger_client/models/velo_cloud_data_source.py
+swagger_client/models/velo_cloud_data_source_request.py
 swagger_client/models/vendor_id.py
 swagger_client/models/vendor_info.py
 swagger_client/models/version_response.py
@@ -260,6 +278,13 @@ test/test_audit_list_response.py
 test/test_audit_request.py
 test/test_audit_response.py
 test/test_authentication_api.py
+test/test_azure_asg.py
+test/test_azure_credentials.py
+test/test_azure_data_source.py
+test/test_azure_data_source_request.py
+test/test_azure_nsg.py
+test/test_azure_nsg_rule.py
+test/test_azure_vm.py
 test/test_base_data_source.py
 test/test_base_data_source_request.py
 test/test_base_entity.py
@@ -292,6 +317,7 @@ test/test_cisco_aci_data_source_request.py
 test/test_cisco_switch_data_source.py
 test/test_cisco_switch_data_source_request.py
 test/test_cisco_switch_type.py
+test/test_cloud_network.py
 test/test_cluster.py
 test/test_container_base_data_source.py
 test/test_data_source_entity_id.py
@@ -322,6 +348,8 @@ test/test_entity_name.py
 test/test_entity_type.py
 test/test_entity_with_time.py
 test/test_error_detail.py
+test/test_f5_bigip_data_source.py
+test/test_f5_bigip_data_source_request.py
 test/test_fetch_request.py
 test/test_fetch_request_entity_ids.py
 test/test_firewall_action.py
@@ -335,6 +363,8 @@ test/test_fortinet_firewall_data_source.py
 test/test_fortinet_firewall_data_source_request.py
 test/test_gd_data_source.py
 test/test_gd_data_source_request.py
+test/test_generic_switch_data_source.py
+test/test_generic_switch_data_source_request.py
 test/test_group.py
 test/test_group_entry.py
 test/test_group_membership_criteria.py
@@ -343,6 +373,8 @@ test/test_hp_one_view_manager_data_source.py
 test/test_hp_one_view_manager_data_source_request.py
 test/test_hpvc_manager_data_source.py
 test/test_hpvc_manager_data_source_request.py
+test/test_huawei_switch_data_source.py
+test/test_huawei_switch_data_source_request.py
 test/test_info_api.py
 test/test_infoblox_manager_data_source.py
 test/test_infoblox_manager_data_source_request.py
@@ -358,6 +390,7 @@ test/test_juniper_switch_data_source_request.py
 test/test_k8_s_credentials.py
 test/test_kubernetes_data_source.py
 test/test_kubernetes_data_source_request.py
+test/test_kubernetes_service.py
 test/test_kubernetes_source_request.py
 test/test_logs_api.py
 test/test_manager.py
@@ -450,10 +483,13 @@ test/test_user_group_response.py
 test/test_user_group_type.py
 test/test_user_response.py
 test/test_user_type.py
+test/test_user_update_request.py
 test/test_v_center_data_source.py
 test/test_v_center_data_source_request.py
 test/test_v_center_manager.py
 test/test_vc_datacenter.py
+test/test_velo_cloud_data_source.py
+test/test_velo_cloud_data_source_request.py
 test/test_vendor_id.py
 test/test_vendor_info.py
 test/test_version_response.py
