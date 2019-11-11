@@ -23,7 +23,7 @@ logger = logging.getLogger("vrni_sdk")
 def get_add_request_body(args, proxy_id):
     api_request_body = {"proxy_id": "{}".format(proxy_id),
                         "ip": "{}".format(args.device_ip_or_fqdn),
-                        "entity_type": "UANIDataSource",
+                        "entity_type": "GenericSwitchDataSource",
                         "nickname": "{}".format(args.device_ip_or_fqdn)}
     return api_request_body
 
@@ -42,7 +42,7 @@ def get_uani_datasource(data_source_api, ip=None):
     if not ip: return None
     data_source_list = data_source_api.list_generic_switch()
     for datasource in data_source_list.results:
-        ds = data_source_api.get_uani(id=datasource.entity_id)
+        ds = data_source_api.get_generic_switch(id=datasource.entity_id)
         if ds.ip == ip or ds.fqdn == ip:
             return datasource
     return None
