@@ -60,13 +60,16 @@ def main(api_client, args):
             logger.info(
                     "Successfully added: {} {} : Response : {}".format(data_source_type, args.device_ip_or_fqdn, response))
         data_source_api.file_upload(id=response.entity_id, file=args.zip_file_path)
-        auth_api = swagger_client.AuthenticationApi(api_client=api_client)
-        auth_api.delete()
+
         logger.info(
                 "Successfully uploaded zip file: {}".format(args.zip_file_path))
     except ApiException as e:
         logger.exception(
                 "Failed adding data source: {} : Error : {} ".format(args.device_ip_or_fqdn, json.loads(e.body)))
+    finally:
+        logger.info("Deleting API token")
+        auth_api = swagger_client.AuthenticationApi(api_client=api_client)
+        auth_api.delete()
 
 def parse_arguments():
     parser = init_api_client.parse_arguments()
