@@ -12,6 +12,12 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 logger = logging.getLogger("vrni_sdk")
 
+# CSV format - required for running this script.
+# u_app_name    |   u_subsystem |   ip_address  |
+# app_1         |   tier_1      | 10.53.212.34  |
+# app_1         |   tier_2      | 10.53.213.42  |
+# app_2         |   tier_1      | 10.53.112.65  |
+
 
 def add_tier_and_ip(apps_tiers, raw):
     if raw['u_app_name'] not in apps_tiers.keys():
