@@ -17,6 +17,7 @@
 import swagger_client
 import init_api_client
 import logging
+import time
 
 import csv
 from swagger_client.rest import ApiException
@@ -114,6 +115,7 @@ def main(api_client, args):
             # Get lis function for datasource
             list_datasource_api_fn = getattr(datasource_api, data_source_api_name["list"])
             get_datasource_fn = getattr(datasource_api, data_source_api_name["get"])
+            time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
             try:
                 data_source_list = list_datasource_api_fn()
                 logger.info("Successfully got list of: {} : Response : {}".format(data_source_type, data_source_list))
@@ -124,6 +126,7 @@ def main(api_client, args):
                     if data_source_type in SNMP_CONFIG_LIST:
                         get_snmp_api_fn = getattr(datasource_api, data_source_api_name['snmp_config'])
                         response = get_snmp_api_fn(id=datasource.entity_id)
+                        time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
                         if response.snmp_version == 'v2c':
                             data_dict['snmp_version'] = response.snmp_version
                             logger.info("Successfully got: {} {} snmp : Response : {}".format(data_source_type, datasource.ip,

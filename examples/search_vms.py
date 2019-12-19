@@ -21,7 +21,7 @@ def main():
     search_api = swagger_client.SearchApi()
 
     # TODO: Add/Change filter to get valid results
-    filter_string = "vcenter_manager.name = '10.196.75.109'"
+    filter_string = "vcenter_manager.name = '10.197.17.43'"
     # Create request parameters required for search APIs
     public_api_search_request_params = dict(entity_type=swagger_client.EntityType.VIRTUALMACHINE,
                                             filter=filter_string,
@@ -34,13 +34,13 @@ def main():
     while True:
         # Call the search API
         api_response = search_api.search_entities(body=search_payload)
-        logger.info("Response attributes: Total Count: {} "
-              "Time: {}".format(api_response.total_count,
+        logger.info("Response attributes: Total Count: {} Cursor : {} "
+              "Time: {}".format(api_response.total_count, api_response.cursor,
                                 time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(api_response.end_time))))
         for result in api_response.results:
             entities_api = swagger_client.EntitiesApi(api_client=api_client)
             logger.info("VM Name: {}".format(entities_api.get_vm(id=result.entity_id).name))
-            # print result
+            time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
         if not api_response.cursor:
             break
         search_payload.cursor = api_response.cursor

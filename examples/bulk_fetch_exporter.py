@@ -77,12 +77,14 @@ def main():
         entities_api = swagger_client.EntitiesApi(api_client=api_client)
         # bulk fetching the entities
         api_response = entities_api.entities_fetch_post(body=payload)
+        time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
 
         for result in api_response.results:
             # Get Source VM Name
             src_vm_name = get_referenced_entity_name(entity_id=result.entity.source_vm.entity_id,
                                                      entity_type=result.entity.source_vm.entity_type,
                                                      entities_api=entities_api)
+            time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
             # Get Source security groups
             sec_group_names = []
             for src_sec_group in result.entity.source_security_groups:
@@ -90,6 +92,7 @@ def main():
                                                   entity_type=src_sec_group.entity_type,
                                                   entities_api=entities_api)
                 if name: sec_group_names.append(name)
+                time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
             # Write it to csv file
             flow_fields = dict(src_ip=result.entity.source_ip.ip_address,
                                dst_ip=result.entity.destination_ip.ip_address,
