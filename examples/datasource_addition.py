@@ -51,6 +51,7 @@ def get_api_function_name(datasource_type):
         data_source_type.DataSourceType.UCSMANAGERDATASOURCE: {"snmp_config": "update_ucs_snmp_config",
                                                                "add": "add_ucs_manager"},
         data_source_type.DataSourceType.HPVCMANAGERDATASOURCE: {"add": "add_hpvc_manager"},
+        data_source_type.DataSourceType.F5BIGIPDATASOURCE: {"add": "add_f5_bigip"},
         data_source_type.DataSourceType.HPONEVIEWDATASOURCE: {"add": "add_hpov_manager"},
         data_source_type.DataSourceType.PANFIREWALLDATASOURCE: {"add": "add_panorama_firewall"},
         data_source_type.DataSourceType.CHECKPOINTFIREWALLDATASOURCE: {"add": "add_checkpoint_firewall"},
