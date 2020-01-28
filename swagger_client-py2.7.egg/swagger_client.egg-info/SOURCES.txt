@@ -23,6 +23,7 @@ swagger_client/apis/schema_api.py
 swagger_client/apis/search_api.py
 swagger_client/apis/settings_api.py
 swagger_client/models/__init__.py
+swagger_client/models/aggregate_order_by_clause.py
 swagger_client/models/aggregation.py
 swagger_client/models/aggregation_request.py
 swagger_client/models/aggregation_response.py
@@ -67,7 +68,9 @@ swagger_client/models/base_virtual_machine.py
 swagger_client/models/base_vnic.py
 swagger_client/models/brocade_switch_data_source.py
 swagger_client/models/brocade_switch_data_source_request.py
+swagger_client/models/bucket_value.py
 swagger_client/models/bulk_fetch_response.py
+swagger_client/models/cardinality.py
 swagger_client/models/checkpoint_firewall.py
 swagger_client/models/checkpoint_firewall_data_source.py
 swagger_client/models/checkpoint_firewall_data_source_request.py
@@ -87,6 +90,7 @@ swagger_client/models/data_source_list_response.py
 swagger_client/models/data_source_type.py
 swagger_client/models/datasource_health.py
 swagger_client/models/datastore.py
+swagger_client/models/dell_os10_switch_data_source_request.py
 swagger_client/models/dell_switch_data_source.py
 swagger_client/models/dell_switch_data_source_request.py
 swagger_client/models/dell_switch_type.py
@@ -114,6 +118,7 @@ swagger_client/models/fetch_request.py
 swagger_client/models/fetch_request_entity_ids.py
 swagger_client/models/firewall_action.py
 swagger_client/models/firewall_direction.py
+swagger_client/models/firewall_rule_mask_event.py
 swagger_client/models/flow.py
 swagger_client/models/flow_summary.py
 swagger_client/models/flow_tag.py
@@ -128,6 +133,7 @@ swagger_client/models/generic_switch_data_source_request.py
 swagger_client/models/group.py
 swagger_client/models/group_entry.py
 swagger_client/models/group_membership_criteria.py
+swagger_client/models/group_with_value.py
 swagger_client/models/host.py
 swagger_client/models/hp_one_view_manager_data_source.py
 swagger_client/models/hp_one_view_manager_data_source_request.py
@@ -137,6 +143,7 @@ swagger_client/models/huawei_switch_data_source.py
 swagger_client/models/huawei_switch_data_source_request.py
 swagger_client/models/infoblox_manager_data_source.py
 swagger_client/models/infoblox_manager_data_source_request.py
+swagger_client/models/interface_wan_config.py
 swagger_client/models/ip_address_membership_criteria.py
 swagger_client/models/ip_address_range.py
 swagger_client/models/ip_numeric_range.py
@@ -168,6 +175,8 @@ swagger_client/models/ns_service_group.py
 swagger_client/models/nsx_controller_data_collection.py
 swagger_client/models/nsx_distributed_firewall.py
 swagger_client/models/nsx_firewall_rule.py
+swagger_client/models/nsx_policy_group.py
+swagger_client/models/nsx_policy_manager.py
 swagger_client/models/nsx_redirect_rule.py
 swagger_client/models/nsx_security_group.py
 swagger_client/models/nsx_service.py
@@ -195,6 +204,8 @@ swagger_client/models/pks_data_source_request.py
 swagger_client/models/pks_source_request.py
 swagger_client/models/policy_manager_data_source.py
 swagger_client/models/policy_manager_data_source_request.py
+swagger_client/models/policy_manager_firewall.py
+swagger_client/models/policy_manager_firewall_rule.py
 swagger_client/models/port_range.py
 swagger_client/models/problem_event.py
 swagger_client/models/protocol.py
@@ -206,6 +217,9 @@ swagger_client/models/resource_pool.py
 swagger_client/models/role.py
 swagger_client/models/rule_set.py
 swagger_client/models/scope_enum.py
+swagger_client/models/sddc_type.py
+swagger_client/models/search_group_by_request.py
+swagger_client/models/search_group_by_response.py
 swagger_client/models/search_membership_criteria.py
 swagger_client/models/search_request.py
 swagger_client/models/security_tag.py
@@ -217,12 +231,17 @@ swagger_client/models/simple_port_range.py
 swagger_client/models/snmp2c_config.py
 swagger_client/models/snmp3_config.py
 swagger_client/models/snmp_config.py
+swagger_client/models/snmp_profile_ids.py
+swagger_client/models/snmp_profile_list_response.py
+swagger_client/models/snmp_profile_request.py
+swagger_client/models/snmp_profile_response.py
 swagger_client/models/sort_by_clause.py
 swagger_client/models/subnet_mapping.py
 swagger_client/models/subnet_mapping_list.py
 swagger_client/models/subnet_mapping_request.py
 swagger_client/models/switch_data_source.py
 swagger_client/models/switch_data_source_request.py
+swagger_client/models/test_snmp_profile_response.py
 swagger_client/models/tier.py
 swagger_client/models/tier_list_response.py
 swagger_client/models/tier_request.py
@@ -258,7 +277,9 @@ swagger_client/models/vmknic.py
 swagger_client/models/vnic.py
 swagger_client/models/vpc.py
 swagger_client/models/vxlan_layer2_network.py
+swagger_client/models/wan_config.py
 test/__init__.py
+test/test_aggregate_order_by_clause.py
 test/test_aggregation.py
 test/test_aggregation_request.py
 test/test_aggregation_response.py
@@ -305,7 +326,9 @@ test/test_base_virtual_machine.py
 test/test_base_vnic.py
 test/test_brocade_switch_data_source.py
 test/test_brocade_switch_data_source_request.py
+test/test_bucket_value.py
 test/test_bulk_fetch_response.py
+test/test_cardinality.py
 test/test_checkpoint_firewall.py
 test/test_checkpoint_firewall_data_source.py
 test/test_checkpoint_firewall_data_source_request.py
@@ -326,6 +349,7 @@ test/test_data_source_type.py
 test/test_data_sources_api.py
 test/test_datasource_health.py
 test/test_datastore.py
+test/test_dell_os10_switch_data_source_request.py
 test/test_dell_switch_data_source.py
 test/test_dell_switch_data_source_request.py
 test/test_dell_switch_type.py
@@ -354,6 +378,7 @@ test/test_fetch_request.py
 test/test_fetch_request_entity_ids.py
 test/test_firewall_action.py
 test/test_firewall_direction.py
+test/test_firewall_rule_mask_event.py
 test/test_flow.py
 test/test_flow_summary.py
 test/test_flow_tag.py
@@ -368,6 +393,7 @@ test/test_generic_switch_data_source_request.py
 test/test_group.py
 test/test_group_entry.py
 test/test_group_membership_criteria.py
+test/test_group_with_value.py
 test/test_host.py
 test/test_hp_one_view_manager_data_source.py
 test/test_hp_one_view_manager_data_source_request.py
@@ -379,6 +405,7 @@ test/test_info_api.py
 test/test_infoblox_manager_data_source.py
 test/test_infoblox_manager_data_source_request.py
 test/test_infrastructure_api.py
+test/test_interface_wan_config.py
 test/test_ip_address_membership_criteria.py
 test/test_ip_address_range.py
 test/test_ip_numeric_range.py
@@ -413,6 +440,8 @@ test/test_ns_service_group.py
 test/test_nsx_controller_data_collection.py
 test/test_nsx_distributed_firewall.py
 test/test_nsx_firewall_rule.py
+test/test_nsx_policy_group.py
+test/test_nsx_policy_manager.py
 test/test_nsx_redirect_rule.py
 test/test_nsx_security_group.py
 test/test_nsx_service.py
@@ -440,6 +469,8 @@ test/test_pks_data_source_request.py
 test/test_pks_source_request.py
 test/test_policy_manager_data_source.py
 test/test_policy_manager_data_source_request.py
+test/test_policy_manager_firewall.py
+test/test_policy_manager_firewall_rule.py
 test/test_port_range.py
 test/test_problem_event.py
 test/test_protocol.py
@@ -452,7 +483,10 @@ test/test_role.py
 test/test_rule_set.py
 test/test_schema_api.py
 test/test_scope_enum.py
+test/test_sddc_type.py
 test/test_search_api.py
+test/test_search_group_by_request.py
+test/test_search_group_by_response.py
 test/test_search_membership_criteria.py
 test/test_search_request.py
 test/test_security_tag.py
@@ -465,12 +499,17 @@ test/test_simple_port_range.py
 test/test_snmp2c_config.py
 test/test_snmp3_config.py
 test/test_snmp_config.py
+test/test_snmp_profile_ids.py
+test/test_snmp_profile_list_response.py
+test/test_snmp_profile_request.py
+test/test_snmp_profile_response.py
 test/test_sort_by_clause.py
 test/test_subnet_mapping.py
 test/test_subnet_mapping_list.py
 test/test_subnet_mapping_request.py
 test/test_switch_data_source.py
 test/test_switch_data_source_request.py
+test/test_test_snmp_profile_response.py
 test/test_tier.py
 test/test_tier_list_response.py
 test/test_tier_request.py
@@ -506,3 +545,4 @@ test/test_vmknic.py
 test/test_vnic.py
 test/test_vpc.py
 test/test_vxlan_layer2_network.py
+test/test_wan_config.py
