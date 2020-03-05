@@ -19,6 +19,7 @@ swagger_client/apis/infrastructure_api.py
 swagger_client/apis/logs_api.py
 swagger_client/apis/metrics_api.py
 swagger_client/apis/microsegmentation_api.py
+swagger_client/apis/path_api.py
 swagger_client/apis/schema_api.py
 swagger_client/apis/search_api.py
 swagger_client/apis/settings_api.py
@@ -70,6 +71,8 @@ swagger_client/models/brocade_switch_data_source.py
 swagger_client/models/brocade_switch_data_source_request.py
 swagger_client/models/bucket_value.py
 swagger_client/models/bulk_fetch_response.py
+swagger_client/models/bulk_problem_fetch_response.py
+swagger_client/models/bulk_user_defined_problem_fetch_response.py
 swagger_client/models/cardinality.py
 swagger_client/models/checkpoint_firewall.py
 swagger_client/models/checkpoint_firewall_data_source.py
@@ -94,6 +97,8 @@ swagger_client/models/dell_os10_switch_data_source_request.py
 swagger_client/models/dell_switch_data_source.py
 swagger_client/models/dell_switch_data_source_request.py
 swagger_client/models/dell_switch_type.py
+swagger_client/models/detailed_vendor_info.py
+swagger_client/models/detailed_vendor_info_response.py
 swagger_client/models/distributed_virtual_portgroup.py
 swagger_client/models/distributed_virtual_switch.py
 swagger_client/models/domain.py
@@ -105,6 +110,8 @@ swagger_client/models/ec2_network_interface.py
 swagger_client/models/ec2_security_group.py
 swagger_client/models/ec2_service.py
 swagger_client/models/ec2_sg_firewall_rule.py
+swagger_client/models/edge_device.py
+swagger_client/models/email_frequency.py
 swagger_client/models/entity_id.py
 swagger_client/models/entity_id_with_time.py
 swagger_client/models/entity_metrics_schema.py
@@ -112,6 +119,8 @@ swagger_client/models/entity_name.py
 swagger_client/models/entity_type.py
 swagger_client/models/entity_with_time.py
 swagger_client/models/error_detail.py
+swagger_client/models/event_meta_info.py
+swagger_client/models/event_meta_info_response.py
 swagger_client/models/f5_bigip_data_source.py
 swagger_client/models/f5_bigip_data_source_request.py
 swagger_client/models/fetch_request.py
@@ -119,6 +128,7 @@ swagger_client/models/fetch_request_entity_ids.py
 swagger_client/models/firewall_action.py
 swagger_client/models/firewall_direction.py
 swagger_client/models/firewall_rule_mask_event.py
+swagger_client/models/firewall_rule_set.py
 swagger_client/models/flow.py
 swagger_client/models/flow_summary.py
 swagger_client/models/flow_tag.py
@@ -128,6 +138,7 @@ swagger_client/models/fortinet_firewall_data_source.py
 swagger_client/models/fortinet_firewall_data_source_request.py
 swagger_client/models/gd_data_source.py
 swagger_client/models/gd_data_source_request.py
+swagger_client/models/generate_event_critera.py
 swagger_client/models/generic_switch_data_source.py
 swagger_client/models/generic_switch_data_source_request.py
 swagger_client/models/group.py
@@ -141,6 +152,7 @@ swagger_client/models/hpvc_manager_data_source.py
 swagger_client/models/hpvc_manager_data_source_request.py
 swagger_client/models/huawei_switch_data_source.py
 swagger_client/models/huawei_switch_data_source_request.py
+swagger_client/models/include_external.py
 swagger_client/models/infoblox_manager_data_source.py
 swagger_client/models/infoblox_manager_data_source_request.py
 swagger_client/models/interface_wan_config.py
@@ -157,6 +169,7 @@ swagger_client/models/kubernetes_data_source.py
 swagger_client/models/kubernetes_data_source_request.py
 swagger_client/models/kubernetes_service.py
 swagger_client/models/kubernetes_source_request.py
+swagger_client/models/logical_router.py
 swagger_client/models/manager.py
 swagger_client/models/meta_entity_type.py
 swagger_client/models/metric_response.py
@@ -172,6 +185,8 @@ swagger_client/models/node_type.py
 swagger_client/models/ns_group.py
 swagger_client/models/ns_service.py
 swagger_client/models/ns_service_group.py
+swagger_client/models/nsx_controller.py
+swagger_client/models/nsx_controller_cluster.py
 swagger_client/models/nsx_controller_data_collection.py
 swagger_client/models/nsx_distributed_firewall.py
 swagger_client/models/nsx_firewall_rule.py
@@ -182,11 +197,21 @@ swagger_client/models/nsx_security_group.py
 swagger_client/models/nsx_service.py
 swagger_client/models/nsx_service_group.py
 swagger_client/models/nsxip_set.py
+swagger_client/models/nsxt_controller.py
+swagger_client/models/nsxt_edge_cluster.py
 swagger_client/models/nsxt_firewall.py
 swagger_client/models/nsxt_firewall_rule.py
+swagger_client/models/nsxt_load_balancer.py
+swagger_client/models/nsxt_logical_switch.py
+swagger_client/models/nsxt_management_node.py
 swagger_client/models/nsxt_manager.py
 swagger_client/models/nsxt_manager_data_source.py
 swagger_client/models/nsxt_manager_data_source_request.py
+swagger_client/models/nsxt_router_device.py
+swagger_client/models/nsxt_server_pool.py
+swagger_client/models/nsxt_transport_node.py
+swagger_client/models/nsxt_transport_zone.py
+swagger_client/models/nsxt_virtual_server.py
 swagger_client/models/nsxtip_set.py
 swagger_client/models/nsxv_manager.py
 swagger_client/models/nsxv_manager_data_source.py
@@ -199,6 +224,8 @@ swagger_client/models/paged_user_list_response.py
 swagger_client/models/pan_firewall_data_source.py
 swagger_client/models/pan_firewall_data_source_request.py
 swagger_client/models/password_credentials.py
+swagger_client/models/path_firewall_rules.py
+swagger_client/models/path_firewall_rules_request.py
 swagger_client/models/pks_data_source.py
 swagger_client/models/pks_data_source_request.py
 swagger_client/models/pks_source_request.py
@@ -208,6 +235,7 @@ swagger_client/models/policy_manager_firewall.py
 swagger_client/models/policy_manager_firewall_rule.py
 swagger_client/models/port_range.py
 swagger_client/models/problem_event.py
+swagger_client/models/problem_with_time.py
 swagger_client/models/protocol.py
 swagger_client/models/recommended_rule.py
 swagger_client/models/recommended_rules.py
@@ -215,6 +243,7 @@ swagger_client/models/recommended_rules_request.py
 swagger_client/models/reference.py
 swagger_client/models/resource_pool.py
 swagger_client/models/role.py
+swagger_client/models/router_device.py
 swagger_client/models/rule_set.py
 swagger_client/models/scope_enum.py
 swagger_client/models/sddc_type.py
@@ -226,6 +255,7 @@ swagger_client/models/security_tag.py
 swagger_client/models/service_now_data_source.py
 swagger_client/models/service_now_data_source_request.py
 swagger_client/models/service_now_source_request.py
+swagger_client/models/severity.py
 swagger_client/models/simple_list_response.py
 swagger_client/models/simple_port_range.py
 swagger_client/models/snmp2c_config.py
@@ -239,6 +269,9 @@ swagger_client/models/sort_by_clause.py
 swagger_client/models/subnet_mapping.py
 swagger_client/models/subnet_mapping_list.py
 swagger_client/models/subnet_mapping_request.py
+swagger_client/models/subscription_list_response.py
+swagger_client/models/subscription_request.py
+swagger_client/models/subscription_response.py
 swagger_client/models/switch_data_source.py
 swagger_client/models/switch_data_source_request.py
 swagger_client/models/test_snmp_profile_response.py
@@ -250,6 +283,8 @@ swagger_client/models/token.py
 swagger_client/models/ucs_manager_data_source.py
 swagger_client/models/ucs_manager_data_source_request.py
 swagger_client/models/user_credential.py
+swagger_client/models/user_defined_problem_event.py
+swagger_client/models/user_defined_problem_with_time.py
 swagger_client/models/user_group_response.py
 swagger_client/models/user_group_type.py
 swagger_client/models/user_response.py
@@ -263,6 +298,7 @@ swagger_client/models/velo_cloud_data_source.py
 swagger_client/models/velo_cloud_data_source_request.py
 swagger_client/models/vendor_id.py
 swagger_client/models/vendor_info.py
+swagger_client/models/vendor_info_with_mk.py
 swagger_client/models/version_response.py
 swagger_client/models/vidm_config_response.py
 swagger_client/models/vidm_configuration.py
@@ -328,6 +364,8 @@ test/test_brocade_switch_data_source.py
 test/test_brocade_switch_data_source_request.py
 test/test_bucket_value.py
 test/test_bulk_fetch_response.py
+test/test_bulk_problem_fetch_response.py
+test/test_bulk_user_defined_problem_fetch_response.py
 test/test_cardinality.py
 test/test_checkpoint_firewall.py
 test/test_checkpoint_firewall_data_source.py
@@ -353,6 +391,8 @@ test/test_dell_os10_switch_data_source_request.py
 test/test_dell_switch_data_source.py
 test/test_dell_switch_data_source_request.py
 test/test_dell_switch_type.py
+test/test_detailed_vendor_info.py
+test/test_detailed_vendor_info_response.py
 test/test_distributed_virtual_portgroup.py
 test/test_distributed_virtual_switch.py
 test/test_domain.py
@@ -364,6 +404,8 @@ test/test_ec2_network_interface.py
 test/test_ec2_security_group.py
 test/test_ec2_service.py
 test/test_ec2_sg_firewall_rule.py
+test/test_edge_device.py
+test/test_email_frequency.py
 test/test_entities_api.py
 test/test_entity_id.py
 test/test_entity_id_with_time.py
@@ -372,6 +414,8 @@ test/test_entity_name.py
 test/test_entity_type.py
 test/test_entity_with_time.py
 test/test_error_detail.py
+test/test_event_meta_info.py
+test/test_event_meta_info_response.py
 test/test_f5_bigip_data_source.py
 test/test_f5_bigip_data_source_request.py
 test/test_fetch_request.py
@@ -379,6 +423,7 @@ test/test_fetch_request_entity_ids.py
 test/test_firewall_action.py
 test/test_firewall_direction.py
 test/test_firewall_rule_mask_event.py
+test/test_firewall_rule_set.py
 test/test_flow.py
 test/test_flow_summary.py
 test/test_flow_tag.py
@@ -388,6 +433,7 @@ test/test_fortinet_firewall_data_source.py
 test/test_fortinet_firewall_data_source_request.py
 test/test_gd_data_source.py
 test/test_gd_data_source_request.py
+test/test_generate_event_critera.py
 test/test_generic_switch_data_source.py
 test/test_generic_switch_data_source_request.py
 test/test_group.py
@@ -401,6 +447,7 @@ test/test_hpvc_manager_data_source.py
 test/test_hpvc_manager_data_source_request.py
 test/test_huawei_switch_data_source.py
 test/test_huawei_switch_data_source_request.py
+test/test_include_external.py
 test/test_info_api.py
 test/test_infoblox_manager_data_source.py
 test/test_infoblox_manager_data_source_request.py
@@ -419,6 +466,7 @@ test/test_kubernetes_data_source.py
 test/test_kubernetes_data_source_request.py
 test/test_kubernetes_service.py
 test/test_kubernetes_source_request.py
+test/test_logical_router.py
 test/test_logs_api.py
 test/test_manager.py
 test/test_meta_entity_type.py
@@ -437,6 +485,8 @@ test/test_node_type.py
 test/test_ns_group.py
 test/test_ns_service.py
 test/test_ns_service_group.py
+test/test_nsx_controller.py
+test/test_nsx_controller_cluster.py
 test/test_nsx_controller_data_collection.py
 test/test_nsx_distributed_firewall.py
 test/test_nsx_firewall_rule.py
@@ -447,11 +497,21 @@ test/test_nsx_security_group.py
 test/test_nsx_service.py
 test/test_nsx_service_group.py
 test/test_nsxip_set.py
+test/test_nsxt_controller.py
+test/test_nsxt_edge_cluster.py
 test/test_nsxt_firewall.py
 test/test_nsxt_firewall_rule.py
+test/test_nsxt_load_balancer.py
+test/test_nsxt_logical_switch.py
+test/test_nsxt_management_node.py
 test/test_nsxt_manager.py
 test/test_nsxt_manager_data_source.py
 test/test_nsxt_manager_data_source_request.py
+test/test_nsxt_router_device.py
+test/test_nsxt_server_pool.py
+test/test_nsxt_transport_node.py
+test/test_nsxt_transport_zone.py
+test/test_nsxt_virtual_server.py
 test/test_nsxtip_set.py
 test/test_nsxv_manager.py
 test/test_nsxv_manager_data_source.py
@@ -464,6 +524,9 @@ test/test_paged_user_list_response.py
 test/test_pan_firewall_data_source.py
 test/test_pan_firewall_data_source_request.py
 test/test_password_credentials.py
+test/test_path_api.py
+test/test_path_firewall_rules.py
+test/test_path_firewall_rules_request.py
 test/test_pks_data_source.py
 test/test_pks_data_source_request.py
 test/test_pks_source_request.py
@@ -473,6 +536,7 @@ test/test_policy_manager_firewall.py
 test/test_policy_manager_firewall_rule.py
 test/test_port_range.py
 test/test_problem_event.py
+test/test_problem_with_time.py
 test/test_protocol.py
 test/test_recommended_rule.py
 test/test_recommended_rules.py
@@ -480,6 +544,7 @@ test/test_recommended_rules_request.py
 test/test_reference.py
 test/test_resource_pool.py
 test/test_role.py
+test/test_router_device.py
 test/test_rule_set.py
 test/test_schema_api.py
 test/test_scope_enum.py
@@ -494,6 +559,7 @@ test/test_service_now_data_source.py
 test/test_service_now_data_source_request.py
 test/test_service_now_source_request.py
 test/test_settings_api.py
+test/test_severity.py
 test/test_simple_list_response.py
 test/test_simple_port_range.py
 test/test_snmp2c_config.py
@@ -507,6 +573,9 @@ test/test_sort_by_clause.py
 test/test_subnet_mapping.py
 test/test_subnet_mapping_list.py
 test/test_subnet_mapping_request.py
+test/test_subscription_list_response.py
+test/test_subscription_request.py
+test/test_subscription_response.py
 test/test_switch_data_source.py
 test/test_switch_data_source_request.py
 test/test_test_snmp_profile_response.py
@@ -518,6 +587,8 @@ test/test_token.py
 test/test_ucs_manager_data_source.py
 test/test_ucs_manager_data_source_request.py
 test/test_user_credential.py
+test/test_user_defined_problem_event.py
+test/test_user_defined_problem_with_time.py
 test/test_user_group_response.py
 test/test_user_group_type.py
 test/test_user_response.py
@@ -531,6 +602,7 @@ test/test_velo_cloud_data_source.py
 test/test_velo_cloud_data_source_request.py
 test/test_vendor_id.py
 test/test_vendor_info.py
+test/test_vendor_info_with_mk.py
 test/test_version_response.py
 test/test_vidm_config_response.py
 test/test_vidm_configuration.py

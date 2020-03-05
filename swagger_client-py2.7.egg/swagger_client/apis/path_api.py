@@ -40,7 +40,7 @@ class PathApi(object):
                 config.api_client = ApiClient()
             self.api_client = config.api_client
 
-    def path_firewall_rules(self, **kwargs):
+    def path_firewall_rules(self, body, **kwargs):
         """
         Get firewall rules for specified client server ips and port/protocol
         Get firewall rules applicable in path for a client ip and server ip for specified port/protocol.
@@ -50,23 +50,23 @@ class PathApi(object):
         >>> def callback_function(response):
         >>>     pprint(response)
         >>>
-        >>> thread = api.path_firewall_rules(callback=callback_function)
+        >>> thread = api.path_firewall_rules(body, callback=callback_function)
 
         :param callback function: The callback function
             for asynchronous request. (optional)
-        :param PathFirewallRulesRequest body: Firewall Rules Request
+        :param PathFirewallRulesRequest body: VMware Identity Manager configuration details (required)
         :return: PathFirewallRules
                  If the method is called asynchronously,
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('callback'):
-            return self.path_firewall_rules_with_http_info(**kwargs)
+            return self.path_firewall_rules_with_http_info(body, **kwargs)
         else:
-            (data) = self.path_firewall_rules_with_http_info(**kwargs)
+            (data) = self.path_firewall_rules_with_http_info(body, **kwargs)
             return data
 
-    def path_firewall_rules_with_http_info(self, **kwargs):
+    def path_firewall_rules_with_http_info(self, body, **kwargs):
         """
         Get firewall rules for specified client server ips and port/protocol
         Get firewall rules applicable in path for a client ip and server ip for specified port/protocol.
@@ -76,11 +76,11 @@ class PathApi(object):
         >>> def callback_function(response):
         >>>     pprint(response)
         >>>
-        >>> thread = api.path_firewall_rules_with_http_info(callback=callback_function)
+        >>> thread = api.path_firewall_rules_with_http_info(body, callback=callback_function)
 
         :param callback function: The callback function
             for asynchronous request. (optional)
-        :param PathFirewallRulesRequest body: Firewall Rules Request
+        :param PathFirewallRulesRequest body: VMware Identity Manager configuration details (required)
         :return: PathFirewallRules
                  If the method is called asynchronously,
                  returns the request thread.
@@ -101,6 +101,9 @@ class PathApi(object):
                 )
             params[key] = val
         del params['kwargs']
+        # verify the required parameter 'body' is set
+        if ('body' not in params) or (params['body'] is None):
+            raise ValueError("Missing the required parameter `body` when calling `path_firewall_rules`")
 
 
         collection_formats = {}
