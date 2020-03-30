@@ -24,9 +24,9 @@ def main(args):
 
     if args.event_backup_action == 'save':
         all_apps = []
-        apps = setting_api.settings_events_user_defined_events_get()
+        apps = setting_api.get_all_user_defined_events()
         for i in apps.results:
-            event = setting_api.settings_events_user_defined_events_id_get(i.entity_id)
+            event = setting_api.get_user_defined_event(i.entity_id)
             logger.info("Saving event {}".format(event))
             all_apps.append(event)
             time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
@@ -38,11 +38,20 @@ def main(args):
     if args.event_backup_action == 'restore':
         with open(args.event_backup_yaml, 'r') as outfile:
             all_apps = yaml.load(outfile)
+        snmp_list = []
+        if args.update_snmp_destinations:
+            logger.info("Getting SNMP trap destinations")
+            snmp_details = setting_api.settings_snmp_profiles_get()
+            snmp_list = [snmp.entity_id for snmp in snmp_details.results]
+        time.sleep(0.025)  # make sure we don't hit the vRNI throttle and start getting 429 errors
         for app in all_apps:
             app._event_name =  app._event_name + '-restored'
             try:
+                logger.info("Updating SNMP trap destinations")
+                app.snmp_trap_entity_ids = snmp_list
                 logger.info("Creating user defined event {}".format(app._event_name))
                 created_application_defined_events= setting_api.settings_events_user_defined_events_post(app)
+                logger.info("Created user defined events {}".format(created_application_defined_events))
                 time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
             except ApiException as e:
                 logger.error("{}".format(json.loads(e.body)))
@@ -54,6 +63,8 @@ def parse_arguments():
                         default='events_backup.yml', help="User defined events are saved in this csv")
     parser.add_argument("--event_backup_action", action="store",
                         default='restore', help="Action can be 'save' or 'restore'")
+    parser.add_argument("--update_snmp_destinations", action="store",
+                        default=True, help="Update snmp in user defined events")
 
     args = parser.parse_args()
     return args
