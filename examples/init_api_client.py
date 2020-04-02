@@ -30,12 +30,20 @@ def get_onprem_api_client(args):
 
     logger.info("Getting api client for IP <{}>".format(args.platform_ip))
     api_client = swagger_client.ApiClient(host="https://{}/api/ni".format(args.platform_ip))
-    user_creds = swagger_client.UserCredential(username=args.username, password=args.password,
-                                               domain=dict(domain_type=args.domain_type))
-
     auth_api = swagger_client.AuthenticationApi(api_client=api_client)
-
-    auth_token = auth_api.create(user_creds)
+    if args.domain_type == "LOCAL" or args.domain_type == "LDAP":
+        user_creds = swagger_client.UserCredential(username=args.username, password=args.password,
+                                                   domain=dict(domain_type=args.domain_type))
+        auth_token = auth_api.create(user_creds)
+    elif args.domain_type == "VIDM":
+        if args.get_vidm_client_id:
+            client_id = auth_api.get_vidm_oauth_clien_id()
+            logger.info("client-id for vIDM is - '{}'".format(client_id.client_id))
+            return
+        user_creds = swagger_client.VidmToken(vidm_token = args.vidm_token)
+        auth_token = auth_api.create_vidm_user_token(user_creds)
+    else:
+        raise ValueError('Please give correct domain_type')
 
     config.api_key['Authorization'] = auth_token.token
     config.api_key_prefix['Authorization'] = 'NetworkInsight'
@@ -63,6 +71,10 @@ def get_niaas_csp_auth_token(args, api_client):
     csp_auth_token = response['access_token']
     return csp_auth_token
 
+def domain_type(type):
+    if not type in ['LOCAL', 'LDAP', 'VIDM']:
+        raise argparse.ArgumentTypeError('argument domain type must be one of type LOCAL, LDAP or VIDM')
+    return type
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Run Public APIs on vRNI Platform')
@@ -74,8 +86,19 @@ def parse_arguments():
                         help='user name for authentication')
     parser.add_argument("--password", action="store",
                         default='admin', help="password for authentication")
-    parser.add_argument("--domain_type", action="store",
-                        default='LOCAL', help="domain type for authentication")
+    parser.add_argument("--domain_type", action="store",type=domain_type,
+                        default='LOCAL', help="domain type for authentication: LOCAL or LDAP or VIDM")
+    parser.add_argument("--get_vidm_client_id", action="store_true",
+                        help="Get client-id for making user access-token request to vIDM")
+
+    # Procedure to generate vidm_token
+    #    1. Get the client-id for making user access-token request to VMware Identity Manager by executing
+    #       init_api_client.py --get_vidm_client_id \
+    #                          --domain_type VIDM \
+    #                          --platform_ip $Platfrom-IP \
+    #                          --deployment_type onprem
+    #    2. Using client-id along with user credentials make an access token request to VMware Identity Manager.
+    parser.add_argument('--vidm_token', action='store', help='Provide vidm_token')
 
     # Network Insight as a service (NIAAS) parameters.
     # Procedure to generate api token
