@@ -97,7 +97,8 @@ def parse_arguments():
     #                          --domain_type VIDM \
     #                          --platform_ip $Platfrom-IP \
     #                          --deployment_type onprem
-    #    2. Using client-id along with user credentials make an access token request to VMware Identity Manager.
+    #    2. Using client-id alongwith user credentials make an access token request to VMware Identity Manager.
+    #       e.g. POST: https://xyz.com/SAAS/auth/oauthtoken?username=${username}&password=${password}&client_id=${client_id}&grant_type=password
     parser.add_argument('--vidm_token', action='store', help='Provide vidm_token')
 
     # Network Insight as a service (NIAAS) parameters.
