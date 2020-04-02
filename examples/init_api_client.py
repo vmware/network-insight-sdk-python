@@ -33,7 +33,7 @@ def get_onprem_api_client(args):
     auth_api = swagger_client.AuthenticationApi(api_client=api_client)
     if args.domain_type == "LOCAL" or args.domain_type == "LDAP":
         user_creds = swagger_client.UserCredential(username=args.username, password=args.password,
-                                                   domain=dict(domain_type=args.domain_type))
+                                                   domain=dict(domain_type=args.domain_type, value=args.domain_value))
         auth_token = auth_api.create(user_creds)
     elif args.domain_type == "VIDM":
         if args.get_vidm_client_id:
@@ -86,8 +86,10 @@ def parse_arguments():
                         help='user name for authentication')
     parser.add_argument("--password", action="store",
                         default='admin', help="password for authentication")
-    parser.add_argument("--domain_type", action="store",type=domain_type,
+    parser.add_argument("--domain_type", action="store", type=domain_type,
                         default='LOCAL', help="domain type for authentication: LOCAL or LDAP or VIDM")
+    parser.add_argument("--domain_value", action="store",
+                        default='example.com', help="domain value: example.com")
     parser.add_argument("--get_vidm_client_id", action="store_true",
                         help="Get client-id for making user access-token request to vIDM")
 
