@@ -43,7 +43,7 @@ def get_onprem_api_client(args):
         user_creds = swagger_client.VidmToken(vidm_token = args.vidm_token)
         auth_token = auth_api.create_vidm_user_token(user_creds)
     else:
-        raise ValueError('Please give correct domain_type')
+        raise ValueError('Please give correct domain_type: LOCAL, LDAP or VIDM')
 
     config.api_key['Authorization'] = auth_token.token
     config.api_key_prefix['Authorization'] = 'NetworkInsight'
