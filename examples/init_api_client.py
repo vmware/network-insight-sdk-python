@@ -89,7 +89,7 @@ def parse_arguments():
     parser.add_argument("--domain_type", action="store", type=domain_type,
                         default='LOCAL', help="domain type for authentication: LOCAL or LDAP or VIDM")
     parser.add_argument("--domain_value", action="store",
-                        default='example.com', help="domain value: example.com")
+                        default='example.com', help="domain value for LDAP user: example.com")
     parser.add_argument("--get_vidm_client_id", action="store_true",
                         help="Get client-id for making user access-token request to vIDM")
 
