@@ -75,8 +75,10 @@ def main(args):
 
 def delete_application(application_api):
     app_no = 1
-    apps = application_api.list_applications(size=100, cursor="")
     while True:
+        apps = application_api.list_applications(size=100)
+        if not apps.results:
+            break
         for i in apps.results:
             app = application_api.get_application(i.entity_id)
             if app.name.startswith('vrni_auto_'):
@@ -87,10 +89,6 @@ def delete_application(application_api):
                 application_api.delete_application(i.entity_id)
             logger.info("{}: App Deleted [{}].".format(app_no, app.name))
             app_no += 1
-        if not apps.cursor:
-            break
-        apps = application_api.list_applications(cursor=apps.cursor, size=100)
-
 
 def create_application(application_api, application_name):
     app_name = "vrni_auto_{}".format(application_name)
