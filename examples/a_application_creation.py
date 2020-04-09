@@ -42,7 +42,7 @@ def main(api_client, args):
         delete_token(api_client)
         return
 
-    reader = csv.DictReader(open("CMDB-VC-inv-Merged.csv"))
+    reader = csv.DictReader(open("cmdb_ci_hardware.csv"))
 
     app_names = set()
     locations = collections.defaultdict(int)
@@ -58,7 +58,7 @@ def main(api_client, args):
             add_tier_and_ip(apps_tiers, raw)
             app_names.add(raw['u_app_name'])
             rows += 1
-            # locations[raw['u_location']] += 1
+            locations[raw['u_location']] += 1
             app_ips[raw['u_app_name']].append(raw["ip_address"])
 
     print("Total Apps discovered: {}".format(len(app_names)))
