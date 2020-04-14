@@ -30,11 +30,16 @@ def add_tier_and_ip(apps_tiers, raw):
     else:
         apps_tiers[raw['u_app_name']][raw['u_subsystem']].append(raw["ip_address"])
 
+def delete_token(api_client):
+    logger.info("Deleting API token")
+    auth_api = swagger_client.AuthenticationApi(api_client=api_client)
+    auth_api.delete()
 
-def main(args):
+def main(api_client, args):
     application_api = swagger_client.ApplicationsApi()
     if args.delete_apps:
         delete_application(application_api)
+        delete_token(api_client)
         return
 
     reader = csv.DictReader(open("cmdb_ci_hardware.csv"))
@@ -72,25 +77,36 @@ def main(args):
         create_tiers(app_name, application_api, vrni_app, apps_tiers[app_name])
         app_no += 1
 
+    delete_token(api_client)
 
-def delete_application(application_api):
+def get_applications(application_api):
+    apps_list = []
+    logger.info("Getting list of all applications starting with name 'vrni_auto_'")
     app_no = 1
     apps = application_api.list_applications(size=100, cursor="")
     while True:
         for i in apps.results:
             app = application_api.get_application(i.entity_id)
             if app.name.startswith('vrni_auto_'):
-                tiers = application_api.list_application_tiers(id=app.entity_id)
-                for t in tiers.results:
-                    application_api.delete_tier(app.entity_id, t.entity_id)
-                    logger.info("    Tier Deleted [{}].".format(t.name))
-                application_api.delete_application(i.entity_id)
-            logger.info("{}: App Deleted [{}].".format(app_no, app.name))
-            app_no += 1
+                logger.info("Getting app {} : {}".format(app_no, app.name))
+                apps_list.append(app)
+                app_no += 1
         if not apps.cursor:
             break
         apps = application_api.list_applications(cursor=apps.cursor, size=100)
+    return apps_list
 
+def delete_application(application_api):
+    app_no = 1
+    apps = get_applications(application_api)
+    for app in apps:
+        tiers = application_api.list_application_tiers(id=app.entity_id)
+        for t in tiers.results:
+            application_api.delete_tier(app.entity_id, t.entity_id)
+            logger.info("    Tier Deleted [{}].".format(t.name))
+        application_api.delete_application(app.entity_id)
+        logger.info("{}: App Deleted [{}].".format(app_no, app.name))
+        app_no += 1
 
 def create_application(application_api, application_name):
     app_name = "vrni_auto_{}".format(application_name)
@@ -151,4 +167,4 @@ if __name__ == '__main__':
     args = parse_arguments()
     utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
-    main(args)
+    main(api_client, args)
