@@ -57,7 +57,16 @@ def get_api_function_name(datasource_type):
         data_source_type.DataSourceType.CHECKPOINTFIREWALLDATASOURCE: {"add": "add_checkpoint_firewall"},
         data_source_type.DataSourceType.NSXTMANAGERDATASOURCE: {"add": "add_nsxt_manager_datasource"},
         data_source_type.DataSourceType.KUBERNETESDATASOURCE: {"add": "add_kubernetes_datasource"},
-        data_source_type.DataSourceType.POLICYMANAGERDATASOURCE: {"add": "add_policy_manager_datasource"}}
+        data_source_type.DataSourceType.POLICYMANAGERDATASOURCE: {"add": "add_policy_manager_datasource"},
+        data_source_type.DataSourceType.HUAWEISWITCHDATASOURCE: {"add": "add_huawei"},
+        data_source_type.DataSourceType.UANIDATASOURCE: {"add": "add_generic_switch"},
+        data_source_type.DataSourceType.PKSDATASOURCE: {"add": "add_pks_datasource"},
+        data_source_type.DataSourceType.INFOBLOXMANAGERDATASOURCE: {"add": "add_infoblox_manager_datasource"},
+        data_source_type.DataSourceType.CISCOACIDATASOURCE: {"add": "add_cisco_aci"},
+        data_source_type.DataSourceType.SERVICENOWDATASOURCE: {"add": "add_service_now_datasource"},
+        data_source_type.DataSourceType.AZUREDATASOURCE: {"add": "add_azure_datasource"},
+        data_source_type.DataSourceType.VELOCLOUDDATASOURCE: {"add": "add_velo_cloud_datasource"},
+        data_source_type.DataSourceType.FORTINETFIREWALLDATASOURCE: {"add": "add_fortinet_firewall"}}
 
     return datasource[datasource_type]
 
@@ -179,6 +188,10 @@ def main(api_client, args):
             except ApiException as e:
                 logger.exception(
                     "Failed adding data source: {} : Error : {} ".format(data_source['IP'], json.loads(e.body)))
+
+    auth_api = swagger_client.AuthenticationApi(api_client=api_client)
+    auth_api.delete()
+
 
 def parse_arguments():
     parser = init_api_client.parse_arguments()
