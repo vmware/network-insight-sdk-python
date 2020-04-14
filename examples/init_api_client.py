@@ -118,3 +118,10 @@ if __name__ == '__main__':
     parser = parse_arguments()
     utilities.configure_logging("/tmp")
     api_client_onprem = get_api_client(parser.parse_args())
+
+
+
+# for nd setups -
+# authorize_api_url = "https://csp.nd31.vrni-symphony.com/csp/gateway/am/api/auth/api-tokens/authorize?refresh_token={}".format(
+#         args.api_token)
+# public_api_url = "https://nd31.us.www.main.vrni-symphony.com/ni/api/ni"
