@@ -1,7 +1,7 @@
 # Python SDK Examples
-# Script will get all user defined eventss and dump to yaml file or create user defined events using data in given yaml file
+# Script will get all user defined events and dump to yaml file or create user defined events using data in given yaml file
 # If event_backup_action = save : All the user defined events will be dump to yaml
-# If event_backup_action = restore : User defined events are restored succesfully by reading yaml dump.
+# If event_backup_action = restore : User defined events are restored succesfully by reading given yaml file.
 
 
 import init_api_client
