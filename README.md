@@ -1,7 +1,7 @@
 # Python SDK for vRNI
 Starting vRealize Network Insight (vRNI) 3.6, vRNI platform has a public API. This Python SDK gives you easy access to API calls and hosts examples on how to use it.
 
-This module is not supported by VMware, and comes with no warranties express or implied. Please test and validate its functionality before using in a production environment.
+This module is not supported by VMware, and comes with no warranties express or implied. Please test and validate its functionality before using in a production environment. If you have any issue please raise a github issue.
 Included SDK is compatible with vRNI 4.0, 4.1.1, 4.2, 5.0, 5.1 and 5.2.
 
 ## Installing Python SDK [python 2.7]
