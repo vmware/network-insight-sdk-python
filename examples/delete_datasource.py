@@ -64,7 +64,7 @@ def main(api_client, args):
                     print("Failed getting data source type : {}: {}".format(data_source_type, data_source['IP']))
                     return
                 delete_datasource_fn(id=entity_id)
-                logger.info("Successfully deleted: {} : Response : {}".format(data_source_type, data_source_list))
+                logger.info("Successfully deleted: {} : {}".format(data_source_type, entity_id))
             except ApiException as e:
                 print("Failed deleting data source type: {} : Error : {} ".format(data_source_type, json.loads(e.body)))
 
