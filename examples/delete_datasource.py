@@ -43,7 +43,7 @@ def get_data_source_entity_id(get_datasource_fn, data_source_list, data_source):
     return None
 
 def main(api_client, args):
-
+    return_code = SUCCESS
     # Create data source API client object
     data_source_api = swagger_client.DataSourcesApi(api_client=api_client)
     with open("{}".format(args.data_sources_csv), 'rb') as csvFile:
