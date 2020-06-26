@@ -32,7 +32,8 @@ import init_api_client
 import utilities
 
 logger = logging.getLogger("vrni_sdk")
-
+ERROR = 1
+SUCCESS = 0
 
 def get_data_source_entity_id(get_datasource_fn, data_source_list, data_source):
     for entity in data_source_list.results:
@@ -67,7 +68,11 @@ def main(api_client, args):
                 logger.info("Successfully deleted: {} : {}".format(data_source_type, entity_id))
             except ApiException as e:
                 print("Failed deleting data source type: {} : Error : {} ".format(data_source_type, json.loads(e.body)))
+                return_code = ERROR
 
+    auth_api = swagger_client.AuthenticationApi(api_client=api_client)
+    auth_api.delete()
+    return return_code
 
 def parse_arguments():
     parser = init_api_client.parse_arguments()
