@@ -1,12 +1,12 @@
-# swagger Examples - update datasources in bulk
+# swagger Examples - Delete datasources in bulk
 #
-# This script uses an input CSV (example: update_data_sources.csv)
-# To update multiple vRealize Network Insight Data Sources. Modify update_data_sources.csv to contain your own data sources
+# This script uses an input CSV (example: data_sources.csv.csv)
+# To Delete multiple vRealize Network Insight Data Sources. Modify data_sources.csv.csv to contain your own data sources
 # (vCenters, NSX, switches, firewalls)
 # and run this script with the param --data_sources_csv to your CSV.
 
 # Note: -
-# DataSourceType in update_data_sources.csv is taken from swagger_client.models.data_source_type.py
+# DataSourceType in data_sources.csv.csv is taken from swagger_client.models.data_source_type.py
 # For reference here are the data source types that can be used in CSV
 # CiscoSwitchDataSource, DellSwitchDataSource, AristaSwitchDataSource, BrocadeSwitchDataSource, JuniperSwitchDataSource,
 # GDDataSource, VCenterDataSource, NSXVManagerDataSource, UCSManagerDataSource, HPVCManagerDataSource,
@@ -77,7 +77,7 @@ def main(api_client, args):
 def parse_arguments():
     parser = init_api_client.parse_arguments()
     parser.add_argument("--data_sources_csv", action="store",
-                        default='delete_data_sources.csv', help="csv file with your own data sources")
+                        default='data_sources.csv', help="csv file with your own data sources")
     args = parser.parse_args()
     return args
 
