@@ -44,8 +44,8 @@ class ConfigDataFilter(object):
         'vidm': 'bool',
         'user_data': 'bool',
         'user_preferences': 'bool',
-        'saved_searches': 'bool',
         'physical_subnet_vlan': 'bool',
+        'saved_searches': 'bool',
         'physical_ip_dns_mapping': 'bool',
         'east_west_ip': 'bool',
         'north_south_ip': 'bool'
@@ -65,14 +65,14 @@ class ConfigDataFilter(object):
         'vidm': 'vidm',
         'user_data': 'user_data',
         'user_preferences': 'user_preferences',
-        'saved_searches': 'saved_searches',
         'physical_subnet_vlan': 'physical_subnet_vlan',
+        'saved_searches': 'saved_searches',
         'physical_ip_dns_mapping': 'physical_ip_dns_mapping',
         'east_west_ip': 'east_west_ip',
         'north_south_ip': 'north_south_ip'
     }
 
-    def __init__(self, applications=True, snmp=True, smtp=True, data_sources=True, analytics_thresholds=True, analytics_outliers=True, events=True, syslog=True, pinboards=True, ldap=True, vidm=True, user_data=True, user_preferences=True, saved_searches=True, physical_subnet_vlan=True, physical_ip_dns_mapping=True, east_west_ip=True, north_south_ip=True):
+    def __init__(self, applications=True, snmp=True, smtp=True, data_sources=True, analytics_thresholds=True, analytics_outliers=True, events=True, syslog=True, pinboards=True, ldap=True, vidm=True, user_data=True, user_preferences=True, physical_subnet_vlan=True, saved_searches=True, physical_ip_dns_mapping=True, east_west_ip=True, north_south_ip=True):
         """
         ConfigDataFilter - a model defined in Swagger
         """
@@ -90,8 +90,8 @@ class ConfigDataFilter(object):
         self._vidm = None
         self._user_data = None
         self._user_preferences = None
-        self._saved_searches = None
         self._physical_subnet_vlan = None
+        self._saved_searches = None
         self._physical_ip_dns_mapping = None
         self._east_west_ip = None
         self._north_south_ip = None
@@ -122,10 +122,10 @@ class ConfigDataFilter(object):
           self.user_data = user_data
         if user_preferences is not None:
           self.user_preferences = user_preferences
-        if saved_searches is not None:
-          self.saved_searches = saved_searches
         if physical_subnet_vlan is not None:
           self.physical_subnet_vlan = physical_subnet_vlan
+        if saved_searches is not None:
+          self.saved_searches = saved_searches
         if physical_ip_dns_mapping is not None:
           self.physical_ip_dns_mapping = physical_ip_dns_mapping
         if east_west_ip is not None:
@@ -407,27 +407,6 @@ class ConfigDataFilter(object):
         self._user_preferences = user_preferences
 
     @property
-    def saved_searches(self):
-        """
-        Gets the saved_searches of this ConfigDataFilter.
-
-        :return: The saved_searches of this ConfigDataFilter.
-        :rtype: bool
-        """
-        return self._saved_searches
-
-    @saved_searches.setter
-    def saved_searches(self, saved_searches):
-        """
-        Sets the saved_searches of this ConfigDataFilter.
-
-        :param saved_searches: The saved_searches of this ConfigDataFilter.
-        :type: bool
-        """
-
-        self._saved_searches = saved_searches
-
-    @property
     def physical_subnet_vlan(self):
         """
         Gets the physical_subnet_vlan of this ConfigDataFilter.
@@ -447,6 +426,27 @@ class ConfigDataFilter(object):
         """
 
         self._physical_subnet_vlan = physical_subnet_vlan
+
+    @property
+    def saved_searches(self):
+        """
+        Gets the saved_searches of this ConfigDataFilter.
+
+        :return: The saved_searches of this ConfigDataFilter.
+        :rtype: bool
+        """
+        return self._saved_searches
+
+    @saved_searches.setter
+    def saved_searches(self, saved_searches):
+        """
+        Sets the saved_searches of this ConfigDataFilter.
+
+        :param saved_searches: The saved_searches of this ConfigDataFilter.
+        :type: bool
+        """
+
+        self._saved_searches = saved_searches
 
     @property
     def physical_ip_dns_mapping(self):
