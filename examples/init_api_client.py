@@ -24,6 +24,12 @@ def get_api_client(args):
             sys.exit()
         return get_niaas_api_client(args)
 
+def delete_token(args, api_client):
+    if args.deployment_type == "onprem":
+        logger.info("Deleting API token")
+        auth_api = swagger_client.AuthenticationApi(api_client=api_client)
+        auth_api.delete()
+
 def get_onprem_api_client(args):
     config = swagger_client.Configuration()
     config.verify_ssl = False

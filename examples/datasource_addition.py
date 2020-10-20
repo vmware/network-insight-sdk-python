@@ -22,6 +22,7 @@
 import csv
 import json
 import logging
+import  time
 
 import swagger_client
 
@@ -180,19 +181,20 @@ def main(api_client, args):
                 response = add_data_source_api_fn(body=get_add_request_body(data_source, proxy_id, vcenter_id))
                 logger.info(
                     "Successfully added: {} {} : Response : {}".format(data_source_type, data_source['IP'], response))
+                time.sleep(1)
                 if data_source['snmp_version']:
                     add_snmp_api_fn = getattr(data_source_api, data_source_api_name['snmp_config'])
                     response = add_snmp_api_fn(id=response.entity_id, body=get_snmp_request_body(data_source))
                     logger.info(
                         "Successfully added: {} {} snmp : Response : {}".format(data_source_type, data_source['IP'],
                                                                                 response))
+                    time.sleep(1)
             except ApiException as e:
                 logger.exception(
                     "Failed adding data source: {} : Error : {} ".format(data_source['IP'], json.loads(e.body)))
                 return_code = ERROR
 
-    auth_api = swagger_client.AuthenticationApi(api_client=api_client)
-    auth_api.delete()
+    init_api_client.delete_token(args, api_client)
     return return_code
 
 
