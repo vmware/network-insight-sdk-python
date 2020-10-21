@@ -70,8 +70,7 @@ def main(api_client, args):
                 print("Failed deleting data source type: {} : Error : {} ".format(data_source_type, json.loads(e.body)))
                 return_code = ERROR
 
-    auth_api = swagger_client.AuthenticationApi(api_client=api_client)
-    auth_api.delete()
+    init_api_client.delete_token(args, api_client)
     return return_code
 
 def parse_arguments():

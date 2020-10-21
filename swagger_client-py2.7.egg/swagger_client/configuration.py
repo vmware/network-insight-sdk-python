@@ -217,7 +217,7 @@ class Configuration(object):
                 },
 
         }
-        if self.deployment_type == "niaas":
+        if self.deployment_type == "vrnic":
             authorization_settings = {
                 'ApiKeyAuth':
                     {
