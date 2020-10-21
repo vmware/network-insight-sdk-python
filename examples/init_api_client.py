@@ -11,6 +11,7 @@ import requests
 
 logger = logging.getLogger('vrni_sdk')
 
+VRNIC_FQDN = "api.mgmt.cloud.vmware.com"
 
 def get_api_client(args):
     if args.deployment_type == "onprem":
@@ -60,7 +61,7 @@ def get_onprem_api_client(args):
 
 
 def get_vrnic_api_client(args):
-    public_api_url = "https://onecloud.api.mgmt.cloud.vmware.com/ni/api/ni"
+    public_api_url = "https://{}/ni/api/ni".format(VRNIC_FQDN)
     public_api_client = swagger_client.ApiClient(host=public_api_url)
     config = swagger_client.Configuration()
     config.verify_ssl = False
