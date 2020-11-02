@@ -1,0 +1,55 @@
+- event_name: Test1_0
+  active: true
+  daily_at_utc: null
+  email_frequency: 'IMMEDIATELY'
+  email_ids:
+    - xyz@gmail.com
+    - abc@gmail.com
+  generate_event_criteria: 'SEARCH_RESULT_CHANGE'
+  is_problem: false
+  search_criteria: vm where Power State = 'POWEREDOFF'
+  severity: 'INFO'
+  snmp_trap_destinations:
+    - 10.1.1.2
+    - security_snmp.abc.local
+- event_name: Test2_0
+  active: true
+  daily_at_utc: 09:40
+  email_frequency: 'DAILY_DIGEST'
+  email_ids:
+    - xyz@gmail.com
+    - abc@gmail.com
+  generate_event_criteria: 'SEARCH_RESULT_CHANGE'
+  is_problem: false
+  search_criteria: host where cpu usage rate > 95 %
+  severity: 'INFO'
+  snmp_trap_destinations:
+    - 10.1.1.2
+- event_name: Test3_0
+  active: true
+  daily_at_utc: 09:40
+  email_frequency: 'DAILY_DIGEST'
+  email_ids:
+    - xyz@gmail.com
+    - abc@gmail.com
+  generate_event_criteria: 'SEARCH_RESULT_CHANGE'
+  is_problem: true
+  search_criteria: vm where cpu usage rate > 75 %
+  severity: 'MODERATE'
+  snmp_trap_destinations:
+    - 10.1.1.2
+    - security_snmp.abc.local
+- event_name: Test4_0
+  active: true
+  daily_at_utc: null
+  email_frequency: 'IMMEDIATELY'
+  email_ids:
+    - xyz@gmail.com
+    - abc@gmail.com
+  generate_event_criteria: 'SEARCH_RESULT_CHANGE'
+  is_problem: true
+  search_criteria: pnic where device.vm.role = 'edge_device' and max network rate > 400 mbps in last 45 mins
+  severity: 'CRITICAL'
+  snmp_trap_destinations:
+    - 10.1.1.2
+    - security_snmp.abc.local
