@@ -82,16 +82,19 @@ def get_data(api_client, datasource_api, datasource):
         vcenter_ip = datasource_api.get_vcenter(id=datasource.vcenter_id).ip
         data["ParentvCenter"] = "{}".format(vcenter_ip)
     data["DataSourceType"] = "{}".format(datasource.entity_type)
-    data["IP"] = "{}".format(datasource.ip)
     data["ProxyIP"] = "{}".format(get_proxy_ip(api_client, datasource.proxy_id))
+    if datasource.ip:
+        data["IP"] = "{}".format(datasource.ip)
+    if datasource.fqdn:
+        data["fqdn"] = "{}".format(datasource.fqdn)
     if hasattr(datasource, "credentials"):
         data["Username"] = "{}".format(datasource.credentials.username)
     data["NickName"] = "{}".format(datasource.nickname)
-    if hasattr(datasource ,"SwitchType"):
+    if hasattr(datasource, "switch_type"):
         data["SwitchType"] = "{}".format(datasource.switch_type)
-    if hasattr(datasource ,"ipfix_enabled"):
+    if hasattr(datasource,"ipfix_enabled"):
         data["IPFixEnabled"] = "{}".format(datasource.ipfix_enabled)
-    if hasattr(datasource ,"central_cli_enabled"):
+    if hasattr(datasource,"central_cli_enabled"):
         data["CentralCliEnabled"] = "{}".format(datasource.central_cli_enabled)
     return data
 
