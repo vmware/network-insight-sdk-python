@@ -138,13 +138,15 @@ def get_node_entity_id(api_client, proxy_ip=None):
     return None
 
 
-def get_vcenter_manager_entity_id(data_source_api, vcenter_ip=None):
-    if not vcenter_ip: return None
+def get_vcenter_manager_entity_id(data_source_api, vcenter=None):
+    if not vcenter: return None
     data_source_list = data_source_api.list_vcenters()
     for entity in data_source_list.results:
         ds = data_source_api.get_vcenter(id=entity.entity_id)
-        if ds.ip == vcenter_ip:
+        if ds.ip == vcenter:
             return entity.entity_id
+        elif ds.fqdn == vcenter:
+            return entity.entity_id 
     return None
 
 
