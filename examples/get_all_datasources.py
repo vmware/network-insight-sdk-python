@@ -79,8 +79,9 @@ def get_api_function_name(datasource_type):
 def get_data(api_client, datasource_api, datasource):
     data = {}
     if hasattr(datasource, "vcenter_id"):
-        vcenter_ip = datasource_api.get_vcenter(id=datasource.vcenter_id).ip
-        data["ParentvCenter"] = "{}".format(vcenter_ip)
+        vcenter_details = datasource_api.get_vcenter(id=datasource.vcenter_id)
+        vcenter = vcenter_details.ip if vcenter_details.ip else vcenter_details.fqdn
+        data["ParentvCenter"] = "{}".format(vcenter)
     data["DataSourceType"] = "{}".format(datasource.entity_type)
     data["ProxyIP"] = "{}".format(get_proxy_ip(api_client, datasource.proxy_id))
     if datasource.ip:
