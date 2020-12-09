@@ -64,7 +64,7 @@ def lookup_vm_name(vm_entity):
     # check cache first
     if vm_entity.entity_id in cache_vms:
         vm_name = cache_vms[vm_entity.entity_id]
-        print("Found src {} in cache!".format(vm_name))
+        #print("Found src {} in cache!".format(vm_name))
     else:
         vm_name = None if vm_entity is None else get_referenced_entity_name(referenced_entity=vm_entity)
         if vm_name is None:
@@ -149,6 +149,7 @@ def main(args):
             except:
                 print("Failure sending to vRLI")
 
+            time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
         # break from the loop if this was the last results page
         if not api_response.cursor:
             break
