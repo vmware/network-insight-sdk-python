@@ -32,6 +32,8 @@ entity_map_to_fn[swagger_client.AllEntityType.NSXSERVICE] = "get_service"
 entity_map_to_fn[swagger_client.AllEntityType.NSSERVICEGROUP] = "get_service_group"
 entity_map_to_fn[swagger_client.AllEntityType.NSXSERVICEGROUP] = "get_service_group"
 entity_map_to_fn[swagger_client.AllEntityType.VIRTUALMACHINE] = "get_vm"
+entity_map_to_fn[swagger_client.AllEntityType.AZUREVM] = "get_vm"
+entity_map_to_fn[swagger_client.AllEntityType.EC2INSTANCE] = "get_vm"
 entity_map_to_fn[swagger_client.AllEntityType.VMKNIC] = "get_vmknic"
 entity_map_to_fn[swagger_client.AllEntityType.VNIC] = "get_vnic"
 
