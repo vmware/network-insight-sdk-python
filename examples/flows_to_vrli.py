@@ -4,7 +4,7 @@
 # Along with the flow information it will fetch the correlated
 # VMs and send it to vRealize Log Insight via its API
 #
-# Usage:  python flows_to_vrli.py --platform_ip your-vrni-platform --username admin@local --password 'VMware1!' --vrli_server your-vrli-server
+# Usage:  python flows_to_vrli.py --platform_ip your-vrni-platform --username admin@local --password 'test' --vrli_server your-vrli-server
 #
 # Martijn Smit <msmit@vmware.com / @smitmartijn>
 
