@@ -90,15 +90,15 @@ def get_add_request_body(datasource, proxy_id=None, vcenter_id=None):
     if datasource['CSPRefreshToken']:
         api_request_body["csp_refresh_token"] = datasource['CSPRefreshToken']
     if datasource['CentralCliEnabled']:
-        api_request_body["central_cli_enabled"] = bool(datasource['CentralCliEnabled'])
+        api_request_body["central_cli_enabled"] = True if datasource['CentralCliEnabled'] == 'TRUE' else False
     if datasource['IPFixEnabled']:
-        api_request_body["ipfix_enabled"] = bool(datasource['IPFixEnabled'])
+        api_request_body["ipfix_enabled"] = True if datasource['IPFixEnabled'] == 'TRUE' else False
     if vcenter_id:
         api_request_body['vcenter_id'] = vcenter_id
     if datasource['SwitchType']:
         api_request_body["switch_type"] = datasource['SwitchType']
     if datasource['IsVMC']:
-        api_request_body["is_vmc"] = bool(datasource['IsVMC'])
+        api_request_body["is_vmc"] = True if datasource['IsVMC'] == 'TRUE' else False
     logger.info("Request body : <{}>".format(api_request_body))
     return api_request_body
 
@@ -138,12 +138,14 @@ def get_node_entity_id(api_client, proxy_ip=None):
     return None
 
 
-def get_vcenter_manager_entity_id(data_source_api, vcenter_ip=None):
-    if not vcenter_ip: return None
+def get_vcenter_manager_entity_id(data_source_api, vcenter=None):
+    if not vcenter: return None
     data_source_list = data_source_api.list_vcenters()
     for entity in data_source_list.results:
         ds = data_source_api.get_vcenter(id=entity.entity_id)
-        if ds.ip == vcenter_ip:
+        if ds.ip == vcenter:
+            return entity.entity_id
+        elif ds.fqdn == vcenter:
             return entity.entity_id
     return None
 
