@@ -23,7 +23,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import csv
-import functools
+import functools32
 import json
 import logging
 import time
@@ -188,7 +188,7 @@ def update_snmp_config(entity_id, data_source_api, data_source):
     # if 'retry' throws an Exception, let the calling method handle it
     retry(update_snmp_api_fn, id=entity_id, body=response)
 
-@functools.lru_cache()
+@functools32.lru_cache()
 def get_entities_by_type(datasource_type, api):
     list_datasource_api_fn = get_api_function_name(datasource_type, 'list')
     #this log message will only print when the datasource_type is not cached
@@ -202,14 +202,14 @@ def get_data_source_entity(get_datasource_fn, data_source_list, to_find):
     datasource_cache = ENTITY_CACHE.get(to_find['DataSourceType'])
 
     # check to see if we've already fetched this entity
-    in_cache = next(filter(lambda x: x.ip == to_find['IP'] or x.fqdn == to_find['fqdn'], datasource_cache), None)
+    in_cache = next(iter(filter(lambda x: x.ip == to_find['IP'] or x.fqdn == to_find['fqdn'], datasource_cache)), None)
     if in_cache:
         logger.debug("Found {} in cache".format(_get_label(to_find)))
         return in_cache
 
     # iterate over list of entity_id's and fetch their entity instances
     for index, entity in enumerate(data_source_list.results):
-        already_fetched = next(filter(lambda x: x.entity_id == entity.entity_id, datasource_cache), None)
+        already_fetched = next(iter(filter(lambda x: x.entity_id == entity.entity_id, datasource_cache)), None)
         if already_fetched:
             #this entity is already in the cache and not the ds we're looking for
             continue
@@ -217,6 +217,7 @@ def get_data_source_entity(get_datasource_fn, data_source_list, to_find):
         # not in the cache, fetch it
         logger.debug("Fetching entity with ID: {}  ({} of {})".format(entity.entity_id, index + 1, len(data_source_list.results)))
         ds = get_datasource_fn(id=entity.entity_id)
+
         ENTITY_CACHE[to_find['DataSourceType']].append(ds)
 
         # this is the entity we're looking for, exit early
@@ -250,9 +251,9 @@ def main(api_client, args):
     notfound_log = []
     # Create data source API client object
     data_source_api = swagger_client.DataSourcesApi(api_client=api_client)
-    total_lines = len(open(args.data_sources_csv).readlines(  )) - 1 #subtract header row
+    total_lines = len(open(args.data_sources_csv).readlines()) - 1 #subtract header row
     with open(args.data_sources_csv, 'rt') as csvFile:
-        data_sources = csv.DictReader(csvFile, delimiter=";")
+        data_sources = csv.DictReader(csvFile)
         for csv_row in data_sources:
             data_source_type = csv_row['DataSourceType']
 
@@ -317,7 +318,7 @@ def parse_arguments():
 
 if __name__ == '__main__':
     args = parse_arguments()
-    utilities.configure_logging("/temp")
+    utilities.configure_logging("/Users/sbhagwat/repos/network-insight-sdk-python/examples")
     api_client = init_api_client.get_api_client(args)
     (failure_log, notfound_log) = main(api_client, args)
     if failure_log:
