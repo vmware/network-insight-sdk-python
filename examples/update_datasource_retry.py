@@ -262,6 +262,7 @@ def main(api_client, args):
                 init_api_client.delete_token(args, api_client)
                 api_client = init_api_client.get_api_client(args)
                 data_source_api = swagger_client.DataSourcesApi(api_client=api_client)
+                start_time = datetime.now()
 
             logger.info("Adding: {} [{} of {}]".format(_get_label(csv_row), data_sources.line_num - 1, total_lines))
             # Get the Data source add api fn
