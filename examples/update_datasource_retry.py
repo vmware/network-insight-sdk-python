@@ -23,6 +23,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import csv
+from datetime import datetime
 import functools32
 import json
 import logging
@@ -250,12 +251,17 @@ def main(api_client, args):
     failure_log = []
     notfound_log = []
     # Create data source API client object
+    start_time = datetime.now()
     data_source_api = swagger_client.DataSourcesApi(api_client=api_client)
     total_lines = len(open(args.data_sources_csv).readlines()) - 1 #subtract header row
     with open(args.data_sources_csv, 'rt') as csvFile:
         data_sources = csv.DictReader(csvFile)
         for csv_row in data_sources:
             data_source_type = csv_row['DataSourceType']
+            if (datetime.now() - start_time).total_seconds() > 1500:
+                init_api_client.delete_token(args, api_client)
+                api_client = init_api_client.get_api_client(args)
+                data_source_api = swagger_client.DataSourcesApi(api_client=api_client)
 
             logger.info("Adding: {} [{} of {}]".format(_get_label(csv_row), data_sources.line_num - 1, total_lines))
             # Get the Data source add api fn
