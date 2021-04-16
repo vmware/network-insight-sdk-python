@@ -325,7 +325,7 @@ def parse_arguments():
 
 if __name__ == '__main__':
     args = parse_arguments()
-    utilities.configure_logging("/Users/sbhagwat/repos/network-insight-sdk-python/examples")
+    utilities.configure_logging("/tmp")
     api_client = init_api_client.get_api_client(args)
     (failure_log, notfound_log) = main(api_client, args)
     if failure_log:
