@@ -12,6 +12,11 @@ import requests
 logger = logging.getLogger('vrni_sdk')
 
 VRNIC_FQDN = "api.mgmt.cloud.vmware.com"
+VRNIC_FQDN_US = "api.mgmt.cloud.vmware.com"
+VRNIC_FQDN_UK = "uk.api.mgmt.cloud.vmware.com"
+VRNIC_FQDN_JP = "jp.api.mgmt.cloud.vmware.com"
+VRNIC_FQDN_AU = "au.api.mgmt.cloud.vmware.com"
+
 
 def get_api_client(args):
     if args.deployment_type == "onprem":
@@ -38,7 +43,8 @@ def get_onprem_api_client(args):
     config.verify_ssl = False
 
     logger.info("Getting api client for IP <{}>".format(args.platform_ip))
-    api_client = swagger_client.ApiClient(host="https://{}/api/ni".format(args.platform_ip))
+    api_client = swagger_client.ApiClient(
+        host="https://{}/api/ni".format(args.platform_ip))
     auth_api = swagger_client.AuthenticationApi(api_client=api_client)
     if args.domain_type == "LOCAL" or args.domain_type == "LDAP":
         user_creds = swagger_client.UserCredential(username=args.username, password=args.password,
@@ -47,12 +53,14 @@ def get_onprem_api_client(args):
     elif args.domain_type == "VIDM":
         if args.get_vidm_client_id:
             client_id = auth_api.get_vidm_oauth_clien_id()
-            logger.info("client-id for vIDM is - '{}'".format(client_id.client_id))
+            logger.info(
+                "client-id for vIDM is - '{}'".format(client_id.client_id))
             return
         user_creds = swagger_client.VidmToken(vidm_token=args.vidm_token)
         auth_token = auth_api.create_vidm_user_token(user_creds)
     else:
-        raise ValueError('Please give correct domain_type: LOCAL, LDAP or VIDM')
+        raise ValueError(
+            'Please give correct domain_type: LOCAL, LDAP or VIDM')
 
     config.api_key['Authorization'] = auth_token.token
     config.api_key_prefix['Authorization'] = 'NetworkInsight'
@@ -61,6 +69,17 @@ def get_onprem_api_client(args):
 
 
 def get_vrnic_api_client(args):
+    # determine vRNI Cloud location and use appropriate URL
+    if args.cloud_location == "UK":
+        VRNIC_FQDN = VRNIC_FQDN_UK
+    elif args.cloud_location == "JP":
+        VRNIC_FQDN = VRNIC_FQDN_JP
+    elif args.cloud_location == "AU":
+        VRNIC_FQDN = VRNIC_FQDN_AU
+    else:
+        VRNIC_FQDN = VRNIC_FQDN_US
+
+    # build API client
     public_api_url = "https://{}/ni/api/ni".format(VRNIC_FQDN)
     public_api_client = swagger_client.ApiClient(host=public_api_url)
     config = swagger_client.Configuration()
@@ -68,7 +87,8 @@ def get_vrnic_api_client(args):
     logger = logging.getLogger('vrni_sdk')
 
     logger.info("Getting api client for VRNIC")
-    config.api_key['csp-auth-token'] = get_vrnic_csp_auth_token(args, config.api_client)
+    config.api_key['csp-auth-token'] = get_vrnic_csp_auth_token(
+        args, config.api_client)
     config.deployment_type = args.deployment_type
     config.api_client = public_api_client
     return public_api_client
@@ -85,12 +105,21 @@ def get_vrnic_csp_auth_token(args, api_client):
 
 def domain_type(type):
     if not type in ['LOCAL', 'LDAP', 'VIDM']:
-        raise argparse.ArgumentTypeError('argument domain type must be one of type LOCAL, LDAP or VIDM')
+        raise argparse.ArgumentTypeError(
+            'argument domain type must be one of type LOCAL, LDAP or VIDM')
+    return type
+
+
+def cloud_location_type(type):
+    if not type in ['US', 'UK', 'JP', 'AU']:
+        raise argparse.ArgumentTypeError(
+            'Cloud location type must be one of US, UK, JP, or AU')
     return type
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description='Run Public APIs on vRNI Platform')
+    parser = argparse.ArgumentParser(
+        description='Run Public APIs on vRNI Platform')
     parser.add_argument("--deployment_type", action="store",
                         help="Setup deployment type: onprem or vrnic", default='onprem')
     parser.add_argument('--platform_ip', action='store',
@@ -114,15 +143,19 @@ def parse_arguments():
     #                          --deployment_type onprem
     #    2. Using client-id alongwith user credentials make an access token request to VMware Identity Manager.
     #       e.g. POST: https://xyz.com/SAAS/auth/oauthtoken?username=${username}&password=${password}&client_id=${client_id}&grant_type=password
-    parser.add_argument('--vidm_token', action='store', help='Provide vidm_token')
+    parser.add_argument('--vidm_token', action='store',
+                        help='Provide vidm_token')
 
-    # Network Insight as a service (VRNIC) parameters.
+    # vRealize Network Insight Cloud (VRNIC) parameters.
     # Procedure to generate api token
     #    1. On the VMware Cloud Services toolbar, click your user name and select My Account > API Tokens.
     #    2. Click on Generate Token.
     #    3. Define Scopes : Check organistion member and Network Insight Administrator Roles or All roles.
     #    4. Click on generate and then Copy button on Token generated popup and pass it as input parameter to api_token
-    parser.add_argument('--api_token', action='store', help='Provide VRNIC api token')
+    parser.add_argument('--api_token', action='store',
+                        help='Provide VRNIC api token')
+    parser.add_argument('--cloud_location', action='store', type=cloud_location_type,
+                        default="US", help='vRNI Cloud location (US, UK, JP, or AU. default: US)')
 
     return parser
 
