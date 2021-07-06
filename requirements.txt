@@ -3,3 +3,4 @@ six
 certifi
 requests
 PyYAML
+functools32
