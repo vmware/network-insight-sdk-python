@@ -1,6 +1,11 @@
-# Python SDK Examples
+# Example: Create User-defined Events from YAML
+#
+# START Description
 # Script will create user defined events using data in given yaml file
-
+# END Description
+#
+# Copyright 2021 VMware, Inc.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import init_api_client
 import swagger_client
@@ -18,7 +23,8 @@ logger = logging.getLogger("vrni_sdk")
 def get_snmp_entity_id(setting_api, snmp_trap_destinations):
     logger.info("Getting SNMP trap snmp_trap_destinations")
     snmp_details = setting_api.settings_snmp_profiles_get()
-    snmp_list = [snmp.entity_id for snmp in snmp_details.results if snmp.target_ip in snmp_trap_destinations]
+    snmp_list = [
+        snmp.entity_id for snmp in snmp_details.results if snmp.target_ip in snmp_trap_destinations]
     return snmp_list
 
 
@@ -40,12 +46,17 @@ def add_events(setting_api, all_events):
     for event in all_events:
         try:
             logger.info("Updating SNMP trap destinations")
-            snmp_list = get_snmp_entity_id(setting_api, event['snmp_trap_destinations'])
+            snmp_list = get_snmp_entity_id(
+                setting_api, event['snmp_trap_destinations'])
             event_object = get_event_object(event, snmp_list)
-            logger.info("Creating user defined event {}".format(event_object.event_name))
-            created_user_defined_events = setting_api.create_user_defined_event(event_object)
-            logger.info("Created user defined events {}".format(created_user_defined_events))
-            time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
+            logger.info("Creating user defined event {}".format(
+                event_object.event_name))
+            created_user_defined_events = setting_api.create_user_defined_event(
+                event_object)
+            logger.info("Created user defined events {}".format(
+                created_user_defined_events))
+            # make sure we don't hit the vRNI throttle and start getting 429 errors
+            time.sleep(0.025)
         except exception.ApiException as e:
             logger.error("{}".format(json.loads(e.body)))
 

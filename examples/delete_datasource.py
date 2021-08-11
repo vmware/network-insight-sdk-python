@@ -1,9 +1,11 @@
-# swagger Examples - Delete datasources in bulk
+# Example: Delete datasources in bulk
 #
+# START Description
 # This script uses an input CSV (example: data_sources.csv.csv)
 # To Delete multiple vRealize Network Insight Data Sources. Modify data_sources.csv.csv to contain your own data sources
 # (vCenters, NSX, switches, firewalls)
 # and run this script with the param --data_sources_csv to your CSV.
+# END Description
 
 # Note: -
 # DataSourceType in data_sources.csv.csv is taken from swagger_client.models.data_source_type.py
@@ -16,7 +18,7 @@
 # Cisco Switch type can be taken from from swagger_client.models.cisco_switch_type.py -
 # CATALYST_3000, CATALYST_4500, CATALYST_6500, NEXUS_5K, NEXUS_7K, NEXUS_9K
 #
-# Copyright 2019 VMware, Inc.
+# Copyright 2021 VMware, Inc.
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import csv
@@ -35,12 +37,14 @@ logger = logging.getLogger("vrni_sdk")
 ERROR = 1
 SUCCESS = 0
 
+
 def get_data_source_entity_id(get_datasource_fn, data_source_list, data_source):
     for entity in data_source_list.results:
         ds = get_datasource_fn(id=entity.entity_id)
         if ds.ip == data_source['IP'] or ds.fqdn == data_source['fqdn']:
             return entity.entity_id
     return None
+
 
 def main(api_client, args):
     return_code = SUCCESS
@@ -51,27 +55,38 @@ def main(api_client, args):
         for data_source in data_sources:
             data_source_type = data_source['DataSourceType']
 
-            logger.info("Deleting: <{}> <{}>".format(data_source_type, data_source['IP']))
+            logger.info("Deleting: <{}> <{}>".format(
+                data_source_type, data_source['IP']))
             # Get the Data source add api fn
-            data_source_api_name = get_datasource_details.get_api_function_name(data_source_type)
-            get_datasource_fn = getattr(data_source_api, data_source_api_name["get"])
-            delete_datasource_fn = getattr(data_source_api, data_source_api_name["delete"])
+            data_source_api_name = get_datasource_details.get_api_function_name(
+                data_source_type)
+            get_datasource_fn = getattr(
+                data_source_api, data_source_api_name["get"])
+            delete_datasource_fn = getattr(
+                data_source_api, data_source_api_name["delete"])
             try:
-                list_datasource_api_fn = getattr(data_source_api, data_source_api_name["list"])
+                list_datasource_api_fn = getattr(
+                    data_source_api, data_source_api_name["list"])
                 data_source_list = list_datasource_api_fn()
-                logger.info("Successfully got list of: {} : Response : {}".format(data_source_type, data_source_list))
-                entity_id = get_data_source_entity_id(get_datasource_fn, data_source_list, data_source)
+                logger.info("Successfully got list of: {} : Response : {}".format(
+                    data_source_type, data_source_list))
+                entity_id = get_data_source_entity_id(
+                    get_datasource_fn, data_source_list, data_source)
                 if not entity_id:
-                    print("Failed getting data source type : {}: {}".format(data_source_type, data_source['IP']))
+                    print("Failed getting data source type : {}: {}".format(
+                        data_source_type, data_source['IP']))
                     return
                 delete_datasource_fn(id=entity_id)
-                logger.info("Successfully deleted: {} : {}".format(data_source_type, entity_id))
+                logger.info("Successfully deleted: {} : {}".format(
+                    data_source_type, entity_id))
             except ApiException as e:
-                print("Failed deleting data source type: {} : Error : {} ".format(data_source_type, json.loads(e.body)))
+                print("Failed deleting data source type: {} : Error : {} ".format(
+                    data_source_type, json.loads(e.body)))
                 return_code = ERROR
 
     init_api_client.delete_token(args, api_client)
     return return_code
+
 
 def parse_arguments():
     parser = init_api_client.parse_arguments()
@@ -79,6 +94,7 @@ def parse_arguments():
                         default='data_sources.csv', help="csv file with your own data sources")
     args = parser.parse_args()
     return args
+
 
 if __name__ == '__main__':
     args = parse_arguments()

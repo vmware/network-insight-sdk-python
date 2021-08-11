@@ -1,8 +1,14 @@
-# Python SDK Examples
-
+# Example: Export Flows into CSV
+#
+# START Description
 # Script will fetch Flows matching certain search criteria
+# It will take this fetch flows result and bulk fetch to get all flows information
 # Along with the flow information it will fetch appropriate VM, Security group information and dump it to
 # CSV file
+# END Description
+#
+# Copyright 2021 VMware, Inc.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import time
 import csv
@@ -32,7 +38,8 @@ def main():
                                             size=100)
     logger.info("Get all VMs with filter = [{}]".format(filter_string))
 
-    search_payload = swagger_client.SearchRequest(**public_api_search_request_params)
+    search_payload = swagger_client.SearchRequest(
+        **public_api_search_request_params)
 
     f_csv = open('flows_to_internet.csv', 'w')
     fields = ['source_sec_tag', 'destination_sec_tag', 'src_security_groups', 'dst_security_groups', 'src_vm', 'src_ip',
@@ -57,7 +64,7 @@ def main():
 
             # Ignore same source IPs
             dest_ip_port_protocol = '{}-{}--{}-{}'.format(flow_details.destination_ip.ip_address, flow_details.protocol,
-                                                       flow_details.port.start, flow_details.port.end)
+                                                          flow_details.port.start, flow_details.port.end)
             if dest_ip_port_protocol in destination_ip_port_protocol:
                 continue
             destination_ip_port_protocol.append(dest_ip_port_protocol)
@@ -79,24 +86,32 @@ def main():
             # Get Source security groups
             src_group_names = []
             for src_sec_group in flow_details.source_security_groups:
-                name = get_referenced_entity_name(referenced_entity=src_sec_group)
-                if name: src_group_names.append(name)
+                name = get_referenced_entity_name(
+                    referenced_entity=src_sec_group)
+                if name:
+                    src_group_names.append(name)
 
             dst_group_names = []
             for dst_sec_group in flow_details.destination_security_groups:
-                name = get_referenced_entity_name(referenced_entity=dst_sec_group)
-                if name: dst_group_names.append(name)
+                name = get_referenced_entity_name(
+                    referenced_entity=dst_sec_group)
+                if name:
+                    dst_group_names.append(name)
 
             # Get Source security tag
             src_security_tag_names = []
             for src_sec_tag in flow_details.source_security_tags:
-                name = get_referenced_entity_name(referenced_entity=src_sec_tag)
-                if name: src_security_tag_names.append(name)
+                name = get_referenced_entity_name(
+                    referenced_entity=src_sec_tag)
+                if name:
+                    src_security_tag_names.append(name)
 
             dst_security_tag_names = []
             for dst_sec_tag in flow_details.destination_security_groups:
-                name = get_referenced_entity_name(referenced_entity=dst_sec_tag)
-                if name: dst_security_tag_names.append(name)
+                name = get_referenced_entity_name(
+                    referenced_entity=dst_sec_tag)
+                if name:
+                    dst_security_tag_names.append(name)
 
             # Write it to csv file
             flow_fields = dict(src_ip=flow_details.source_ip.ip_address,
@@ -106,7 +121,8 @@ def main():
                                src_vm=src_vm_name,
                                destination_vm=dst_vm_name,
                                source_sec_tag=",".join(src_security_tag_names),
-                               destination_sec_tag=",".join(dst_security_tag_names),
+                               destination_sec_tag=",".join(
+                                   dst_security_tag_names),
                                src_security_groups=",".join(src_group_names),
                                dst_security_groups=",".join(dst_group_names))
             writer.writerow(flow_fields)

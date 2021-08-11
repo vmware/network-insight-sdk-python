@@ -1,7 +1,13 @@
-# Python SDK Examples
+# Example: User-defined Events Backup and Restore
+#
+# START Description
 # Script will get all user defined events and dump to yaml file or create user defined events using data in given yaml file
 # If event_backup_action = save : All the user defined events will be dump to yaml
 # If event_backup_action = restore : User defined events are restored succesfully by reading given yaml file.
+# END Description
+#
+# Copyright 2021 VMware, Inc.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 
 import init_api_client
@@ -27,9 +33,11 @@ def main(args):
             event = setting_api.get_user_defined_event(i.entity_id)
             logger.info("Saving event {}".format(event))
             all_apps.append(event)
-            time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
+            # make sure we don't hit the vRNI throttle and start getting 429 errors
+            time.sleep(0.025)
 
-        logger.info("Storing user defined events info to {}".format(args.event_backup_yaml))
+        logger.info("Storing user defined events info to {}".format(
+            args.event_backup_yaml))
         with open(args.event_backup_yaml, 'w') as outfile:
             yaml.dump(all_apps, outfile, default_flow_style=False)
 
@@ -41,16 +49,21 @@ def main(args):
             logger.info("Getting SNMP trap destinations")
             snmp_details = setting_api.settings_snmp_profiles_get()
             snmp_list = [snmp.entity_id for snmp in snmp_details.results]
-        time.sleep(0.025)  # make sure we don't hit the vRNI throttle and start getting 429 errors
+        # make sure we don't hit the vRNI throttle and start getting 429 errors
+        time.sleep(0.025)
         for app in all_apps:
-            app._event_name =  app._event_name + '-restored'
+            app._event_name = app._event_name + '-restored'
             try:
                 logger.info("Updating SNMP trap destinations")
                 app.snmp_trap_entity_ids = snmp_list
-                logger.info("Creating user defined event {}".format(app._event_name))
-                created_application_defined_events= setting_api.settings_events_user_defined_events_post(app)
-                logger.info("Created user defined events {}".format(created_application_defined_events))
-                time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
+                logger.info(
+                    "Creating user defined event {}".format(app._event_name))
+                created_application_defined_events = setting_api.settings_events_user_defined_events_post(
+                    app)
+                logger.info("Created user defined events {}".format(
+                    created_application_defined_events))
+                # make sure we don't hit the vRNI throttle and start getting 429 errors
+                time.sleep(0.025)
             except ApiException as e:
                 logger.error("{}".format(json.loads(e.body)))
 

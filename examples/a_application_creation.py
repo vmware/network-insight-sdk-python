@@ -1,3 +1,12 @@
+# Example: Bulk import applications from CSV
+#
+# START Description
+# Imports applications that are defined in a file called cmdb_ci_hardware.csv.
+# END Description
+#
+# Copyright 2021 VMware, Inc.
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 import csv
 import collections
 import json
@@ -23,17 +32,22 @@ def add_tier_and_ip(apps_tiers, raw):
     if raw['u_app_name'] not in apps_tiers.keys():
         apps_tiers[raw['u_app_name']] = dict()
         apps_tiers[raw['u_app_name']][raw['u_subsystem']] = []
-        apps_tiers[raw['u_app_name']][raw['u_subsystem']].append(raw["ip_address"])
+        apps_tiers[raw['u_app_name']][raw['u_subsystem']].append(
+            raw["ip_address"])
     elif raw['u_subsystem'] not in apps_tiers[raw['u_app_name']]:
         apps_tiers[raw['u_app_name']][raw['u_subsystem']] = []
-        apps_tiers[raw['u_app_name']][raw['u_subsystem']].append(raw["ip_address"])
+        apps_tiers[raw['u_app_name']][raw['u_subsystem']].append(
+            raw["ip_address"])
     else:
-        apps_tiers[raw['u_app_name']][raw['u_subsystem']].append(raw["ip_address"])
+        apps_tiers[raw['u_app_name']][raw['u_subsystem']].append(
+            raw["ip_address"])
+
 
 def delete_token(api_client):
     logger.info("Deleting API token")
     auth_api = swagger_client.AuthenticationApi(api_client=api_client)
     auth_api.delete()
+
 
 def main(api_client, args):
     application_api = swagger_client.ApplicationsApi()
@@ -79,9 +93,11 @@ def main(api_client, args):
 
     delete_token(api_client)
 
+
 def get_applications(application_api):
     apps_list = []
-    logger.info("Getting list of all applications starting with name 'vrni_auto_'")
+    logger.info(
+        "Getting list of all applications starting with name 'vrni_auto_'")
     app_no = 1
     apps = application_api.list_applications(size=100, cursor="")
     while True:
@@ -96,6 +112,7 @@ def get_applications(application_api):
         apps = application_api.list_applications(cursor=apps.cursor, size=100)
     return apps_list
 
+
 def delete_application(application_api):
     app_no = 1
     apps = get_applications(application_api)
@@ -107,6 +124,7 @@ def delete_application(application_api):
         application_api.delete_application(app.entity_id)
         logger.info("{}: App Deleted [{}].".format(app_no, app.name))
         app_no += 1
+
 
 def create_application(application_api, application_name):
     app_name = "vrni_auto_{}".format(application_name)

@@ -1,10 +1,12 @@
-# swagger Examples - Adding datasources in bulk
+# Example: Adding datasources in bulk
 #
+# START Description
 # This script uses an input CSV (example: data_sources.csv)
 # To add multiple vRealize Network Insight Data Sources. Modify data_sources.csv to contain your own data sources
 # (vCenters, NSX, switches, firewalls)
 # and run this script with the param --data_sources_csv to your CSV.
-
+# END Description
+#
 # Note: -
 # DataSourceType in data_sources.csv is taken from swagger_client.models.data_source_type.py
 # For reference here are the data source types that can be used in CSV
@@ -16,13 +18,13 @@
 # Cisco Switch type can be taken from from swagger_client.models.cisco_switch_type.py -
 # CATALYST_3000, CATALYST_4500, CATALYST_6500, NEXUS_5K, NEXUS_7K, NEXUS_9K
 #
-# Copyright 2019 VMware, Inc.
+# Copyright 2021 VMware, Inc.
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import csv
 import json
 import logging
-import  time
+import time
 
 import swagger_client
 
@@ -86,7 +88,7 @@ def get_add_request_body(datasource, proxy_id=None, vcenter_id=None):
 
     if datasource['Username']:
         api_request_body["credentials"] = {"username": "{}".format(datasource['Username']),
-                               "password": "{}".format(datasource['Password'])}
+                                           "password": "{}".format(datasource['Password'])}
     if datasource['CSPRefreshToken']:
         api_request_body["csp_refresh_token"] = datasource['CSPRefreshToken']
     if datasource['CentralCliEnabled']:
@@ -105,13 +107,14 @@ def get_add_request_body(datasource, proxy_id=None, vcenter_id=None):
 
 def get_snmp_request_body(datasource):
     api_request_body = {
-            "snmp_enabled": True,
-            "snmp_version": "{}".format(datasource['snmp_version']),
-        }
+        "snmp_enabled": True,
+        "snmp_version": "{}".format(datasource['snmp_version']),
+    }
 
     snmp_config = dict()
     if datasource['snmp_version'] == 'v2c':
-        snmp_config = dict(config_snmp_2c=dict(community_string='{}'.format(datasource['snmp_community_string'])))
+        snmp_config = dict(config_snmp_2c=dict(
+            community_string='{}'.format(datasource['snmp_community_string'])))
 
     elif datasource['snmp_version'] == 'v3':
         snmp_config = dict(config_snmp_3=dict(
@@ -129,7 +132,8 @@ def get_snmp_request_body(datasource):
 
 
 def get_node_entity_id(api_client, proxy_ip=None):
-    infrastructure_api = swagger_client.InfrastructureApi(api_client=api_client)
+    infrastructure_api = swagger_client.InfrastructureApi(
+        api_client=api_client)
     node_list = infrastructure_api.list_nodes()
     for entity in node_list.results:
         node = infrastructure_api.get_node(id=entity.id)
@@ -139,7 +143,8 @@ def get_node_entity_id(api_client, proxy_ip=None):
 
 
 def get_vcenter_manager_entity_id(data_source_api, vcenter=None):
-    if not vcenter: return None
+    if not vcenter:
+        return None
     data_source_list = data_source_api.list_vcenters()
     for entity in data_source_list.results:
         ds = data_source_api.get_vcenter(id=entity.entity_id)
@@ -154,6 +159,7 @@ proxy_ip_to_id = dict()
 ERROR = 1
 SUCCESS = 0
 
+
 def main(api_client, args):
     return_code = SUCCESS
     # Create data source API client object
@@ -165,28 +171,36 @@ def main(api_client, args):
 
             # Get the Proxy ID from Proxy IP
             if data_source['ProxyIP'] not in proxy_ip_to_id:
-                proxy_id = get_node_entity_id(api_client, data_source['ProxyIP'])
+                proxy_id = get_node_entity_id(
+                    api_client, data_source['ProxyIP'])
                 if not proxy_id:
-                    logger.info("Incorrect Proxy IP {}".format(data_source['ProxyIP']))
+                    logger.info("Incorrect Proxy IP {}".format(
+                        data_source['ProxyIP']))
                     continue
                 proxy_ip_to_id[data_source['ProxyIP']] = proxy_id
             else:
                 proxy_id = proxy_ip_to_id[data_source['ProxyIP']]
 
             # Get vCenter ID for vCenter manager required for adding NSX
-            vcenter_id = get_vcenter_manager_entity_id(data_source_api, data_source['ParentvCenter'])
-            logger.info("Adding: <{}> <{}>".format(data_source_type, data_source['IP']))
+            vcenter_id = get_vcenter_manager_entity_id(
+                data_source_api, data_source['ParentvCenter'])
+            logger.info("Adding: <{}> <{}>".format(
+                data_source_type, data_source['IP']))
             # Get the Data source add api fn
             data_source_api_name = get_api_function_name(data_source_type)
-            add_data_source_api_fn = getattr(data_source_api, data_source_api_name['add'])
+            add_data_source_api_fn = getattr(
+                data_source_api, data_source_api_name['add'])
             try:
-                response = add_data_source_api_fn(body=get_add_request_body(data_source, proxy_id, vcenter_id))
+                response = add_data_source_api_fn(
+                    body=get_add_request_body(data_source, proxy_id, vcenter_id))
                 logger.info(
                     "Successfully added: {} {} : Response : {}".format(data_source_type, data_source['IP'], response))
                 time.sleep(1)
                 if data_source['snmp_version']:
-                    add_snmp_api_fn = getattr(data_source_api, data_source_api_name['snmp_config'])
-                    response = add_snmp_api_fn(id=response.entity_id, body=get_snmp_request_body(data_source))
+                    add_snmp_api_fn = getattr(
+                        data_source_api, data_source_api_name['snmp_config'])
+                    response = add_snmp_api_fn(
+                        id=response.entity_id, body=get_snmp_request_body(data_source))
                     logger.info(
                         "Successfully added: {} {} snmp : Response : {}".format(data_source_type, data_source['IP'],
                                                                                 response))
@@ -206,6 +220,7 @@ def parse_arguments():
                         default='data_sources.csv', help="csv file with your own data sources")
     args = parser.parse_args()
     return args
+
 
 if __name__ == '__main__':
     args = parse_arguments()

@@ -1,11 +1,13 @@
-# Python SDK Examples
-
+# Example: Export Flows
+#
+# START Description
 # Script will fetch Flows matching certain search criteria
 # It will take this fetch flows result and bulk fetch to get all flows information
 # Along with the flow information it will fetch appropriate VM, Security group information and dump it to
 # CSV file
+# END Description
 #
-# Copyright 2019 VMware, Inc.
+# Copyright 2021 VMware, Inc.
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import time
@@ -57,7 +59,8 @@ def main():
     logger.info("Get all VMs with filter = [{}]".format(filter_string))
 
     # Create payload from search parameters required for calling the search API
-    search_payload = swagger_client.SearchRequest(**public_api_search_request_params)
+    search_payload = swagger_client.SearchRequest(
+        **public_api_search_request_params)
 
     f_csv = open('flows_to_internet.csv', 'w')
     fields = ['src_ip', 'dst_ip', 'src_vm', 'src_security_groups', 'port']
@@ -68,31 +71,35 @@ def main():
         # Call the search API
         api_response = search_api.search_entities(body=search_payload)
         logger.info("Response attributes: Total Count: {} "
-              "Time: {}".format(api_response.total_count,
-                                time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(api_response.end_time))))
+                    "Time: {}".format(api_response.total_count,
+                                      time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(api_response.end_time))))
         logger.info("Result list : {} ".format(api_response.results))
 
         # payload for bulk fetch
-        payload ={"entity_ids" : api_response.results}
+        payload = {"entity_ids": api_response.results}
         entities_api = swagger_client.EntitiesApi(api_client=api_client)
         # bulk fetching the entities
         api_response = entities_api.entities_fetch_post(body=payload)
-        time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
+        # make sure we don't hit the vRNI throttle and start getting 429 errors
+        time.sleep(0.025)
 
         for result in api_response.results:
             # Get Source VM Name
             src_vm_name = get_referenced_entity_name(entity_id=result.entity.source_vm.entity_id,
                                                      entity_type=result.entity.source_vm.entity_type,
                                                      entities_api=entities_api)
-            time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
+            # make sure we don't hit the vRNI throttle and start getting 429 errors
+            time.sleep(0.025)
             # Get Source security groups
             sec_group_names = []
             for src_sec_group in result.entity.source_security_groups:
                 name = get_referenced_entity_name(entity_id=src_sec_group.entity_id,
                                                   entity_type=src_sec_group.entity_type,
                                                   entities_api=entities_api)
-                if name: sec_group_names.append(name)
-                time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
+                if name:
+                    sec_group_names.append(name)
+                # make sure we don't hit the vRNI throttle and start getting 429 errors
+                time.sleep(0.025)
             # Write it to csv file
             flow_fields = dict(src_ip=result.entity.source_ip.ip_address,
                                dst_ip=result.entity.destination_ip.ip_address,
@@ -106,10 +113,12 @@ def main():
         search_payload.cursor = api_response.cursor
     f_csv.close()
 
+
 def parse_arguments():
     parser = init_api_client.parse_arguments()
     args = parser.parse_args()
     return args
+
 
 if __name__ == '__main__':
     args = parse_arguments()
