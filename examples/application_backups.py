@@ -1,9 +1,15 @@
-# Python SDK Examples
+# Example: Application Backup and Restore
+#
+# START Description
 # Script will get all applications and dump to yaml file or create application using data in given yaml file
 # If application_backup_action = save : All the applications will be dump to yaml
 # If application_backup_action = restore : Applications and Tiers which are created only using Public API restored succesfully.
 # e.g Tier with filter criteria for Virtual machine is given as security_groups.name='security_group_scale_100' will be restore correctly since it is done through public APIs
 # while manually created Tier with filter criteria for virtual machine as security groups='security_group_scale_100' cannot be configured through public APIs.
+# END Description
+#
+# Copyright 2021 VMware, Inc.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import init_api_client
 import argparse
@@ -30,15 +36,19 @@ def main(args):
             for i in apps.results:
                 app = application_api.get_application(i.entity_id)
                 logger.info("Getting application '{}'".format(app.name))
-                tiers = application_api.list_application_tiers(id=app.entity_id)
-                app_to_save = dict(name=app.name, no_of_tiers=len(tiers.results), tiers=tiers.to_dict())
+                tiers = application_api.list_application_tiers(
+                    id=app.entity_id)
+                app_to_save = dict(name=app.name, no_of_tiers=len(
+                    tiers.results), tiers=tiers.to_dict())
                 all_apps.append(app_to_save)
-                time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
+                # make sure we don't hit the vRNI throttle and start getting 429 errors
+                time.sleep(0.025)
             if not apps.cursor:
                 break
             params['cursor'] = apps.cursor
 
-        logger.info("Storing Application/Tier info to {}".format(args.application_backup_yaml))
+        logger.info(
+            "Storing Application/Tier info to {}".format(args.application_backup_yaml))
         with open(args.application_backup_yaml, 'w') as outfile:
             yaml.dump(all_apps, outfile, default_flow_style=False)
 
@@ -54,8 +64,10 @@ def main(args):
                     tier.pop('application')
                     tier.pop('entity_id')
                     logger.info("\tRestoring tier '{}'".format(tier['name']))
-                    application_api.add_tier(created_application.entity_id, tier)
-                time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
+                    application_api.add_tier(
+                        created_application.entity_id, tier)
+                # make sure we don't hit the vRNI throttle and start getting 429 errors
+                time.sleep(0.025)
             except ApiException as e:
                 logger.error("{}".format(json.loads(e.body)))
 

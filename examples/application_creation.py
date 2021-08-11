@@ -1,9 +1,11 @@
-# Python SDK Examples
+# Example: Create single application
 #
+# START Description
 # Script will create one application and three tiers in it
 # Delete application snippet also included
+# END Description
 #
-# Copyright 2019 VMware, Inc.
+# Copyright 2021 VMware, Inc.
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import init_api_client
@@ -91,10 +93,12 @@ def main():
     create_appication_and_tiers(application_api, "demo_app_1")
     # delete_application(application_api, "demo_app_1")
 
+
 def parse_arguments():
     parser = init_api_client.parse_arguments()
     args = parser.parse_args()
     return args
+
 
 if __name__ == '__main__':
     args = parse_arguments()

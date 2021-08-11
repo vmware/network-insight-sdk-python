@@ -1,10 +1,15 @@
-# Python SDK Examples
-
+# Example: Export Flows into vRealize Log Insight
+#
+# START Description
 # Script will fetch Flows matching certain search criteria
 # Along with the flow information it will fetch the correlated
 # VMs and send it to vRealize Log Insight via its API
 #
 # Usage:  python flows_to_vrli.py --platform_ip your-vrni-platform --username admin@local --password 'test' --vrli_server your-vrli-server
+# END Description
+#
+# Copyright 2021 VMware, Inc.
+# SPDX-License-Identifier: GPL-2.0-or-later
 #
 # Martijn Smit <msmit@vmware.com / @smitmartijn>
 
@@ -39,24 +44,29 @@ CONFIG_FILTER_STRING = "((flow_tag = TAG_SRC_IP_VM) or (flow_tag = TAG_DST_IP_VM
 # return only internet traffic and from a specific vSphere cluster
 # CONFIG_FILTER_STRING = "((flow_tag = TAG_INTERNET_TRAFFIC) and (source_datacenter.name = 'HaaS-1'))"
 
+
 def send_vrli_message(message, timestamp_milliseconds, fields, args):
     cfapi_port = 9543 if args.vrli_port is None else args.vrli_port
-    vrli_url = "https://{}:{}/api/v1/events/ingest/0".format(args.vrli_server, cfapi_port)
+    vrli_url = "https://{}:{}/api/v1/events/ingest/0".format(
+        args.vrli_server, cfapi_port)
 
     body = {}
     body['text'] = message
     body['timestamp'] = timestamp_milliseconds
     if fields:
-        body['fields'] = [{'name': str(k), 'content': str(v)} for k, v in fields.items()]
+        body['fields'] = [{'name': str(k), 'content': str(v)}
+                          for k, v in fields.items()]
 
     try:
         r = requests.post(vrli_url, json={"events": [body]}, verify=False)
     except requests.exceptions.HTTPError as err:
         raise ServerError(err)
 
+
 # cache Virtual Machine names to prevent duplicate lookups
 # cache_vms[entity_id] = vm_name
 cache_vms = {}
+
 
 def lookup_vm_name(vm_entity):
     # resolve VM Name from the entity_id
@@ -66,7 +76,8 @@ def lookup_vm_name(vm_entity):
         vm_name = cache_vms[vm_entity.entity_id]
         #print("Found src {} in cache!".format(vm_name))
     else:
-        vm_name = None if vm_entity is None else get_referenced_entity_name(referenced_entity=vm_entity)
+        vm_name = None if vm_entity is None else get_referenced_entity_name(
+            referenced_entity=vm_entity)
         if vm_name is None:
             pass
         else:
@@ -75,6 +86,7 @@ def lookup_vm_name(vm_entity):
 
     return vm_name
 
+
 def main(args):
     # Create search API client object
     search_api = swagger_client.SearchApi()
@@ -82,9 +94,11 @@ def main(args):
     filter_string = CONFIG_FILTER_STRING
 
     # Create request parameters required for search APIs
-    public_api_search_request_params = dict(entity_type=swagger_client.EntityType.FLOW, filter=filter_string, size=100)
+    public_api_search_request_params = dict(
+        entity_type=swagger_client.EntityType.FLOW, filter=filter_string, size=100)
     logger.info("Get all flows with filter = [{}]".format(filter_string))
-    search_payload = swagger_client.SearchRequest(**public_api_search_request_params)
+    search_payload = swagger_client.SearchRequest(
+        **public_api_search_request_params)
 
     # to prevent default lookups, keep a record
     destination_ip_port_protocol = []
@@ -92,18 +106,21 @@ def main(args):
     while True:
         # Call the search API
         api_response = search_api.search_entities(body=search_payload)
-        logger.info("Response attributes: Total Count: {} Start Time: {} End Time: {}".format(api_response.total_count, datetime.fromtimestamp(api_response.start_time), datetime.fromtimestamp(api_response.end_time)))
-        #print(api_response)
+        logger.info("Response attributes: Total Count: {} Start Time: {} End Time: {}".format(
+            api_response.total_count, datetime.fromtimestamp(api_response.start_time), datetime.fromtimestamp(api_response.end_time)))
+        # print(api_response)
 
         for result in api_response.results:
             entities_api = swagger_client.EntitiesApi()
             flow_timestamp = result.time
-            flow_details = entities_api.get_flow(id=result.entity_id, time=flow_timestamp)
+            flow_details = entities_api.get_flow(
+                id=result.entity_id, time=flow_timestamp)
             flow_name = flow_details.name.encode('utf-8').strip()
             logger.info("Flow: {}".format(flow_name))
 
             # Ignore flows we've already seen
-            dest_ip_port_protocol = '{}-{}--{}-{}'.format(flow_details.destination_ip.ip_address, flow_details.protocol, flow_details.port.start, flow_details.port.end)
+            dest_ip_port_protocol = '{}-{}--{}-{}'.format(
+                flow_details.destination_ip.ip_address, flow_details.protocol, flow_details.port.start, flow_details.port.end)
             if dest_ip_port_protocol in destination_ip_port_protocol:
                 continue
             destination_ip_port_protocol.append(dest_ip_port_protocol)
@@ -125,7 +142,8 @@ def main(args):
 
             # create syslog message
             datetime_str = datetime.fromtimestamp(flow_timestamp)
-            syslog_msg = 'vRNI-Flow: {} {} {} {}'.format(datetime_str, flow_details.firewall_action, flow_details.protocol, flow_name)
+            syslog_msg = 'vRNI-Flow: {} {} {} {}'.format(
+                datetime_str, flow_details.firewall_action, flow_details.protocol, flow_name)
 
             print(syslog_msg)
 
@@ -145,11 +163,13 @@ def main(args):
             # vRLI takes milliseconds as the ts
             flow_timestamp_ms = flow_timestamp * 1000
             try:
-                send_vrli_message(syslog_msg, flow_timestamp_ms, log_fields, args)
+                send_vrli_message(
+                    syslog_msg, flow_timestamp_ms, log_fields, args)
             except:
                 print("Failure sending to vRLI")
 
-            time.sleep(0.025) # make sure we don't hit the vRNI throttle and start getting 429 errors
+            # make sure we don't hit the vRNI throttle and start getting 429 errors
+            time.sleep(0.025)
         # break from the loop if this was the last results page
         if not api_response.cursor:
             break
@@ -159,10 +179,13 @@ def main(args):
 
 def parse_arguments():
     parser = init_api_client.parse_arguments()
-    parser.add_argument('--vrli_server', action='store', help='IP address or hostname of vRealize Log Insight', required=True)
-    parser.add_argument('--vrli_port', action='store', help='CFAPI Port of vRealize Log Insight (default 9543)', required=False)
+    parser.add_argument('--vrli_server', action='store',
+                        help='IP address or hostname of vRealize Log Insight', required=True)
+    parser.add_argument('--vrli_port', action='store',
+                        help='CFAPI Port of vRealize Log Insight (default 9543)', required=False)
     args = parser.parse_args()
     return args
+
 
 if __name__ == '__main__':
     args = parse_arguments()

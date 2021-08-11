@@ -1,10 +1,12 @@
-# swagger Examples - update datasources in bulk
+# Example: Update datasources in bulk
 #
+# START Description
 # This script uses an input CSV (example: update_data_sources.csv)
 # To update multiple vRealize Network Insight Data Sources. Modify update_data_sources.csv to contain your own data sources
 # (vCenters, NSX, switches, firewalls)
 # and run this script with the param --data_sources_csv to your CSV.
-
+# END Description
+#
 # Note: -
 # DataSourceType in update_data_sources.csv is taken from swagger_client.models.data_source_type.py
 # For reference here are the data source types that can be used in CSV
@@ -12,11 +14,11 @@
 # GDDataSource, VCenterDataSource, NSXVManagerDataSource, UCSManagerDataSource, HPVCManagerDataSource,
 # HPOneViewDataSource, PanFirewallDataSource, CheckpointFirewallDataSource, NSXTManagerDataSource, KubernetesDataSource,
 # InfobloxManagerDataSource
-
+#
 # Cisco Switch type can be taken from from swagger_client.models.cisco_switch_type.py -
 # CATALYST_3000, CATALYST_4500, CATALYST_6500, NEXUS_5K, NEXUS_7K, NEXUS_9K
 #
-# Copyright 2019 VMware, Inc.
+# Copyright 2021 VMware, Inc.
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import csv
@@ -112,17 +114,20 @@ def get_update_request_body(response, data_source):
     response.notes = data_source['Notes']
     return response
 
+
 def update_snmp_config(entity_id, data_source_api, data_source_api_name, data_source):
     try:
-        update_snmp_api_fn = getattr(data_source_api, data_source_api_name['update_snmp_config'])
-        get_snmp_api_fn = getattr(data_source_api, data_source_api_name['get_snmp_config'])
+        update_snmp_api_fn = getattr(
+            data_source_api, data_source_api_name['update_snmp_config'])
+        get_snmp_api_fn = getattr(
+            data_source_api, data_source_api_name['get_snmp_config'])
         response = get_snmp_api_fn(id=entity_id)
         if data_source['snmp_version'] == 'v2c':
-            if  response.snmp_version == 'v2c':
+            if response.snmp_version == 'v2c':
                 response.config_snmp_2c.community_string = data_source['snmp_community_string']
-            else: # updating to v2c from v3
+            else:  # updating to v2c from v3
                 response = {"snmp_enabled": True,
-                    "snmp_version": "{}".format(data_source['snmp_version'])}
+                            "snmp_version": "{}".format(data_source['snmp_version'])}
                 snmp_config = dict(
                     config_snmp_2c=dict(community_string='{}'.format(data_source['snmp_community_string'])))
                 response.update(snmp_config)
@@ -137,15 +142,19 @@ def update_snmp_config(entity_id, data_source_api, data_source_api_name, data_so
                             "snmp_version": "{}".format(data_source['snmp_version']),
                             }
                 snmp_config = dict(config_snmp_3=dict(
-                        username="{}".format(data_source['snmp_username']),
-                        authentication_password="{}".format(data_source['snmp_password']),
-                        context_name="",
-                        authentication_type="{}".format(data_source['snmp_auth_type']),
-                        privacy_type="{}".format(data_source['snmp_privacy_type'])))
+                    username="{}".format(data_source['snmp_username']),
+                    authentication_password="{}".format(
+                        data_source['snmp_password']),
+                    context_name="",
+                    authentication_type="{}".format(
+                        data_source['snmp_auth_type']),
+                    privacy_type="{}".format(data_source['snmp_privacy_type'])))
                 response.update(snmp_config)
         update_snmp_api_fn(id=entity_id, body=response)
     except ApiException as e:
-        print("Failed updating of snmp config: Error : {} ".format(json.loads(e.body)))
+        print("Failed updating of snmp config: Error : {} ".format(
+            json.loads(e.body)))
+
 
 def get_data_source_entity_id(data_source_api, get_datasource_fn, data_source_list, data_source):
     for entity in data_source_list.results:
@@ -153,6 +162,7 @@ def get_data_source_entity_id(data_source_api, get_datasource_fn, data_source_li
         if ds.ip == data_source['IP'] or ds.fqdn == data_source['fqdn']:
             return entity.entity_id
     return None
+
 
 def main(api_client, args):
 
@@ -163,27 +173,38 @@ def main(api_client, args):
         for data_source in data_sources:
             data_source_type = data_source['DataSourceType']
 
-            logger.info("Adding: <{}> <{}>".format(data_source_type, data_source['IP']))
+            logger.info("Adding: <{}> <{}>".format(
+                data_source_type, data_source['IP']))
             # Get the Data source add api fn
             data_source_api_name = get_api_function_name(data_source_type)
-            get_datasource_fn = getattr(data_source_api, data_source_api_name["get"])
-            update_datasource_fn = getattr(data_source_api, data_source_api_name["update"])
+            get_datasource_fn = getattr(
+                data_source_api, data_source_api_name["get"])
+            update_datasource_fn = getattr(
+                data_source_api, data_source_api_name["update"])
             try:
-                list_datasource_api_fn = getattr(data_source_api, data_source_api_name["list"])
+                list_datasource_api_fn = getattr(
+                    data_source_api, data_source_api_name["list"])
                 data_source_list = list_datasource_api_fn()
-                logger.info("Successfully got list of: {} : Response : {}".format(data_source_type, data_source_list))
-                entity_id = get_data_source_entity_id(data_source_api, get_datasource_fn, data_source_list, data_source)
+                logger.info("Successfully got list of: {} : Response : {}".format(
+                    data_source_type, data_source_list))
+                entity_id = get_data_source_entity_id(
+                    data_source_api, get_datasource_fn, data_source_list, data_source)
                 if not entity_id:
-                    print("Failed getting data source type : {}: {}".format(data_source_type, data_source['IP']))
+                    print("Failed getting data source type : {}: {}".format(
+                        data_source_type, data_source['IP']))
                     return
                 response = get_datasource_fn(id=entity_id)
-                update_request_body = get_update_request_body(response, data_source)
+                update_request_body = get_update_request_body(
+                    response, data_source)
                 update_datasource_fn(id=entity_id, body=update_request_body)
-                logger.info("Successfully updated: {} : Response : {}".format(data_source_type, data_source_list))
+                logger.info("Successfully updated: {} : Response : {}".format(
+                    data_source_type, data_source_list))
                 if data_source['snmp_version']:
-                    update_snmp_config(entity_id, data_source_api, data_source_api_name, data_source)
+                    update_snmp_config(
+                        entity_id, data_source_api, data_source_api_name, data_source)
             except ApiException as e:
-                print("Failed updating of data source type: {} : Error : {} ".format(data_source_type, json.loads(e.body)))
+                print("Failed updating of data source type: {} : Error : {} ".format(
+                    data_source_type, json.loads(e.body)))
 
 
 def parse_arguments():
@@ -192,6 +213,7 @@ def parse_arguments():
                         default='update_data_sources.csv', help="csv file with your own data sources")
     args = parser.parse_args()
     return args
+
 
 if __name__ == '__main__':
     args = parse_arguments()

@@ -1,13 +1,15 @@
-# swagger Examples - TAGGING IP Addresses/Subnets with EAST_WEST/INTERNET tags
+# Example: Add IP addresses/subnets to EAST_WEST or INTERNET settings
 #
+# START Description
 # This script uses an input CSV (example: ip_tags.csv)
 # To add or remove IP addresses to EAST-WEST or INTERNET Tags vRealize Network Insight Data Sources.
 # Modify ip_tags ip_tags.csv to contain your own data sources
-
 # The script also retrieves EAST-WEST and INTERNET IPs configured in vRNI and export as CSV
-
-# Copyright 2019 VMware, Inc.
+# END Description
+#
+# Copyright 2021 VMware, Inc.
 # SPDX-License-Identifier: GPL-2.0-or-later
+
 
 import csv
 import ipaddress
@@ -34,12 +36,13 @@ def main(args):
                 tag_id = ip_tag['TAG_ID']
                 body = get_body(ip_addresses, tag_id)
                 try:
-                    logger.info("Adding {} to {} tag".format(ip_addresses, tag_id))
+                    logger.info("Adding {} to {} tag".format(
+                        ip_addresses, tag_id))
                     settings_api.add_ip_tag(tag_id, body)
                 except ApiException as e:
                     logger.exception(
-                            "Failed adding {} to tag: {} : Error : {} ".format(ip_addresses, tag_id,
-                                                                               json.loads(e.body)))
+                        "Failed adding {} to tag: {} : Error : {} ".format(ip_addresses, tag_id,
+                                                                           json.loads(e.body)))
     if args.action == 'remove':
         logger.info("Removing IP-Addresses from EAST_WEST/INTERNET Tag")
         with open("{}".format(args.ip_tags_csv), 'r') as csvFile:
@@ -49,12 +52,13 @@ def main(args):
                 tag_id = ip_tag['TAG_ID']
                 body = get_body(ip_addresses, tag_id)
                 try:
-                    logger.info("removing {} from {} tag".format(ip_addresses, tag_id))
+                    logger.info("removing {} from {} tag".format(
+                        ip_addresses, tag_id))
                     settings_api.remove_ip_tag(tag_id, body)
                 except ApiException as e:
                     logger.exception(
-                            "Failed removing {} from tag: {} : Error : {} ".format(ip_addresses, tag_id,
-                                                                                   json.loads(e.body)))
+                        "Failed removing {} from tag: {} : Error : {} ".format(ip_addresses, tag_id,
+                                                                               json.loads(e.body)))
 
     if args.action == 'get':
         logger.info("Getting IP-Addresses with EAST_WEST/INTERNET Tag")
@@ -73,12 +77,15 @@ def main(args):
                         data_dict['IP_Addresses'] = ip_tag.start_ip
                         data.append(data_dict)
                     else:
-                        data_dict['IP_Addresses'] = "{}-{}".format(ip_tag.start_ip, ip_tag.end_ip)
+                        data_dict['IP_Addresses'] = "{}-{}".format(
+                            ip_tag.start_ip, ip_tag.end_ip)
                         data.append(data_dict)
-                data = data + [{"IP_Addresses" : subnet, 'TAG_ID':ip_tags.tag_id} for subnet in ip_tags.subnets]
+                data = data + [{"IP_Addresses": subnet, 'TAG_ID': ip_tags.tag_id}
+                               for subnet in ip_tags.subnets]
             writer.writerows(data)
         for value in data:
-            logger.info("Got {} with {} Tag".format(value['IP_Addresses'], value['TAG_ID']))
+            logger.info("Got {} with {} Tag".format(
+                value['IP_Addresses'], value['TAG_ID']))
 
 
 def get_body(ip_address, tag_id):
@@ -95,6 +102,7 @@ def get_body(ip_address, tag_id):
         body["ip_address_ranges"] = [{"start_ip": "{}".format(ip_address),
                                       "end_ip": "{}".format(ip_address)}]
     return body
+
 
 def parse_arguments():
     parser = init_api_client.parse_arguments()
