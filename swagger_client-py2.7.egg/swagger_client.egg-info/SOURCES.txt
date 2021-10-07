@@ -41,6 +41,8 @@ swagger_client/models/application_flow_summary.py
 swagger_client/models/application_member.py
 swagger_client/models/application_members.py
 swagger_client/models/application_members_response.py
+swagger_client/models/application_message.py
+swagger_client/models/application_message_list.py
 swagger_client/models/application_request.py
 swagger_client/models/application_top_talking_member_data.py
 swagger_client/models/application_top_talking_pair_data.py
@@ -116,6 +118,8 @@ swagger_client/models/container_base_data_source.py
 swagger_client/models/data_source_entity_id.py
 swagger_client/models/data_source_list_response.py
 swagger_client/models/data_source_type.py
+swagger_client/models/databus_subscriber.py
+swagger_client/models/databus_subscriber_list.py
 swagger_client/models/datasource_health.py
 swagger_client/models/datastore.py
 swagger_client/models/dell_os10_switch_data_source_request.py
@@ -144,6 +148,8 @@ swagger_client/models/email_frequency.py
 swagger_client/models/entity_id.py
 swagger_client/models/entity_id_with_time.py
 swagger_client/models/entity_limit_exceeded_base_event.py
+swagger_client/models/entity_message.py
+swagger_client/models/entity_message_list.py
 swagger_client/models/entity_metrics_schema.py
 swagger_client/models/entity_name.py
 swagger_client/models/entity_pair.py
@@ -177,6 +183,7 @@ swagger_client/models/gd_data_source_request.py
 swagger_client/models/generate_event_critera.py
 swagger_client/models/generic_switch_data_source.py
 swagger_client/models/generic_switch_data_source_request.py
+swagger_client/models/generic_vmcsddc.py
 swagger_client/models/group.py
 swagger_client/models/group_entry.py
 swagger_client/models/group_membership_criteria.py
@@ -413,6 +420,7 @@ swagger_client/models/virtual_machine.py
 swagger_client/models/vlan.py
 swagger_client/models/vlan_l2_network.py
 swagger_client/models/vmc_capacity_threshold_breach_event.py
+swagger_client/models/vmc_dell_sddc.py
 swagger_client/models/vmcsddc.py
 swagger_client/models/vmknic.py
 swagger_client/models/vnic.py
@@ -442,6 +450,8 @@ test/test_application_flow_summary.py
 test/test_application_member.py
 test/test_application_members.py
 test/test_application_members_response.py
+test/test_application_message.py
+test/test_application_message_list.py
 test/test_application_request.py
 test/test_application_top_talking_member_data.py
 test/test_application_top_talking_pair_data.py
@@ -520,6 +530,8 @@ test/test_data_source_entity_id.py
 test/test_data_source_list_response.py
 test/test_data_source_type.py
 test/test_data_sources_api.py
+test/test_databus_subscriber.py
+test/test_databus_subscriber_list.py
 test/test_datasource_health.py
 test/test_datastore.py
 test/test_dell_os10_switch_data_source_request.py
@@ -549,6 +561,8 @@ test/test_entities_api.py
 test/test_entity_id.py
 test/test_entity_id_with_time.py
 test/test_entity_limit_exceeded_base_event.py
+test/test_entity_message.py
+test/test_entity_message_list.py
 test/test_entity_metrics_schema.py
 test/test_entity_name.py
 test/test_entity_pair.py
@@ -582,6 +596,7 @@ test/test_gd_data_source_request.py
 test/test_generate_event_critera.py
 test/test_generic_switch_data_source.py
 test/test_generic_switch_data_source_request.py
+test/test_generic_vmcsddc.py
 test/test_group.py
 test/test_group_entry.py
 test/test_group_membership_criteria.py
@@ -828,6 +843,7 @@ test/test_virtual_machine.py
 test/test_vlan.py
 test/test_vlan_l2_network.py
 test/test_vmc_capacity_threshold_breach_event.py
+test/test_vmc_dell_sddc.py
 test/test_vmcsddc.py
 test/test_vmknic.py
 test/test_vnic.py
