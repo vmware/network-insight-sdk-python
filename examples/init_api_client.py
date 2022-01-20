@@ -16,6 +16,7 @@ VRNIC_FQDN_US = "api.mgmt.cloud.vmware.com"
 VRNIC_FQDN_UK = "uk.api.mgmt.cloud.vmware.com"
 VRNIC_FQDN_JP = "jp.api.mgmt.cloud.vmware.com"
 VRNIC_FQDN_AU = "au.api.mgmt.cloud.vmware.com"
+VRNIC_FQDN_DE = "de.api.mgmt.cloud.vmware.com"
 
 
 def get_api_client(args):
@@ -76,8 +77,14 @@ def get_vrnic_api_client(args):
         VRNIC_FQDN = VRNIC_FQDN_JP
     elif args.cloud_location == "AU":
         VRNIC_FQDN = VRNIC_FQDN_AU
+    elif args.cloud_location == "DE":
+        VRNIC_FQDN = VRNIC_FQDN_DE
     else:
         VRNIC_FQDN = VRNIC_FQDN_US
+
+    # override Cloud API url if the cloud_api_url param is set
+    if args.cloud_api_url != "":
+        VRNIC_FQDN = args.cloud_api_url
 
     # build API client
     public_api_url = "https://{}/ni/api/ni".format(VRNIC_FQDN)
@@ -111,9 +118,9 @@ def domain_type(type):
 
 
 def cloud_location_type(type):
-    if not type in ['US', 'UK', 'JP', 'AU']:
+    if not type in ['US', 'UK', 'JP', 'AU', 'DE']:
         raise argparse.ArgumentTypeError(
-            'Cloud location type must be one of US, UK, JP, or AU')
+            'Cloud location type must be one of US, UK, JP, AU, or DE')
     return type
 
 
@@ -155,7 +162,10 @@ def parse_arguments():
     parser.add_argument('--api_token', action='store',
                         help='Provide VRNIC api token')
     parser.add_argument('--cloud_location', action='store', type=cloud_location_type,
-                        default="US", help='vRNI Cloud location (US, UK, JP, or AU. default: US)')
+                        default="US", help='vRNI Cloud location (US, UK, JP, AU, or DE. default: US)')
+
+    parser.add_argument('--cloud_api_url', action='store',
+                        default="", help='Optional customer vRNI Cloud API URL. Overrides the cloud_location parameter. Example: uk.api.mgmt.cloud.vmware.com')
 
     return parser
 
