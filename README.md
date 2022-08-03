@@ -12,7 +12,7 @@ Then install the prerequisites with: pip install -r requirements.txt
 You are ready to go.
 
 ## Examples
-The **examples/** directory is full of examples that use the Network Insight Python SDK and inspire you.
+The **examples/** directory is full of examples that use the Network Insight Python SDK and inspires you to contribute to the project.
 
 ## Contributing
 
