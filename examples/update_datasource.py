@@ -112,6 +112,7 @@ def get_update_request_body(response, data_source):
         response.csp_refresh_token = data_source['CSPRefreshToken']
     response.nickname = data_source['NickName']
     response.notes = data_source['Notes']
+    response.proxy_id = data_source['proxy_id']
     return response
 
 
@@ -164,6 +165,9 @@ def get_data_source_entity_id(data_source_api, get_datasource_fn, data_source_li
     return None
 
 
+proxy_ip_to_id = dict()
+
+
 def main(api_client, args):
 
     # Create data source API client object
@@ -172,6 +176,20 @@ def main(api_client, args):
         data_sources = csv.DictReader(csvFile)
         for data_source in data_sources:
             data_source_type = data_source['DataSourceType']
+
+            # Get the Proxy ID from Proxy IP
+            if data_source['ProxyIP'] not in proxy_ip_to_id:
+                proxy_id = get_node_entity_id(
+                    api_client, data_source['ProxyIP'])
+                if not proxy_id:
+                    logger.info("Incorrect Proxy IP {}".format(
+                        data_source['ProxyIP']))
+                    continue
+                proxy_ip_to_id[data_source['ProxyIP']] = proxy_id
+            else:
+                proxy_id = proxy_ip_to_id[data_source['ProxyIP']]
+
+            data_source.update(['proxy_id'], proxy_id)
 
             logger.info("Adding: <{}> <{}>".format(
                 data_source_type, data_source['IP']))
@@ -205,6 +223,17 @@ def main(api_client, args):
             except ApiException as e:
                 print("Failed updating of data source type: {} : Error : {} ".format(
                     data_source_type, json.loads(e.body)))
+
+
+def get_node_entity_id(api_client, proxy_ip=None):
+    infrastructure_api = swagger_client.InfrastructureApi(
+        api_client=api_client)
+    node_list = infrastructure_api.list_nodes()
+    for entity in node_list.results:
+        node = infrastructure_api.get_node(id=entity.id)
+        if proxy_ip == node.ip_address:
+            return node.id
+    return None
 
 
 def parse_arguments():
