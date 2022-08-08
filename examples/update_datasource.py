@@ -15,6 +15,13 @@
 # HPOneViewDataSource, PanFirewallDataSource, CheckpointFirewallDataSource, NSXTManagerDataSource, KubernetesDataSource,
 # InfobloxManagerDataSource
 #
+# Update:
+# (Aug 2022 | Chirag Nayak) : To update collector ip,
+#              - (first preference)  add value to column "ProxyIP" in update_datasources.csv
+#              - (Second preference) pass --proxy_ip in args (applies to all data sources in csv file, if ProxyIP is not
+#              updated in it)
+#
+#
 # Cisco Switch type can be taken from from swagger_client.models.cisco_switch_type.py -
 # CATALYST_3000, CATALYST_4500, CATALYST_6500, NEXUS_5K, NEXUS_7K, NEXUS_9K
 #
@@ -178,20 +185,29 @@ def main(api_client, args):
             data_source_type = data_source['DataSourceType']
 
             # Get the Proxy ID from Proxy IP
-            if data_source['ProxyIP'] not in proxy_ip_to_id:
-                proxy_id = get_node_entity_id(
-                    api_client, data_source['ProxyIP'])
-                if not proxy_id:
-                    logger.info("Incorrect Proxy IP {}".format(
-                        data_source['ProxyIP']))
-                    continue
-                proxy_ip_to_id[data_source['ProxyIP']] = proxy_id
+            proxy_ip = None
+            if 'ProxyIP' in data_source and data_source['ProxyIP'] is not None and len(data_source["ProxyIP"]) != 0:
+                proxy_ip = data_source['ProxyIP']
+            elif 'proxy_ip' in args and args.proxy_ip is not None:
+                proxy_ip = args.proxy_ip
             else:
-                proxy_id = proxy_ip_to_id[data_source['ProxyIP']]
+                print("proxy ip is not passed")
 
-            data_source.update(['proxy_id'], proxy_id)
+            if proxy_ip:
+                if proxy_ip not in proxy_ip_to_id:
+                    proxy_id = get_node_entity_id(
+                            api_client, proxy_ip=proxy_ip)
+                    if not proxy_id:
+                        logger.info("Incorrect Proxy IP {}".format(
+                            data_source['ProxyIP']))
+                        continue
+                    proxy_ip_to_id[data_source['ProxyIP']] = proxy_id
+                else:
+                    proxy_id = proxy_ip_to_id[data_source['ProxyIP']]
 
-            logger.info("Adding: <{}> <{}>".format(
+                data_source.update(['proxy_id'], proxy_id)
+
+            logger.info("Updating: <{}> <{}>".format(
                 data_source_type, data_source['IP']))
             # Get the Data source add api fn
             data_source_api_name = get_api_function_name(data_source_type)
@@ -240,6 +256,8 @@ def parse_arguments():
     parser = init_api_client.parse_arguments()
     parser.add_argument("--data_sources_csv", action="store",
                         default='update_data_sources.csv', help="csv file with your own data sources")
+    parser.add_argument("--proxy_ip", action="store",
+                        default=None, help="proxy ip, if required to be updated in all datasources passed")
     args = parser.parse_args()
     return args
 
