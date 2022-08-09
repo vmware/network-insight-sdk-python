@@ -205,7 +205,7 @@ def main(api_client, args):
                 else:
                     proxy_id = proxy_ip_to_id[data_source['ProxyIP']]
 
-                data_source.update(['proxy_id'], proxy_id)
+                data_source.update({'proxy_id': proxy_id})
 
             logger.info("Updating: <{}> <{}>".format(
                 data_source_type, data_source['IP']))
