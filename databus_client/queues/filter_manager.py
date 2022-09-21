@@ -1,0 +1,409 @@
+import collections
+import json
+import os
+from pprint import pprint
+
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../queues/filters/filter.json"))
+f = open(path)
+
+non_metric_message_group = ["applications", "vms", "flows", "hosts", "problems"]
+sub_metrics_message_group = ["metrics", "vms-metrics", "hosts-metrics", "flows-metrics", "hosts-metrics", "nics-metrics",
+                             "switchports-metrics"]
+
+
+class FilterManager:
+
+    def set_filters(self, filter_dict=None):
+        file = open(path, "w")  # append mode
+        file.write(str(json.dumps(filter_dict)) + "\n")
+        file.close()
+
+    def update_filters(self, filter_dict=None):
+        try:
+            m_filters = self.get_filters()
+            m_filters = collections.namedtuple("FilterStruct", m_filters.keys())(*m_filters.values())
+
+            if hasattr(filter_dict, "matched_filter") and filter_dict["matched_filter"]:
+                m_filters["matched_filter"] = filter_dict["matched_filter"]
+
+            if hasattr(filter_dict, "unmatched_filter") and filter_dict["unmatched_filter"]:
+                m_filters["unmatched_filter"] = filter_dict["unmatched_filter"]
+
+            """Updating the non_metrics"""
+            if filter_dict["message_group"] in non_metric_message_group:
+                for i in m_filters.non_metric_filter:
+                    i = collections.namedtuple("NonMetricStruct", i.keys())(*i.values())
+                    if i.source == filter_dict["source"] and i.entity_type == filter_dict["message_group"]:
+                        if hasattr(filter_dict, "entityId") and filter_dict["entityId"]:
+                            not_found_entities = []
+                            for entry in filter_dict["entityId"]:
+                                if filter_dict["action"] == "add":
+                                    i.entityIds.append(entry)
+                                else:
+                                    if entry in i.entityIds:
+                                        i.entityIds.remove()
+                                    else:
+                                        not_found_entities.append(entry)
+                            if len(not_found_entities) > 0:
+                                return "EntityID {} is not present in current configuration to delete".format(
+                                    str(not_found_entities))
+                            else:
+                                self.set_filters(m_filters)
+                                return "EntityID {} added to source {}".format(str(filter_dict["entityId"]),
+                                                                               filter_dict["source"])
+                        if hasattr(filter_dict, "entityName") and filter_dict["entityName"]:
+                            not_found_entities = []
+                            for entry in filter_dict["entityName"]:
+                                if filter_dict["action"] == "add":
+                                    i.entityNames.append(entry)
+                                else:
+                                    if entry in i.entityNames:
+                                        i.entityNames.remove()
+                                    else:
+                                        not_found_entities.append(entry)
+                            if len(not_found_entities) > 0:
+                                return "EntityName {} is not present in current configuration to delete".format(
+                                    str(not_found_entities))
+                            else:
+                                self.set_filters(m_filters)
+                                return "EntityName {} added to source {}".format(str(filter_dict["entityName"]),
+                                                                                 filter_dict["source"])
+
+            elif filter_dict["message_group"] in sub_metrics_message_group:
+                """Updating the sub_metrics"""
+                for i in m_filters.sub_metric_filter:
+                    i = collections.namedtuple("SubMetricStruct", i.keys())(*i.values())
+                    if i.source == filter_dict["source"] and i.entity_type == filter_dict["message_group"]:
+                        if hasattr(filter_dict, "entityId") and filter_dict["entityId"]:
+                            not_found_entities = []
+                            for entry in filter_dict["entityId"]:
+                                if filter_dict["action"] == "add":
+                                    i.entityIds.append(entry)
+                                else:
+                                    if entry in i.entityIds:
+                                        i.entityIds.remove()
+                                    else:
+                                        not_found_entities.append(entry)
+                            if len(not_found_entities) > 0:
+                                return "EntityID {} is not present in current configuration to delete".format(
+                                    str(not_found_entities))
+                            else:
+                                self.set_filters(m_filters)
+                                return "EntityID {} added to source {}".format(str(filter_dict["entityId"]),
+                                                                               filter_dict["source"])
+                        if hasattr(filter_dict, "metric") and filter_dict["metric"]:
+                            not_found_entities = []
+                            for entry in filter_dict["metric"]:
+                                if filter_dict["action"] == "add":
+                                    i.metrics.append(entry)
+                                else:
+                                    if entry in i.metrics:
+                                        i.metrics.remove()
+                                    else:
+                                        not_found_entities.append(entry)
+                            if len(not_found_entities) > 0:
+                                return "Metric {} is not present in current configuration to delete".format(
+                                    str(not_found_entities))
+                            else:
+                                self.set_filters(m_filters)
+                                return "Metric {} added to source {}".format(str(filter_dict["metric"]),
+                                                                             filter_dict["source"])
+                return "Update successful for metrics"
+        except Exception as e:
+            raise Exception
+
+    def delete_filters(self, source=None):
+        full_filters = self.get_filters()
+        full_filters = collections.namedtuple("FilterStruct", full_filters.keys())(*full_filters.values())
+        if source:
+            m_filter = self.get_filters(source=source)
+            m_filter = collections.namedtuple("FilterStruct", m_filter.keys())(*m_filter.values())
+            if m_filter:
+                m_filter = collections.namedtuple("FilterStruct", m_filter.keys())(*m_filter.values())
+                if len(m_filter.non_metric_filter) > 0:
+                    for i in m_filter.non_metric_filter:
+                        i = collections.namedtuple("NonMetricStruct", i.keys())(*i.values())
+                        if i in full_filters.non_metric_filter:
+                            full_filters.non_metric_filter.remove(i)
+                    for i in m_filter.metric_filter:
+                        i = collections.namedtuple("MetricStruct", i.keys())(*i.values())
+                        if i in full_filters.metric_filter:
+                            full_filters.metric_filter.remove(i)
+                    for i in m_filter.sub_metric_filter:
+                        i = collections.namedtuple("SubMetricStruct", i.keys())(*i.values())
+                        if i in full_filters.sub_metric_filter:
+                            full_filters.sub_metric_filter.remove(i)
+            self.set_filters(full_filters)
+            return True, full_filters
+        else:
+            return False, None
+
+    def get_filters(self, source=None, use_local=False):
+        if use_local:
+            m_filters = json.load(f)
+        else:
+            print(path)
+            file = open(path, "r")
+            m_filters = json.loads(file.read())
+            file.close
+
+        if source:
+            full_filters = collections.namedtuple("FilterStruct", m_filters.keys())(*m_filters.values())
+            source_list = [source]
+            source_filters = {"matched_filter": full_filters.matched_filter,
+                              "unmatched_filter": full_filters.unmatched_filter,
+                              "source": source_list}
+            non_metric_list = []
+            metric_list = []
+            sub_metric_list = []
+            for i in full_filters.non_metric_filter:
+                i = collections.namedtuple("NonMetricStruct", i.keys())(*i.values())
+                if i.source == source:
+                    non_metric_list.append(i)
+            for i in full_filters.metric_filter:
+                i = collections.namedtuple("NewMetricStruct", i.keys())(*i.values())
+                if i.source == source:
+                    metric_list.append(i)
+            for i in full_filters.sub_metric_filter:
+                i = collections.namedtuple("SubMetricStruct", i.keys())(*i.values())
+                if i.source == source:
+                    sub_metric_list.append(i)
+            source_filters["non_metric_filter"] = non_metric_list
+            source_filters["metric_filter"] = metric_list
+            source_filters["sub_metric_filter"] = sub_metric_list
+
+            return source_filters
+
+        return m_filters
+
+    def get_application_filter(self, source=None):
+        application_filter = self.extract_non_metric_filter(entity="applications", source=source)
+        if not application_filter["entityIds"] and not application_filter["entityNames"]:
+            return None
+        print("Filters fetched for applications: " + json.dumps(application_filter))
+        return application_filter
+
+    def get_vms_filter(self, source=None):
+        vms_filter = self.extract_non_metric_filter(entity="vms", source=source)
+        if not vms_filter["entityIds"] and not vms_filter["entityNames"]:
+            return None
+        print("Filters fetched for vms: " + json.dumps(vms_filter))
+        return vms_filter
+
+    def get_hosts_filter(self, source=None):
+        hosts_filter = self.extract_non_metric_filter(entity="hosts", source=source)
+        if not hosts_filter["entityIds"] and not hosts_filter["entityNames"]:
+            return None
+        print("Filters fetched for hosts: " + json.dumps(hosts_filter))
+        return hosts_filter
+
+    def get_flows_filter(self, source=None):
+        flows_filter = self.extract_non_metric_filter(entity="flows", source=source)
+        if not flows_filter["entityIds"] and not flows_filter["entityNames"]:
+            return None
+        print("Filters fetched for flows: " + json.dumps(flows_filter))
+        return flows_filter
+
+    def get_problems_filter(self, source=None):
+        problems_filter = self.extract_non_metric_filter(entity="problems", source=source)
+        if not problems_filter["entityIds"] and not problems_filter["entityNames"]:
+            return None
+        print("Filters fetched for problems: " + json.dumps(problems_filter))
+        return problems_filter
+
+    def get_metrics_filter(self, source=None, entity=None):
+        metrics_filter = self.extract_metric_filter(entity=entity, source=source)
+        print("Metric filters fetched: " + json.dumps(metrics_filter))
+        return metrics_filter
+
+    def get_vms_metrics_filter(self, source=None):
+        vms_metrics_filter = self.extract_sub_metric_filter(entity="vms-metrics", source=source)
+        print("vms-metric filters fetched: " + json.dumps(vms_metrics_filter))
+        return vms_metrics_filter
+
+    def get_hosts_metrics_filter(self, source=None):
+        hosts_metrics_filter = self.extract_sub_metric_filter(entity="hosts-metrics", source=source)
+        print("hosts-metric filters fetched: " + json.dumps(hosts_metrics_filter))
+        return hosts_metrics_filter
+
+    def get_flows_metrics_filter(self, source=None):
+        flows_metrics_filter = self.extract_sub_metric_filter(entity="flows-metrics", source=source)
+        print("Metric filters fetched: " + json.dumps(flows_metrics_filter))
+        return flows_metrics_filter
+
+    def get_nics_metrics_filter(self, source=None):
+        nics_metrics_filter = self.extract_sub_metric_filter(entity="nics-metrics", source=source)
+        print("Metric filters fetched: " + json.dumps(nics_metrics_filter))
+        return nics_metrics_filter
+
+    def get_switchport_metrics_filter(self, source=None):
+        switchports_metrics_filter = self.extract_sub_metric_filter(entity="switchports-metrics", source=source)
+        print("Metric filters fetched: " + json.dumps(switchports_metrics_filter))
+        return switchports_metrics_filter
+
+    def get_non_metric_filter_table(self):
+        non_metric_filter_dict = dict()
+        f_filter = self.get_filters()
+        f_filter = collections.namedtuple("FilterStruct", f_filter.keys())(*f_filter.values())
+        for i in f_filter.non_metric_filter:
+            i = collections.namedtuple("NonMetricStruct", i.keys())(*i.values())
+            if i.source:
+                if hasattr(i, "entityIds"):
+                    if len(i.entityIds) > 0:
+                        for e_id in i.entityIds:
+                            non_metric_filter_dict[self.getKey(source=i.source, entityId=e_id)] = ""
+                if hasattr(i, "entityNames"):
+                    if len(i.entityNames) > 0:
+                        for e_id in i.entityNames:
+                            non_metric_filter_dict[self.getKey(source=i.source, entityId=e_id)] = ""
+                else:
+                    non_metric_filter_dict[self.getKey(source=i.source)] = ""
+        return non_metric_filter_dict
+
+    def get_metric_filter_table(self):
+        metric_filter_dict = dict()
+        f_filter = self.get_filters()
+        f_filter = collections.namedtuple("FilterStruct", f_filter.keys())(*f_filter.values())
+        for i in f_filter.metric_filter:
+            i = collections.namedtuple("MetricStruct", i.keys())(*i.values())
+            if i.source:
+                if hasattr(i, "entityIds"):
+                    if len(i.entityIds) > 0:
+                        for e_id in i.entityIds:
+                            if hasattr(i, "metrics"):
+                                if len(i.metrics) > 0:
+                                    for m_name in i.metrics:
+                                        metric_filter_dict[self.getKey(source=i.source, entityId=e_id, metricName=m_name)] = ""
+                            else:
+                                metric_filter_dict[self.getKey(source=i.source, entityId=e_id)] = ""
+                else:
+                    metric_filter_dict[self.getKey(source=i.source)] = ""
+        return metric_filter_dict
+
+    def get_sub_metric_filter_table(self):
+        metric_filter_dict = dict()
+        f_filter = self.get_filters()
+        f_filter = collections.namedtuple("FilterStruct", f_filter.keys())(*f_filter.values())
+        for i in f_filter.sub_metric_filter:
+            i = collections.namedtuple("SubMetricStruct", i.keys())(*i.values())
+            if i.source:
+                if hasattr(i, "entityIds"):
+                    if len(i.entityIds) > 0:
+                        for e_id in i.entityIds:
+                            if hasattr(i, "metrics"):
+                                if len(i.metrics) > 0:
+                                    for m_name in i.metrics:
+                                        metric_filter_dict[self.getKey(source=i.source, entityId=e_id, metricName=m_name)] = ""
+                            else:
+                                metric_filter_dict[self.getKey(source=i.source, entityId=e_id)] = ""
+                else:
+                    metric_filter_dict[self.getKey(source=i.source)] = ""
+        return metric_filter_dict
+
+    def get_match_unmatch_filter(self):
+        f_filter = self.get_filters()
+        f_filter = collections.namedtuple("FilterStruct", f_filter.keys())(*f_filter.values())
+        return f_filter.matched_filter, f_filter.unmatched_filter
+
+    def getKey(self, source=None, entityId=None, metricName=None):
+        key = ""
+        if source:
+            key = source
+        if entityId:
+            key = key + ":" + entityId
+        else:
+            key = key + ":" + "databus"
+        if metricName:
+            key = key + ":" + metricName
+        else:
+            key = key + ":" + "databus"
+        return key
+
+    def extract_non_metric_filter(self, source=None, entity=None):
+        filter = self.get_filters(source=source)
+        filter = collections.namedtuple("FilterStruct", filter.keys())(*filter.values())
+        allowed_sources = []
+        allowed_entityIds = []
+        allowed_entityNames = []
+
+        if source:
+            for i in filter.non_metric_filter:
+                if i.entity_type == entity and i.source == source:
+                    allowed_entityIds.extend(i.entityIds)
+                    allowed_entityNames.extend(i.entityNames)
+            allowed_sources.append(source)
+
+        else:
+            for i in filter.non_metric_filter:
+                i = collections.namedtuple("NonMetricStruct", i.keys())(*i.values())
+                if i.entity_type == entity:
+                    allowed_sources.append(i.source)
+                    allowed_entityIds.extend(i.entityIds)
+                    allowed_entityNames.extend(i.entityNames)
+
+        return {"matched_filter": filter.matched_filter,
+                "unmatched_filter": filter.unmatched_filter,
+                "source": allowed_sources,
+                "entityIds": allowed_entityIds,
+                "entityNames": allowed_entityNames}
+
+    def extract_metric_filter(self, source=None, entity=None):
+        filter = self.get_filters(source=source)
+        filter = collections.namedtuple("FilterStruct", filter.keys())(*filter.values())
+        allowed_sources = []
+        allowed_entityIds = []
+        allowed_metrics = []
+
+        if source:
+            for i in filter.metric_filter:
+                if i.entity_type == entity and i.source == source:
+                    allowed_entityIds.extend(i.entityIds)
+                    allowed_metrics.extend(i.metrics)
+            allowed_sources.append(source)
+        else:
+            for i in filter.metric_filter:
+                i = collections.namedtuple("MetricStruct", i.keys())(*i.values())
+                if i.entity_type == entity:
+                    allowed_sources.append(i.source)
+                    allowed_entityIds.extend(i.entityIds)
+                    allowed_metrics.extend(i.metrics)
+
+        return {"matched_filter": filter.matched_filter,
+                "unmatched_filter": filter.unmatched_filter,
+                "entity": entity,
+                "source": allowed_sources,
+                "entityIds": allowed_entityIds,
+                "metric": allowed_metrics}
+
+    def extract_sub_metric_filter(self, source=None, entity=None):
+        filter = self.get_filters(source=source)
+        filter = collections.namedtuple("FilterStruct", filter.keys())(*filter.values())
+        allowed_sources = []
+        allowed_entityIds = []
+        allowed_metrics = []
+
+        if source:
+            for i in filter.sub_metric_filter:
+                if i.entity_type == entity and i.source == source:
+                    allowed_entityIds.extend(i.entityIds)
+                    allowed_metrics.extend(i.metrics)
+            allowed_sources.append(source)
+        else:
+            for i in filter.sub_metric_filter:
+                i = collections.namedtuple("SubMetricStruct", i.keys())(*i.values())
+                if i.entity_type == entity:
+                    allowed_sources.append(i.source)
+                    allowed_entityIds.extend(i.entityIds)
+                    allowed_metrics.extend(i.metrics)
+
+        return {"matched_filter": filter.matched_filter,
+                "unmatched_filter": filter.unmatched_filter,
+                "source": allowed_sources,
+                "entityIds": allowed_entityIds,
+                "metric": allowed_metrics}
+
+
+if __name__ == "__main__":
+    f_manager = FilterManager()
+    pprint(f_manager.get_non_metric_filter_table())
+    pprint(f_manager.get_metric_filter_table())
