@@ -115,14 +115,14 @@ def get_snmp_request_body(datasource):
     if datasource['snmp_version'] == 'v2c':
         snmp_config = dict(config_snmp_2c=dict(
             community_string='{}'.format(datasource['snmp_community_string'])))
-
     elif datasource['snmp_version'] == 'v3':
         snmp_config = dict(config_snmp_3=dict(
             username="{}".format(datasource['snmp_username']),
-            authentication_password="{}".format(datasource['snmp_password']),
-            context_name="",
+            context_name="{}".format(datasource['snmp_password']),
+            authentication_password="{}".format(datasource['snmp_auth_password']),
             authentication_type="{}".format(datasource['snmp_auth_type']),
-            privacy_type="{}".format(datasource['snmp_privacy_type'])
+            privacy_type="{}".format(datasource['snmp_privacy_type']),
+            privacy_password="{}".format(datasource['snmp_privacy_password'])
         ))
 
     api_request_body.update(snmp_config)
