@@ -210,8 +210,11 @@ def filters():
                 source = request_filter_dict["source"]
             else:
                 return Response("Source is required.", 500)
-            f_manager.delete_filters(source=source)
-
+            done = f_manager.delete_filters(source=source)
+            if done:
+                return Response("Deleted source {} from filter".format(source))
+            else:
+                return Response("Source does not exist in source", 204)
     except Exception as e:
         exception_logger.log(license_plate + "Exception occurred while fetching/sending filters - " + traceback.format_exc())
 
