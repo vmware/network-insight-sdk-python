@@ -2,6 +2,7 @@ import json
 
 from databus_client.db_handler.mongoDB_handler.connection import MongoDBConnection
 from databus_client.db_handler.utils.mongodb_models import *
+from databus_client.log_handler.log_queue import LogQueue
 from databus_client.utils.common.databus_constants import DatabusMongo, DatabusMessageGroup
 from databus_client.db_handler.utils.utilities import MandatoryParameterMissing
 from databus_client.db_handler.utils import utilities
@@ -40,8 +41,15 @@ METRIC_MSG_GRPS = [
 ]
 
 
-# TODO: Add Exception handler and Exception Recorder
 class DatabusClientDataService(object):
+    exception_logger = None
+    license_plate = "[License Plate: DB service] "
+
+    def set_ex_logger(cls):
+        if cls.exception_logger:
+            pass
+        else:
+            cls.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception")
     """
     To support DB operations for MongoDB add/delete/get mongo db documents
     """
@@ -57,7 +65,7 @@ class DatabusClientDataService(object):
         else:
             message = "INCORRECT MESSAGE GROUP {} PASSED FOR get_data_for_source_nonmetric_message_group()".format(
                 message_group)
-            print("Exception: " + message)
+            cls.exception_logger.log(cls.license_plate + "Exception: " + message)
             return None
 
         # Process data if not None
@@ -72,7 +80,7 @@ class DatabusClientDataService(object):
 
         else:
             message = "None (data) QuerySet while getting result for {}".format(message_group)
-            print("Exception: " + message)
+            cls.exception_logger.log(cls.license_plate + "Exception: " + message)
             return None
 
         return ret_result
@@ -88,7 +96,7 @@ class DatabusClientDataService(object):
         else:
             message = "INCORRECT MESSAGE GROUP {} PASSED FOR get_data_for_source_metric_message_group()".format(
                 message_group)
-            print("Exception: " + message)
+            cls.exception_logger.log(cls.license_plate + "Exception: " + message)
             return None
 
         # Process data if not None
@@ -103,7 +111,7 @@ class DatabusClientDataService(object):
                 ret_result = ret_result[source]
         else:
             message = "None (data) QuerySet while getting result for {}".format(message_group)
-            print("Exception: " + message)
+            cls.exception_logger.log(cls.license_plate + "Exception: " + message)
             return None
 
         return ret_result
@@ -121,7 +129,7 @@ class DatabusClientDataService(object):
         else:
             message = "INCORRECT MESSAGE GROUP {} PASSED FOR get_raw_data_for_source_metric_message_group()".format(
                 message_group)
-            print("Exception: " + message)
+            cls.exception_logger.log(cls.license_plate + "Exception: " + message)
             return None
 
         # Process data if not None
@@ -136,7 +144,7 @@ class DatabusClientDataService(object):
 
         else:
             message = "None (data) QuerySet while getting result for {}".format(message_group)
-            print("Exception: " + message)
+            cls.exception_logger.log(cls.license_plate + "Exception: " + message)
             return None
 
         return ret_result
@@ -212,7 +220,7 @@ class DatabusClientDataService(object):
 
         result = MESSAGE_GRP_DB_SCHEMA[message_group].objects(**params).delete()
 
-        print(result)
+        cls.exception_logger.log(cls.license_plate + result)
 
         return True
 
@@ -223,7 +231,7 @@ class DatabusClientDataService(object):
 
         result = DatabusClientHeartBeatData.objects(**params).delete()
 
-        print(result)
+        cls.exception_logger.log(cls.license_plate + result)
 
         return True
 
@@ -249,7 +257,7 @@ class DatabusClientDataService(object):
 
         else:
             message = "None (data) QuerySet while getting result for Heartbeat for source {}".format(source)
-            print("Exception: " + message)
+            cls.exception_logger.log(cls.license_plate + "Exception: " + message)
 
         print(ret_result)
 

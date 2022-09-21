@@ -443,6 +443,8 @@ if __name__ == "__main__":
     exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception")
     license_plate = "[License Plate: Endpoint] "
 
+    dbcDataService = DatabusClientDataService()
+    dbcDataService.set_ex_logger()
     # hosted port
     hosted_port = args.port
 
