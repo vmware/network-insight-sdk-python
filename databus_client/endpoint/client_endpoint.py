@@ -193,14 +193,14 @@ def filters():
             filter_dict = dict()
             record = request.get_json()
             for key, value in record.items():
-                filter_dict[key] = value
+                if value == "" or value == "NA":
+                    filter_dict[key] = None
+                else:
+                    filter_dict[key] = value
             if "source" not in filter_dict:
                 return Response("Source is required.", 500)
             message = f_manager.update_filters(filter_dict=filter_dict)
-            if "not" in message:
-                return Response("Some updates were not completed. " + message, 404)
-            else:
-                return Response(message)
+            return Response(json.dumps(message), content_type=json)
 
         elif request.method == 'DELETE':
             request_filter_dict = dict()

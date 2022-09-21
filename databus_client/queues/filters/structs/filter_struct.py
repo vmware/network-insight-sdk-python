@@ -9,5 +9,5 @@ class FilterStruct:
         self.matched_filter = str
         self.unmatched_filter = str
         self.non_metric_filter = list(NonMetricStruct())
-        self.new_metric_filter = list(MetricStruct())
+        self.metric_filter = list(MetricStruct())
         self.sub_metric_filter = list(SubMetricStruct())
