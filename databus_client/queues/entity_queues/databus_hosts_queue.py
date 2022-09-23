@@ -13,9 +13,9 @@ from databus_client.utils.databus_utilities import DatabusUtilities
 
 class DatabusHostsQueue(DatabusQueue):
 
-    def __init__(self, debug_logs=False, use_mongo=True, message_group=None):
+    def __init__(self, use_mongo=True, message_group=None):
         super(DatabusHostsQueue, self).__init__(message_group=DatabusMessageGroup.HOSTS.value, num_of_worker_threads=2,
-                                                debug_logs=debug_logs, use_mongo=use_mongo)
+                                                use_mongo=use_mongo)
         self.logger = LogQueue(num_of_worker_threads=2, message_group=DatabusMessageGroup.HOSTS.value)
         self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception")
         self.license_plate = DatabusUtilities.get_license_plate()

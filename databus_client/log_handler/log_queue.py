@@ -1,6 +1,7 @@
 import queue
 import threading
 
+from databus_client.endpoint.client_endpoint import get_file_threshold
 from databus_client.log_handler.file_handler import DatabusLogFileHandler
 from databus_client.log_handler.log_file_scheduler import DatabusLogFileScheduler
 
@@ -14,7 +15,8 @@ class LogQueue:
         self.num_of_worker_threads = num_of_worker_threads
         self.message_group = message_group
         self.file_handler = DatabusLogFileHandler(message_group=message_group, queue=self.queue)
-        self.file_scheduler = DatabusLogFileScheduler(message_group=message_group, file_threshold=10, file_log_handler=self.file_handler)
+        self.file_scheduler = DatabusLogFileScheduler(message_group=message_group, file_threshold=get_file_threshold(),
+                                                      file_log_handler=self.file_handler)
 
         for i in range(self.num_of_worker_threads):
             t = threading.Thread(target=self.start_processing_data)

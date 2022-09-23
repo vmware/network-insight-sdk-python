@@ -6,14 +6,13 @@ import os
 import threading
 import time
 import traceback
-from collections import OrderedDict
 from datetime import datetime
 from json.decoder import JSONDecodeError
 import ssl
 import socket
 
 import pytz
-from flask import Flask, Response, make_response
+from flask import Flask, Response
 from flask import jsonify
 from flask import request
 from mongoengine import connect
@@ -24,7 +23,6 @@ from databus_client.db_handler.mongoDB_handler.databus_metric_db_handler import 
 from databus_client.log_handler.databus_logger import DatabusLoggerHandler
 from databus_client.log_handler.log_queue import LogQueue
 from databus_client.queues.filter_manager import FilterManager
-from databus_client.queues.filters.structs.filter_struct import FilterStruct
 from databus_client.queues.queue_manager import DatabusQueueManager
 from databus_client.utils.common.databus_constants import DatabusMessageGroup
 from databus_client.utils.common.databus_message_entity_count_recorder import DatabusMessageEntityCountRecorder
@@ -46,9 +44,6 @@ Feature set is as below:
 app = Flask(__name__)
 dbclient_queue_handler = None
 
-use_dump = False
-use_debug_json = False
-debug_logs = False
 enable_telemetry = False
 
 TIME = calendar.timegm(time.gmtime())
@@ -166,7 +161,7 @@ def databus_filedumpfrequency():
         return Response(json.dumps(result), content_type="json")
 
 
-@app.route("/filters", methods=["POST",  "GET", "PUT", "DELETE"])
+@app.route("/filters", methods=["POST", "GET", "PUT", "DELETE"])
 def filters():
     try:
         if request.method == 'POST':
@@ -216,7 +211,8 @@ def filters():
             else:
                 return Response("Source does not exist in source", 204)
     except Exception as e:
-        exception_logger.log(license_plate + "Exception occurred while fetching/sending filters - " + traceback.format_exc())
+        exception_logger.log(
+            license_plate + "Exception occurred while fetching/sending filters - " + traceback.format_exc())
 
 
 @app.route("/entity_filters", methods=["GET"])
@@ -304,10 +300,7 @@ def do_post(queue_processor=None, message_group=None):
         app.logger.info(data)
         json_resp = jsonify(success=True)
 
-        if use_dump:
-            queue_processor.update_from_dump(data)
-        else:
-            queue_processor.add_to_queue(data)
+        queue_processor.add_to_queue(data)
 
         return json_resp
 
@@ -396,19 +389,13 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="HTTP server end point configuration for databus")
     parser.add_argument("--host", default="0.0.0.0", action="store", dest="host")
     parser.add_argument("--port", default="5001", action="store", dest="port")
-    parser.add_argument("--use_dump", default="False", action="store")
-    parser.add_argument("--use_debug_json", default="False", action="store")  # Keep False in production environment
-    parser.add_argument("--debug_logs", default="False", action="store")
-    parser.add_argument("--file_dump_frequency", default="24H 0M", action="store")
     parser.add_argument("--enable_telemetry", default="True", action="store")
     parser.add_argument("--use_mongo", default="True", action="store")
-    parser.add_argument("--mongo_server_ip", default="10.89.69.157:27017,10.89.69.154:27017,10.89.69.156:27017,"
-                                                     "10.89.69.153:27017,10.89.69.155:27017", action="store")
-    parser.add_argument("--staging_mongo_server_ip", default="172.74.21.156:27017", action="store")
+    parser.add_argument("--mongo_server_ip", default="localhost:27017", action="store")
     parser.add_argument("--https", default="False", action="store")
-    parser.add_argument("--staging", default="False", action="store")
-    parser.add_argument("--cert_file_path", action="store")
-    parser.add_argument("--key_file_path", action="store")
+    parser.add_argument("--cert_file_path", default="", action="store")
+    parser.add_argument("--key_file_path", default="", action="store")
+    parser.add_argument("--file_threshold", default=200, action="store")
     args_cmd = parser.parse_args()
     return args_cmd
 
@@ -422,17 +409,17 @@ def load_staging_ssl(cert_file_path=None, key_file_path=None):
     return staging_context
 
 
+def get_file_threshold():
+    return file_threshold
+
+
 if __name__ == "__main__":
     args = parse_arguments()
-    use_dump = bool(distutils.util.strtobool(args.use_dump))
-    use_debug_json = bool(distutils.util.strtobool(args.use_debug_json))
     use_mongo = bool(distutils.util.strtobool(args.use_mongo))
-    debug_logs = bool(distutils.util.strtobool(args.debug_logs))
     enable_telemetry = bool(distutils.util.strtobool(args.enable_telemetry))
     bringup_https = bool(distutils.util.strtobool(args.https))
     host_ip_address = get_ip_address()
-    unique_key = (host_ip_address + "_" + args.port).replace(".", "_")
-    use_staging_client = bool(distutils.util.strtobool(args.staging))
+    file_threshold = args.file_threshold
     f_manager = FilterManager()
 
     handler = DatabusLoggerHandler()
@@ -450,32 +437,21 @@ if __name__ == "__main__":
 
     dbclient_queue_handler = DatabusQueueManager(host_ip=args.host,  # host is usually always 0.0.0.0
                                                  host_port=hosted_port,
-                                                 file_dump_frequency=args.file_dump_frequency,
-                                                 debug_logs=debug_logs,
                                                  use_mongo=use_mongo)
 
     telemetry = DatabusQueueTelemetry()
 
-    if use_staging_client:
-        MongoDBConnection(server_url=args.staging_mongo_server_ip,
-                          database_name="databus_client_data",
-                          alias='databus_client_data')
-        print("*************** Selecting staging Mongo: " + str(args.staging_mongo_server_ip) + "***************")
-        DEFAULT_CONNECTION_NAME = connect('databus_client_data',
-                                          host=os.getenv('MONGO_URI', args.staging_mongo_server_ip))
-    else:
-        MongoDBConnection(server_url=args.mongo_server_ip,
-                          database_name="databus_client_data",
-                          alias='databus_client_data')
-        print("*************** Selecting Mongo: " + str(args.mongo_server_ip) + "***************")
-        DEFAULT_CONNECTION_NAME = connect('databus_client_data', host=os.getenv('MONGO_URI', args.mongo_server_ip))
+    MongoDBConnection(server_url=args.mongo_server_ip,
+                      database_name="databus_client_data",
+                      alias='databus_client_data')
+    print("*************** Selecting Mongo: " + str(args.mongo_server_ip) + "***************")
+    DEFAULT_CONNECTION_NAME = connect('databus_client_data', host=os.getenv('MONGO_URI', args.mongo_server_ip))
 
     t = threading.Thread(target=DatabusMessageEntityCountRecorder.get_instance().start_recording)
     t.start()
 
     if bringup_https:
-        if use_staging_client:
-            context = load_staging_ssl(cert_file_path=args.cert_file_path, key_file_path=args.key_file_path)
+        context = load_staging_ssl(cert_file_path=args.cert_file_path, key_file_path=args.key_file_path)
         app.run(ssl_context=context, host=args.host, port=hosted_port, debug=True)
     else:
         app.run(host=args.host, port=hosted_port, debug=False)

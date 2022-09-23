@@ -9,16 +9,12 @@ class DatabusQueue:
 
     def __init__(self, message_group=None,
                  num_of_worker_threads=2,
-                 debug_logs=False,
-                 use_debug_json=False,
                  use_mongo=False):
         self.queue = queue.Queue()
         self.data_map = dict()
         self.threads = list()
-        self.debug = debug_logs
         self.num_of_worker_threads = num_of_worker_threads
         self.message_group = message_group
-        self.use_debug_json = use_debug_json
         self.count = 0  # depicts count of an entity process in queue (eq to count of unique entity ids)
         self.use_mongo = use_mongo
 
@@ -81,10 +77,6 @@ class DatabusQueue:
 
         else:
             self.data_map.clear()
-
-    def set_debug(self, debug_logs=None):
-        print("debug_logs: updated to : {}".format(type(debug_logs)))
-        self.debug = debug_logs
 
     def get_dict_val(self, key, entry):
         if self.debug: print("fetch key {} in entry type {}".format(key, type(entry)))

@@ -34,27 +34,24 @@ class DatabusQueueManager:
     def __init__(self,
                  host_ip=None,
                  host_port=None,
-                 file_dump_frequency=None,
-                 debug_logs=False,
                  use_mongo=True):
 
         self.q_processors = dict()
 
         for message_group, cls in self.ENDPOINT_CLASS_MAP.items():
             klass = globals()[cls.__name__]
-            instance = klass(debug_logs=debug_logs, use_mongo=use_mongo, message_group=message_group)
+            instance = klass(use_mongo=use_mongo, message_group=message_group)
             att_name = message_group+"_qProcessor"
             self.__setattr__(att_name, instance)
             self.q_processors.update({message_group: self.__getattribute__(att_name)})
 
         self.use_mongo = use_mongo
 
-    def get_file_handler(self, databus_queue_list=None, host_ip=None, host_port=None, file_dump_frequency=None, use_mongo=None):
+    def get_file_handler(self, databus_queue_list=None, host_ip=None, host_port=None, use_mongo=None):
 
         return DatabusLoggerHandler(databus_queue_list=databus_queue_list,
                                     host_ip=host_ip,
                                     host_port=host_port,
-                                    file_dump_frequency=file_dump_frequency,
                                     use_mongo=use_mongo)
 
     def get_qp(self, message_group):
@@ -62,7 +59,3 @@ class DatabusQueueManager:
             return self.q_processors[message_group]
         else:
             print("Exception: " + "message_group {} not found in DatabusQueueManager q_processors".format(message_group))
-
-    def set_debug(self, val):
-        for message_grp, qp in self.q_processors.items():
-            qp.set_debug(debug_logs=val)
