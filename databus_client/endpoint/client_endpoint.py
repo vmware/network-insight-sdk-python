@@ -409,10 +409,6 @@ def load_staging_ssl(cert_file_path=None, key_file_path=None):
     return staging_context
 
 
-def get_file_threshold():
-    return file_threshold
-
-
 if __name__ == "__main__":
     args = parse_arguments()
     use_mongo = bool(distutils.util.strtobool(args.use_mongo))
