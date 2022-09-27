@@ -35,7 +35,7 @@ class DatabusProblemsQueue(DatabusQueue):
 
                 if source not in self.data_map:
                     self.data_map[source] = dict()
-                    if self.debug: print("\n---new source {} added".format(source))
+                    self.logger.log(self.license_plate + "\n---new source {} added".format(source))
 
                 source_map = self.data_map[source]
 

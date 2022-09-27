@@ -57,7 +57,7 @@ class DatabusHostsQueue(DatabusQueue):
                                 self.license_plate + "Error while pushing data to downstream: " + push_db[1])
                     else:
                         source_map.update({entity_id: message})
-                        if self.debug: print("updated host -> {} ".format(entity_id))
+                        self.logger.log(self.license_plate + "updated host -> {} ".format(entity_id))
                 else:
                     # add new
                     if self.use_mongo:

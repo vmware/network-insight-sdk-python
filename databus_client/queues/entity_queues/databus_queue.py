@@ -35,14 +35,9 @@ class DatabusQueue:
 
     def add_to_queue(self, data=None):
         if type(data) == dict:
-            if self.debug:
-                print("\ntype is dict...")
-                print("\nentered in queue... {}".format(data))
             self.queue.put(data)
         elif type(data) == list:
-            if self.debug: print("type is list...")
             for entry in data:
-                if self.debug: print("\nentered in queue...\ntype ...{} \ndata ---> {}".format(type(entry), entry))
                 self.queue.put(entry)
         else:
             raise Exception(
@@ -79,7 +74,7 @@ class DatabusQueue:
             self.data_map.clear()
 
     def get_dict_val(self, key, entry):
-        if self.debug: print("fetch key {} in entry type {}".format(key, type(entry)))
+        self.logger.log(self.license_plate + "fetch key {} in entry type {}".format(key, type(entry)))
         if key in entry:
             return entry[key]
         else:
