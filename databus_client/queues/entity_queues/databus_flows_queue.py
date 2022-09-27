@@ -118,6 +118,6 @@ class DatabusFlowsQueue(DatabusQueue):
             except queue.Empty as e:
                 sleep(1)
             except Exception as e:
-                message = "Error occured process message in DatabusFlowsQueue. Trace : {} - entry : {}".format(
+                message = "Error occured process message in DatabusFlowsQueue. Trace : {}".format(
                     traceback.format_exc())
                 self.exception_logger.log(self.license_plate + "Exception: " + message)

@@ -118,5 +118,5 @@ class DatabusHostsQueue(DatabusQueue):
             except queue.Empty as e:
                 sleep(1)
             except Exception as e:
-                message = "Error occured process message in DatabusHostsQueue. Trace : {} - entry : {}".format(traceback.format_exc())
+                message = "Error occured process message in DatabusHostsQueue. Trace : {}".format(traceback.format_exc())
                 self.exception_logger.log(self.license_plate + "Exception: " + message)

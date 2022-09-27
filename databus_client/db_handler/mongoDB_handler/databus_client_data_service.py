@@ -282,7 +282,7 @@ class DatabusClientDataService(object):
 
     @classmethod
     def put_new_nonmetric_entity_message_group_data(cls, data, message_group):
-
+        # TODO: add try catch here, send false on catch
         if message_group in NON_METRIC_MSG_GRPS:
             db_entry_new_non_metric = MESSAGE_GRP_DB_SCHEMA[message_group](source=data[DatabusMongo.SOURCE],
                                                                            entity_id=data[DatabusMongo.ENTITY_ID],

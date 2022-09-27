@@ -107,7 +107,7 @@ class DatabusApplicationQueue(DatabusQueue):
             except queue.Empty as e:
                 sleep(1)
             except Exception as e:
-                message = "Error occured process message in DatabusApplicationQueue. Trace : {} - entry : {}".format(
+                message = "Error occured process message in DatabusApplicationQueue. Trace : {}".format(
                     traceback.format_exc())
                 # self.logger.log(self.license_plate + "Exception: " + message)
                 self.exception_logger.log(self.license_plate + "Exception: " + message)
