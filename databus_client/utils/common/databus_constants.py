@@ -49,6 +49,3 @@ class DatabusMessageGroup(enum.Enum):
     FLOWS = "flows"
     VMS = "vms"
     HOSTS = "hosts"
-
-
-DATABUS_MONGO_IP = "10.89.69.157:27017,10.89.69.154:27017,10.89.69.156:27017,10.89.69.153:27017,10.89.69.155:27017"
