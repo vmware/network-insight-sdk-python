@@ -21,7 +21,7 @@ class DatabusHeartBeatDbHandler:
     """
     _instance = None
     _queue = queue.Queue()
-    num_of_worker_threads = 10
+    num_of_worker_threads = 2
 
     def __init__(self, logger=None, ex_log=None):
         self.logger = logger
@@ -53,6 +53,6 @@ class DatabusHeartBeatDbHandler:
             except queue.Empty as e:
                 sleep(1)
             except Exception as e:
-                message = "Error occured process message in DatabusheartbeatDbHandler. Trace : {} - entry : {}".format(
+                message = "Error occured process message in DatabusheartbeatDbHandler. Trace : {}".format(
                     traceback.format_exc())
                 self.exception_logger.log(self.license_plate + "Exception: " + message)

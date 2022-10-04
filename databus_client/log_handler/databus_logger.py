@@ -3,12 +3,12 @@ from threading import Lock
 from datetime import datetime
 
 path = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "../utils/common/files/"))
+    os.path.join(os.path.dirname(__file__), "../logs/"))
 
 
 class DatabusLoggerHandler:
     """
-    This helps periodically save in-memory dict (if used) in pickle format.
+    This creates log files structure per message group
     """
     main_folder = "databus_logs"
     sub_folders_files = {"applications": "applications",
@@ -26,16 +26,16 @@ class DatabusLoggerHandler:
     paths_dict = dict()
     lock = Lock()
 
-    def create_file_structure(self):
+    @staticmethod
+    def create_file_structure():
         print("Creating folder and file structure")
-        if os.path.exists(path + '/' + self.main_folder):
+        if os.path.exists(path + '/' + DatabusLoggerHandler.main_folder):
             pass
         else:
-            os.makedirs(path + '/' + self.main_folder)
-        sub_path = os.path.abspath(os.path.join(path + '/' + self.main_folder))
+            os.makedirs(path + '/' + DatabusLoggerHandler.main_folder)
+        sub_path = os.path.abspath(os.path.join(path + '/' + DatabusLoggerHandler.main_folder))
         x = datetime.now()
-        for key, value in self.sub_folders_files.items():
-            # print("Creating folder and file for {}".format(key))
+        for key, value in DatabusLoggerHandler.sub_folders_files.items():
             if os.path.exists(sub_path + '/' + key):
                 pass
             else:
@@ -43,13 +43,19 @@ class DatabusLoggerHandler:
             file_path = os.path.abspath(os.path.join((sub_path + '/' + key)))
             file_name = x.strftime(value + '_' + '%d-%m-%Y' + '.log')
             open(file_path + '/' + file_name, 'a')
-            self.paths_dict[key] = file_path + "/" + file_name
+            DatabusLoggerHandler.paths_dict[key] = file_path + "/" + file_name
         return "Done"
 
-    def get_file_path(self, message_group=None):
-        return self.paths_dict[message_group]
+    @staticmethod
+    def get_file_path(message_group=None):
+        return DatabusLoggerHandler.paths_dict[message_group]
 
-    def get_file_name(self, message_group=None):
-        for key, value in self.paths_dict:
+    @staticmethod
+    def get_file_name(message_group=None):
+        for key, value in DatabusLoggerHandler.paths_dict:
             if key == message_group:
                 return value
+
+    @staticmethod
+    def set_file_path(message_group=None, file_path=None):
+        DatabusLoggerHandler.paths_dict[message_group] = file_path

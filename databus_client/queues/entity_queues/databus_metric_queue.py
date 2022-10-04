@@ -5,7 +5,7 @@ from time import sleep
 from databus_client.db_handler.mongoDB_handler.databus_client_data_service import DatabusClientDataService
 from databus_client.db_handler.mongoDB_handler.databus_metric_db_handler import DatabusMetricDbHandler
 from databus_client.log_handler.log_queue import LogQueue
-from databus_client.queues.filters.metric_filter import MetricFilter
+from databus_client.filters.metric_filter import MetricFilter
 from databus_client.queues.entity_queues.databus_queue import DatabusQueue
 from databus_client.db_handler.mongoDB_handler.databus_hb_dbhandler import DatabusHeartBeatDbHandler
 from databus_client.utils.databus_utilities import DatabusUtilities
@@ -13,11 +13,11 @@ from databus_client.utils.databus_utilities import DatabusUtilities
 
 class DatabusMetricsQueue(DatabusQueue):
 
-    def __init__(self, use_mongo=True, message_group=None):
+    def __init__(self, use_mongo=True, message_group=None, file_threshold=None):
         super(DatabusMetricsQueue, self).__init__(message_group=message_group,
                                                   num_of_worker_threads=2, use_mongo=use_mongo)
-        self.logger = LogQueue(num_of_worker_threads=2, message_group=self.message_group)
-        self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception")
+        self.logger = LogQueue(num_of_worker_threads=2, message_group=self.message_group, file_threshold=file_threshold)
+        self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception", file_threshold=file_threshold)
         self.license_plate = ""
         self.source_entity_id_lookup = dict()
 
@@ -54,9 +54,7 @@ class DatabusMetricsQueue(DatabusQueue):
                     Getting filtered pass
                     """
                     self.logger.log(self.license_plate + "Passing through filter.")
-                    metric_filter = MetricFilter()
-
-                    pass_through, entry = metric_filter.pass_metric_filter(source=source, entry=entry, message_group=self.message_group)
+                    pass_through, entry = MetricFilter.pass_metric_filter(source=source, entry=entry, message_group=self.message_group)
 
                     if pass_through:
                         data = self.get_dict_val("data", entry)

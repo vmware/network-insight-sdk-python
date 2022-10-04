@@ -23,6 +23,11 @@ class DatabusMongo(DatabusConstants):
     TYPE = 'type'
     CLIENT_KEY = 'client_key'
     TOKEN = 'token'
+    MATCHED_FILTER = 'matched_filter'
+    UNMATCHED_FILTER = 'unmatched_filter'
+    NON_METRIC_FILTER = 'non_metric_filter'
+    METRIC_FILTER = 'metric_filter'
+    SUB_METRIC_FILTER = 'sub_metric_filter'
 
 
 class DatabusSSHConstants(DatabusConstants):

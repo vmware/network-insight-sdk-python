@@ -1,5 +1,5 @@
 # Databus Client for vRNI
-Starting vRealize Network Insight (vRNI) 3.6, vRNI platform has a public API. This Python SDK provides you a setup that can spawn a client which can receive data via databus from vRNI.
+Starting vRealize Network Insight (vRNI) 6.6, vRNI platform has a public API. This Python SDK provides you a setup that can spawn a client which can receive data via databus from vRNI.
 
 This module is not supported by VMware, and comes with no warranties express or implied. Please test and validate its functionality before using in a production environment. If you have any issue please raise a github issue.
 Included SDK is compatible with vRNI 6.6, 6.7, 6.8 and onwards
@@ -11,9 +11,34 @@ Then install the prerequisites with: pip install -r databus_client/requirements.
 
 Get the latest docker image from databus_client/dockerImages/
 
-Start docker container with the image
+1. Start docker container with the image:
 
-You are ready to go.
+   Expected arguments are:
+* port - Port on which client should be brought up
+* enable_telemetry - Set to true to enable telemetry
+* use_mongo - set to true if data received from client should be pushed to mongo
+* mongo_server_ip - mongo server ip (is not passed, default set to localhost:27017)
+* https - set to true if client has to be up in https mode
+* cert_file_path - pass absolute path for cert file (needed only for https client)
+* key_file_path - pass absolute path for key file (needed only for https client)
+* file_threshold - pass threshold size of working log file in MB. Above threshold files will be rolled over
+
+
+2. Mongo cleanup:
+
+   Execute script - databus_client/health_monitoring/on_system_mongo_cleanup.py
+   
+   Example: python3 databus_client/health_monitoring/on_system_mongo_cleanup.py --source sourceName --dbName DatabaseName --colName CollectionName
+
+   * Here if no collection name is passed complete mongo cleanup will be performed. Else cleanup for only particular collection for particular source will be done 
+   * If source is not provided, then cleanup will be done for complete collection
+
+
+3. For using client, filters are to be configured first:
+
+   Set filters:
+
+   API : 
 
 ## Examples
 The **examples/** directory is full of examples that use the Network Insight Python SDK and inspires you to contribute to the project.

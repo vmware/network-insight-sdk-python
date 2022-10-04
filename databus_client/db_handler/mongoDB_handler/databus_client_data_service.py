@@ -45,6 +45,7 @@ class DatabusClientDataService(object):
     exception_logger = None
     license_plate = "[License Plate: DB service] "
 
+    @classmethod
     def set_ex_logger(cls):
         if cls.exception_logger:
             pass
@@ -282,19 +283,22 @@ class DatabusClientDataService(object):
 
     @classmethod
     def put_new_nonmetric_entity_message_group_data(cls, data, message_group):
-        # TODO: add try catch here, send false on catch
+
         if message_group in NON_METRIC_MSG_GRPS:
             db_entry_new_non_metric = MESSAGE_GRP_DB_SCHEMA[message_group](source=data[DatabusMongo.SOURCE],
                                                                            entity_id=data[DatabusMongo.ENTITY_ID],
                                                                            message=data[DatabusMongo.MESSAGE],
                                                                            token=data[DatabusMongo.TOKEN])
-            db_entry_new_non_metric.save()
+            try:
+                db_entry_new_non_metric.save()
+            except Exception as e:
+                cls.exception_logger.log(cls.license_plate + "Exception: Error pushing message to mongo")
+                return False, "Exception: Error pushing message to mongo"
 
         else:
             message = "Incorrect message group passed put_new_nonmetric_entity_message_group_data :  {}".format(
                 message_group)
             return False, message
-
         return True, None
 
     @classmethod
@@ -307,7 +311,11 @@ class DatabusClientDataService(object):
 
         if message_group in NON_METRIC_MSG_GRPS:
             db_entry_update_non_metric = MESSAGE_GRP_DB_SCHEMA[message_group].objects(**params)
-            db_entry_update_non_metric.update_one(message=data["message"])
+            try:
+                db_entry_update_non_metric.update_one(message=data["message"])
+            except Exception as e:
+                cls.exception_logger.log(cls.license_plate + "Exception: Error pushing message to mongo")
+                return False, "Exception: Error pushing message to mongo"
         else:
             message = "Incorrect message group passed put_new_nonmetric_entity_message_group_data :  {}".format(
                 message_group)
@@ -423,8 +431,39 @@ class DatabusClientDataService(object):
                                               )
 
         db_entry.save()
-
         return
+
+    @classmethod
+    def put_filters(cls, data):
+        db_entry = DatabusClientFilterData(matched_filter=data[DatabusMongo.MATCHED_FILTER],
+                                           unmatched_filter=data[DatabusMongo.UNMATCHED_FILTER],
+                                           non_metric_filter=data[DatabusMongo.NON_METRIC_FILTER],
+                                           metric_filter=data[DatabusMongo.METRIC_FILTER],
+                                           sub_metric_filter=data[DatabusMongo.SUB_METRIC_FILTER]
+                                           )
+        db_entry.save()
+        return
+
+    @classmethod
+    def get_filters(cls):
+        data = DatabusClientFilterData.objects(None)
+        f_dict = cls.process_filter_data(data=data)
+        return f_dict
+
+    @classmethod
+    def process_filter_data(cls, data=None):
+        f = dict()
+        if data:
+            for x in data:
+                if type(x) == DatabusClientFilterData:
+                    f['matched_filter'] = x.matched_filter
+                    f['unmatched_filter'] = x.unmatched_filter
+                    f['non_metric_filter'] = x.non_metric_filter
+                    f['metric_filter'] = x.metric_filter
+                    f['sub_metric_filter'] = x.sub_metric_filter
+            return f
+        else:
+            return None
 
     @classmethod
     def get_query_params(cls, source, message_group, entity_id=None):

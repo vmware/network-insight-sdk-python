@@ -1,6 +1,6 @@
-from databus_client.queues.filters.structs.metric_struct import MetricStruct
-from databus_client.queues.filters.structs.non_metric_struct import NonMetricStruct
-from databus_client.queues.filters.structs.sub_metric_struct import SubMetricStruct
+from databus_client.filters.structs.metric_struct import MetricStruct
+from databus_client.filters.structs.non_metric_struct import NonMetricStruct
+from databus_client.filters.structs.sub_metric_struct import SubMetricStruct
 
 
 class FilterStruct:

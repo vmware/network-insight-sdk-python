@@ -9,21 +9,19 @@ import traceback
 from datetime import datetime
 from json.decoder import JSONDecodeError
 import ssl
-import socket
 
 import pytz
 from flask import Flask, Response
 from flask import jsonify
 from flask import request
-from mongoengine import connect
 
 from databus_client.db_handler.mongoDB_handler.connection import MongoDBConnection
 from databus_client.db_handler.mongoDB_handler.databus_client_data_service import DatabusClientDataService
 from databus_client.db_handler.mongoDB_handler.databus_metric_db_handler import DatabusMetricDbHandler
 from databus_client.log_handler.databus_logger import DatabusLoggerHandler
 from databus_client.log_handler.log_queue import LogQueue
-from databus_client.queues.filter_manager import FilterManager
-from databus_client.queues.queue_manager import DatabusQueueManager
+from databus_client.filters.filter_manager import FilterManager
+from databus_client.filters.queue_manager import DatabusQueueManager
 from databus_client.utils.common.databus_constants import DatabusMessageGroup
 from databus_client.utils.common.databus_message_entity_count_recorder import DatabusMessageEntityCountRecorder
 from databus_client.utils.common.databus_queue_telemetry import DatabusQueueTelemetry
@@ -378,24 +376,17 @@ def do_copy(queue_processor=None, message_group=None):
         if enable_telemetry: telemetry.update_copy_telemetry(status=request_status, info_data_dict=info_dict)
 
 
-def get_ip_address():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    # this is some random ip address
-    s.connect(("8.8.8.8", 80))
-    return s.getsockname()[0]
-
-
 def parse_arguments():
     parser = argparse.ArgumentParser(description="HTTP server end point configuration for databus")
     parser.add_argument("--host", default="0.0.0.0", action="store", dest="host")
     parser.add_argument("--port", default="5001", action="store", dest="port")
     parser.add_argument("--enable_telemetry", default="True", action="store")
     parser.add_argument("--use_mongo", default="True", action="store")
-    parser.add_argument("--mongo_server_ip", default="localhost:27017", action="store")
+    parser.add_argument("--mongo_server_ip", default="10.89.69.157:27017,10.89.69.154:27017,10.89.69.156:27017,10.89.69.153:27017,10.89.69.155:27017", action="store")
     parser.add_argument("--https", default="False", action="store")
     parser.add_argument("--cert_file_path", default="", action="store")
     parser.add_argument("--key_file_path", default="", action="store")
-    parser.add_argument("--file_threshold", default=200, action="store")
+    parser.add_argument("--file_threshold", default=100, action="store")
     args_cmd = parser.parse_args()
     return args_cmd
 
@@ -409,45 +400,41 @@ def load_staging_ssl(cert_file_path=None, key_file_path=None):
     return staging_context
 
 
+def get_file_threshold():
+    return file_threshold
+
+
 if __name__ == "__main__":
+    print("###################INITIALIZING DATABUS CLIENT#########################")
     args = parse_arguments()
     use_mongo = bool(distutils.util.strtobool(args.use_mongo))
     enable_telemetry = bool(distutils.util.strtobool(args.enable_telemetry))
     bringup_https = bool(distutils.util.strtobool(args.https))
-    host_ip_address = get_ip_address()
     file_threshold = args.file_threshold
-    f_manager = FilterManager()
 
-    handler = DatabusLoggerHandler()
-    handler.create_file_structure()
-
-    mdb_hand = DatabusMetricDbHandler()
-    mdb_hand.set_ex_logger()
-    exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception")
-    license_plate = "[License Plate: Endpoint] "
-
-    dbcDataService = DatabusClientDataService()
-    dbcDataService.set_ex_logger()
-    # hosted port
-    hosted_port = args.port
-
-    dbclient_queue_handler = DatabusQueueManager(host_ip=args.host,  # host is usually always 0.0.0.0
-                                                 host_port=hosted_port,
-                                                 use_mongo=use_mongo)
-
-    telemetry = DatabusQueueTelemetry()
-
+    print("*******************Connecting to MONGO************************")
     MongoDBConnection(server_url=args.mongo_server_ip,
                       database_name="databus_client_data",
                       alias='databus_client_data')
-    print("*************** Selecting Mongo: " + str(args.mongo_server_ip) + "***************")
-    DEFAULT_CONNECTION_NAME = connect('databus_client_data', host=os.getenv('MONGO_URI', args.mongo_server_ip))
+    print("********************Setting up processes**********************")
+    DatabusLoggerHandler.create_file_structure()
+
+    license_plate = "[License Plate: Endpoint] "
+
+    dbclient_queue_handler = DatabusQueueManager(use_mongo=use_mongo, file_threshold=file_threshold)
+    DatabusClientDataService.set_ex_logger()
+    mdb_hand = DatabusMetricDbHandler()
+    mdb_hand.set_ex_logger()
+    exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception", file_threshold=file_threshold)
+
+    telemetry = DatabusQueueTelemetry()
+    f_manager = FilterManager()
 
     t = threading.Thread(target=DatabusMessageEntityCountRecorder.get_instance().start_recording)
     t.start()
 
     if bringup_https:
         context = load_staging_ssl(cert_file_path=args.cert_file_path, key_file_path=args.key_file_path)
-        app.run(ssl_context=context, host=args.host, port=hosted_port, debug=True)
+        app.run(ssl_context=context, host=args.host, port=args.port, debug=True)
     else:
-        app.run(host=args.host, port=hosted_port, debug=False)
+        app.run(host=args.host, port=args.port, debug=False)

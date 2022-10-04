@@ -233,3 +233,15 @@ class DatabusClientHeartBeatData(mongoengine.Document):
             'token'
         ]
     }
+
+
+class DatabusClientFilterData(mongoengine.Document):
+    matched_filter = mongoengine.StringField()
+    unmatched_filter = mongoengine.StringField()
+    non_metric_filter = mongoengine.ListField()
+    metric_filter = mongoengine.ListField()
+    sub_metric_filter = mongoengine.ListField()
+    meta = {
+        'db_alias': 'databus_client_data',
+        'collection': 'filter_configuration',
+    }

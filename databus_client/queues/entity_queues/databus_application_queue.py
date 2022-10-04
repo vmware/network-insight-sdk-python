@@ -1,12 +1,11 @@
 import queue
 import traceback
-import random
 from time import sleep
 
 from databus_client.db_handler.mongoDB_handler.databus_client_data_service import DatabusClientDataService
 from databus_client.log_handler.log_queue import LogQueue
 
-from databus_client.queues.filters.non_metric_filter import NonMetricFilter
+from databus_client.filters.non_metric_filter import NonMetricFilter
 from databus_client.utils.common.databus_constants import DatabusMessageGroup
 from databus_client.queues.entity_queues.databus_queue import DatabusQueue
 from databus_client.db_handler.mongoDB_handler.databus_hb_dbhandler import DatabusHeartBeatDbHandler
@@ -15,11 +14,14 @@ from databus_client.utils.databus_utilities import DatabusUtilities
 
 class DatabusApplicationQueue(DatabusQueue):
 
-    def __init__(self, use_mongo=True, message_group=None):
+    def __init__(self, use_mongo=True, message_group=None, file_threshold=None):
         super(DatabusApplicationQueue, self).__init__(message_group=DatabusMessageGroup.APPLICATIONS.value,
-                                                      num_of_worker_threads=2, use_mongo=use_mongo)
-        self.logger = LogQueue(num_of_worker_threads=2, message_group=DatabusMessageGroup.APPLICATIONS.value)
-        self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception")
+                                                      num_of_worker_threads=2, use_mongo=use_mongo,
+                                                      file_threshold=file_threshold)
+        self.logger = LogQueue(num_of_worker_threads=2, message_group=DatabusMessageGroup.APPLICATIONS.value,
+                               file_threshold=file_threshold)
+        self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception",
+                                         file_threshold=file_threshold)
         self.license_plate = ""
 
     def start_processing_data(self):
@@ -48,7 +50,8 @@ class DatabusApplicationQueue(DatabusQueue):
                     self.append_key_val_in_dict(message, ["timestamp"], entry)
                     self.logger.log(
                         self.license_plate + ". Message received is identified as heartbeat. Bypassing filters")
-                    DatabusHeartBeatDbHandler.get_instance(logger=self.logger, ex_log=self.exception_logger).add_to_queue(message)
+                    DatabusHeartBeatDbHandler.get_instance(logger=self.logger,
+                                                           ex_log=self.exception_logger).add_to_queue(message)
                 else:
                     # if data message
                     self.append_key_val_in_dict(message, ["data"], entry)
@@ -67,10 +70,11 @@ class DatabusApplicationQueue(DatabusQueue):
                     Getting filtered pass
                     """
                     self.logger.log(self.license_plate + "Passing through filter.")
-                    non_metric_filter = NonMetricFilter()
 
-                    pass_through = non_metric_filter.pass_non_metric_filter(source=source, entity_id=entity_id,
-                                                                            entity_name=message["data"]["name"])
+                    pass_through = NonMetricFilter.pass_non_metric_filter(source=source, entity_id=entity_id,
+                                                                          entity_name=message["data"][
+                                                                              "name"] if "name" in message[
+                                                                              "data"] else None)
 
                     if pass_through:
                         self.logger.log(self.license_plate + "Got pass through from filter. Pushing data to downstream")
@@ -80,9 +84,12 @@ class DatabusApplicationQueue(DatabusQueue):
                                 push_db = DatabusClientDataService.update_nonmetric_entity_message_group_data(db_entry,
                                                                                                               message_group=self.message_group)
                                 if push_db[0]:
-                                    self.logger.log(self.license_plate + "updated new application in mongo -> {} ".format(entity_id))
+                                    self.logger.log(
+                                        self.license_plate + "updated new application in mongo -> {} ".format(
+                                            entity_id))
                                 else:
-                                    self.logger.log(self.license_plate + "Error while pushing data to downstream: " + push_db[1])
+                                    self.logger.log(
+                                        self.license_plate + "Error while pushing data to downstream: " + push_db[1])
                             else:
                                 source_map.update({entity_id: message})
                                 self.logger.log(self.license_plate + "updated application -> {} ".format(entity_id))
@@ -94,7 +101,7 @@ class DatabusApplicationQueue(DatabusQueue):
                                 source_map[entity_id] = dict()  # for look up only, hence not saving the message
                                 if push_db[0]:
                                     self.logger.log(self.license_plate +
-                                        "added new application in mongo -> {} ".format(entity_id))
+                                                    "added new application in mongo -> {} ".format(entity_id))
                                 else:
                                     self.logger.log(
                                         self.license_plate + "Error while pushing data to downstream: " + push_db[1])
@@ -103,11 +110,12 @@ class DatabusApplicationQueue(DatabusQueue):
                                 self.logger.log(self.license_plate + "added new application-> {} ".format(entity_id))
                         self.queue.task_done()
                     else:
-                        self.logger.log(self.license_plate + "Data was eliminated from the filter criteria. Was not pushed further downstream")
+                        self.logger.log(
+                            self.license_plate + "Data was eliminated from the filter criteria. Was not pushed "
+                                                 "further downstream")
             except queue.Empty as e:
                 sleep(1)
             except Exception as e:
                 message = "Error occured process message in DatabusApplicationQueue. Trace : {}".format(
                     traceback.format_exc())
-                # self.logger.log(self.license_plate + "Exception: " + message)
                 self.exception_logger.log(self.license_plate + "Exception: " + message)

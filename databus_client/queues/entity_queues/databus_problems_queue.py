@@ -5,7 +5,7 @@ from time import sleep
 from databus_client.db_handler.mongoDB_handler.databus_client_data_service import DatabusClientDataService
 from databus_client.db_handler.mongoDB_handler.databus_hb_dbhandler import DatabusHeartBeatDbHandler
 from databus_client.log_handler.log_queue import LogQueue
-from databus_client.queues.filters.non_metric_filter import NonMetricFilter
+from databus_client.filters.non_metric_filter import NonMetricFilter
 from databus_client.utils.common.databus_constants import DatabusMessageGroup
 from databus_client.queues.entity_queues.databus_queue import DatabusQueue
 from databus_client.utils.databus_utilities import DatabusUtilities
@@ -13,11 +13,11 @@ from databus_client.utils.databus_utilities import DatabusUtilities
 
 class DatabusProblemsQueue(DatabusQueue):
 
-    def __init__(self, use_mongo=True, message_group=None):
+    def __init__(self, use_mongo=True, message_group=None, file_threshold=None):
         super(DatabusProblemsQueue, self).__init__(message_group=DatabusMessageGroup.PROBLEMS.value,
                                                    num_of_worker_threads=2, use_mongo=use_mongo)
-        self.logger = LogQueue(num_of_worker_threads=2, message_group=DatabusMessageGroup.PROBLEMS.value)
-        self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception")
+        self.logger = LogQueue(num_of_worker_threads=2, message_group=DatabusMessageGroup.PROBLEMS.value, file_threshold=file_threshold)
+        self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception", file_threshold=file_threshold)
         self.license_plate = DatabusUtilities.get_license_plate()
 
     def start_processing_data(self):
@@ -66,9 +66,8 @@ class DatabusProblemsQueue(DatabusQueue):
                     Getting filtered pass
                     """
                     self.logger.log(self.license_plate + "Passing through filter.")
-                    non_metric_filter = NonMetricFilter()
-                    pass_through = non_metric_filter.validate_from_non_metric_filter(source=source, entry=entry,
-                                                                                     message_group=DatabusMessageGroup.PROBLEMS)
+                    pass_through = NonMetricFilter.pass_non_metric_filter(source=source, entity_id=entity_id,
+                                                                          entity_name=message["data"]["name"] if "name" in message["data"] else None)
 
                     if pass_through:
                         if entity_id in source_map:

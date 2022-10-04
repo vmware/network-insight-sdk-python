@@ -9,12 +9,13 @@ class DatabusQueue:
 
     def __init__(self, message_group=None,
                  num_of_worker_threads=2,
-                 use_mongo=False):
+                 use_mongo=False, file_threshold=None):
         self.queue = queue.Queue()
         self.data_map = dict()
         self.threads = list()
         self.num_of_worker_threads = num_of_worker_threads
         self.message_group = message_group
+        self.file_threshold = file_threshold
         self.count = 0  # depicts count of an entity process in queue (eq to count of unique entity ids)
         self.use_mongo = use_mongo
 

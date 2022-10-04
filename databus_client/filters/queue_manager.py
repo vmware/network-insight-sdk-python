@@ -32,15 +32,14 @@ class DatabusQueueManager:
     }
 
     def __init__(self,
-                 host_ip=None,
-                 host_port=None,
-                 use_mongo=True):
+                 use_mongo=True,
+                 file_threshold=None):
 
         self.q_processors = dict()
 
         for message_group, cls in self.ENDPOINT_CLASS_MAP.items():
             klass = globals()[cls.__name__]
-            instance = klass(use_mongo=use_mongo, message_group=message_group)
+            instance = klass(use_mongo=use_mongo, message_group=message_group, file_threshold=file_threshold)
             att_name = message_group+"_qProcessor"
             self.__setattr__(att_name, instance)
             self.q_processors.update({message_group: self.__getattribute__(att_name)})
