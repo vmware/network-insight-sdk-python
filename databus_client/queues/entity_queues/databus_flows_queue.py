@@ -8,6 +8,7 @@ from databus_client.filters.non_metric_filter import NonMetricFilter
 from databus_client.utils.common.databus_constants import DatabusMessageGroup
 from databus_client.queues.entity_queues.databus_queue import DatabusQueue
 from databus_client.db_handler.mongoDB_handler.databus_hb_dbhandler import DatabusHeartBeatDbHandler
+from databus_client.utils.common.databus_queue_telemetry import DatabusQueueTelemetry
 from databus_client.utils.databus_utilities import DatabusUtilities
 
 
@@ -80,7 +81,14 @@ class DatabusFlowsQueue(DatabusQueue):
                                                                               entity_name=message["data"][
                                                                                   "name"] if "name" in message[
                                                                                   "data"] else None)
+
+                        if type(pass_through) == str:
+                            self.logger.log(self.license_plate + pass_through)
+                            pass_through = True
+
                         if pass_through:
+                            DatabusQueueTelemetry().update_filter_telemetry(call_type="ALLOWED_BY_FILTER",
+                                                                            message_group=self.message_group)
                             if entity_id in source_map:
                                 if self.use_mongo:
                                     push_db = DatabusClientDataService.update_nonmetric_entity_message_group_data(
@@ -114,6 +122,8 @@ class DatabusFlowsQueue(DatabusQueue):
                         else:
                             self.logger.log(
                                 self.license_plate + "Data was eliminated from the filter criteria. Was not pushed further downstream")
+                            DatabusQueueTelemetry().update_filter_telemetry(call_type="REMOVED_BY_FILTER",
+                                                                            message_group=self.message_group)
 
                 self.queue.task_done()
             except queue.Empty as e:
@@ -122,3 +132,4 @@ class DatabusFlowsQueue(DatabusQueue):
                 message = "Error occured process message in DatabusFlowsQueue. Trace : {}".format(
                     traceback.format_exc())
                 self.exception_logger.log(self.license_plate + "Exception: " + message)
+                DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)

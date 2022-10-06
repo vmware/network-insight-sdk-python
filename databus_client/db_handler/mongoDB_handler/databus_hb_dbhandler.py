@@ -5,6 +5,7 @@ from time import sleep
 
 from databus_client.db_handler.mongoDB_handler.databus_client_data_service import DatabusClientDataService
 from databus_client.log_handler.log_queue import LogQueue
+from databus_client.utils.common.databus_queue_telemetry import DatabusQueueTelemetry
 from databus_client.utils.databus_utilities import DatabusUtilities
 
 
@@ -56,3 +57,4 @@ class DatabusHeartBeatDbHandler:
                 message = "Error occured process message in DatabusheartbeatDbHandler. Trace : {}".format(
                     traceback.format_exc())
                 self.exception_logger.log(self.license_plate + "Exception: " + message)
+                DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)

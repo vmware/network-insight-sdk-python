@@ -167,8 +167,9 @@ def filters():
             record = request.get_json()
             for key, value in record.items():
                 filter_dict[key] = value
-            f_manager.set_filters(filter_dict=filter_dict)
-            return Response("Filters successfully configured")
+            FilterManager().set_filters(filter_dict=filter_dict)
+            request_status = 200
+            return Response("Filters successfully configured", request_status)
 
         elif request.method == 'GET':
             request_filter_dict = dict()
@@ -176,10 +177,10 @@ def filters():
                 request_filter_dict[key] = value
             if "source" in request_filter_dict:
                 source = request_filter_dict["source"]
-                result = f_manager.get_filters(source=source)
+                result = FilterManager().get_filters(source=source)
             else:
-                result = f_manager.get_filters(source=None)
-
+                result = FilterManager().get_filters(source=None)
+            request_status = 200
             return Response(json.dumps(result), content_type=json)
 
         elif request.method == 'PUT':
@@ -191,8 +192,10 @@ def filters():
                 else:
                     filter_dict[key] = value
             if "source" not in filter_dict:
-                return Response("Source is required.", 500)
-            message = f_manager.update_filters(filter_dict=filter_dict)
+                request_status = 500
+                return Response("Source is required.", request_status)
+            request_status = 200
+            message = FilterManager().update_filters(filter_dict=filter_dict)
             return Response(json.dumps(message), content_type=json)
 
         elif request.method == 'DELETE':
@@ -202,15 +205,31 @@ def filters():
             if "source" in request_filter_dict:
                 source = request_filter_dict["source"]
             else:
-                return Response("Source is required.", 500)
-            done = f_manager.delete_filters(source=source)
+                request_status = 500
+                return Response("Source is required.", request_status)
+            done = FilterManager().delete_filters(source=source)
             if done:
                 return Response("Deleted source {} from filter".format(source))
             else:
-                return Response("Source does not exist in source", 204)
+                request_status = 204
+                return Response("Source does not exist in source", request_status)
     except Exception as e:
         exception_logger.log(
             license_plate + "Exception occurred while fetching/sending filters - " + traceback.format_exc())
+        DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)
+    finally:
+        info_dict = {"message_group": "filters"}
+        if request_status is None:
+            request_status = 200
+        if enable_telemetry:
+            if request.method == 'POST':
+                telemetry.update_post_telemetry(status=request_status, info_data_dict=info_dict)
+            if request.method == 'GET':
+                telemetry.update_get_telemetry(status=request_status, info_data_dict=info_dict)
+            if request.method == 'PUT':
+                telemetry.update_put_telemetry(status=request_status, info_data_dict=info_dict)
+            if request.method == 'DELETE':
+                telemetry.update_delete_telemetry(status=request_status, info_data_dict=info_dict)
 
 
 @app.route("/entity_filters", methods=["GET"])
@@ -228,29 +247,29 @@ def get_entity_filter():
         result = None
         if "entity" in request_filter_dict:
             if request_filter_dict["entity"] == 'applications':
-                result = f_manager.get_application_filter(source=source)
+                result = FilterManager().get_application_filter(source=source)
             elif request_filter_dict["entity"] == 'vms':
-                result = f_manager.get_vms_filter(source=source)
+                result = FilterManager().get_vms_filter(source=source)
             elif request_filter_dict["entity"] == 'hosts':
-                result = f_manager.get_hosts_filter(source=source)
+                result = FilterManager().get_hosts_filter(source=source)
             elif request_filter_dict["entity"] == 'flows':
-                result = f_manager.get_flows_filter(source=source)
+                result = FilterManager().get_flows_filter(source=source)
             elif request_filter_dict["entity"] == 'nics':
-                result = f_manager.get_nics_filter(source=source)
+                result = FilterManager().get_nics_filter(source=source)
             elif request_filter_dict["entity"] == 'problems':
-                result = f_manager.get_problems_filter(source=source)
+                result = FilterManager().get_problems_filter(source=source)
             elif request_filter_dict["entity"] == 'metrics':
-                result = f_manager.get_metrics_filter(source=source)
+                result = FilterManager().get_metrics_filter(source=source)
             elif request_filter_dict["entity"] == 'vms-metrics':
-                result = f_manager.get_vms_metrics_filter(source=source)
+                result = FilterManager().get_vms_metrics_filter(source=source)
             elif request_filter_dict["entity"] == 'hosts-metrics':
-                result = f_manager.get_hosts_metrics_filter(source=source)
+                result = FilterManager().get_hosts_metrics_filter(source=source)
             elif request_filter_dict["entity"] == 'flows-metrics':
-                result = f_manager.get_flows_metrics_filter(source=source)
+                result = FilterManager().get_flows_metrics_filter(source=source)
             elif request_filter_dict["entity"] == 'nics-metrics':
-                result = f_manager.get_nics_metrics_filter(source=source)
+                result = FilterManager().get_nics_metrics_filter(source=source)
             elif request_filter_dict["entity"] == 'switchports-metrics':
-                result = f_manager.get_switchport_metrics_filter(source=source)
+                result = FilterManager().get_switchport_metrics_filter(source=source)
         else:
             return Response("Entity is required.", 500)
 
@@ -258,6 +277,7 @@ def get_entity_filter():
     except Exception as e:
         message = "Exception occurred in entity_filters -" + format(traceback.format_exc())
         exception_logger.log(license_plate + message)
+        DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)
 
 
 def databus_queue_processor(request=None, message_group=None):
@@ -273,6 +293,7 @@ def databus_queue_processor(request=None, message_group=None):
             return do_copy(queue_processor=queue_processor, message_group=message_group)
     except Exception as e:
         exception_logger.log(license_plate + e)
+        DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)
         raise Exception("EXCEPTION IN {} REQUEST".format(request.method))
 
 
@@ -370,6 +391,7 @@ def do_copy(queue_processor=None, message_group=None):
     except Exception as e:
         message = "Unexpected Exception during COPY call. Trace ... \n\n{}".format(traceback.format_exc())
         exception_logger.log(license_plate + "Exception: " + message)
+        DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)
         request_status = 500
         return Response("Internal Server Error. Contact Developer. Message: {}".format(message), request_status)
     finally:
@@ -412,10 +434,16 @@ if __name__ == "__main__":
     bringup_https = bool(distutils.util.strtobool(args.https))
     file_threshold = args.file_threshold
 
-    print("*******************Connecting to MONGO************************")
-    MongoDBConnection(server_url=args.mongo_server_ip,
-                      database_name="databus_client_data",
-                      alias='databus_client_data')
+    if not use_mongo:
+        FilterManager().set_use_local(flag=True)
+        print("******************Starting in NO Mongo mode*******************")
+    else:
+        print("*******************Connecting to MONGO************************")
+        MongoDBConnection(server_url=args.mongo_server_ip,
+                          database_name="databus_client_data",
+                          alias='databus_client_data')
+        FilterManager()
+
     print("********************Setting up processes**********************")
     DatabusLoggerHandler.create_file_structure()
 
@@ -428,7 +456,6 @@ if __name__ == "__main__":
     exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception", file_threshold=file_threshold)
 
     telemetry = DatabusQueueTelemetry()
-    f_manager = FilterManager()
 
     t = threading.Thread(target=DatabusMessageEntityCountRecorder.get_instance().start_recording)
     t.start()

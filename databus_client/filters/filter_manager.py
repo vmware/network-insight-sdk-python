@@ -1,6 +1,7 @@
 import collections
 import json
 import os
+import threading
 from pprint import pprint
 
 from databus_client.db_handler.mongoDB_handler.databus_client_data_service import DatabusClientDataService
@@ -14,11 +15,13 @@ sub_metrics_message_group = ["vms-metrics", "hosts-metrics", "flows-metrics", "h
 
 
 def singleton(class_):
+    lock = threading.Lock()
     instances = {}
 
     def getinstance(*args, **kwargs):
         if class_ not in instances:
-            instances[class_] = class_(*args, **kwargs)
+            with lock:
+                instances[class_] = class_(*args, **kwargs)
         return instances[class_]
 
     return getinstance
@@ -29,20 +32,26 @@ class FilterManager:
     non_metric_filter_table = dict()
     metric_filter_table = dict()
     sub_metric_filter_table = dict()
+    use_local = False
 
     def __init__(self):
         self.non_metric_filter_table = self.get_non_metric_filter_table()
         self.metric_filter_table = self.get_metric_filter_table()
         self.sub_metric_filter_table = self.get_sub_metric_filter_table()
 
+    def set_use_local(self, flag):
+        self.use_local = flag
+
     def set_filters(self, filter_dict=None):
         # To access from local file use below
-        # file = open(path, "w")  # append mode
-        # file.write(str(json.dumps(filter_dict)) + "\n")
-        # file.close()
 
-        # Accessing from database
-        DatabusClientDataService.put_filters(filter_dict)
+        if self.use_local:
+            file = open(path, "w")  # append mode
+            file.write(str(json.dumps(filter_dict)) + "\n")
+            file.close()
+        else:
+            # Accessing from database
+            DatabusClientDataService.put_filters(filter_dict)
 
     def update_filters(self, filter_dict=None):
         update_message = dict()
@@ -280,9 +289,9 @@ class FilterManager:
         else:
             return False
 
-    def get_filters(self, source=None, use_local=False):
+    def get_filters(self, source=None):
         # use_local fetches data from local file, else from db
-        if use_local:
+        if self.use_local:
             file = open(path, "r")
             m_filters = json.loads(file.read())
             file.close

@@ -8,6 +8,7 @@ from databus_client.filters.non_metric_filter import NonMetricFilter
 from databus_client.utils.common.databus_constants import DatabusMessageGroup
 from databus_client.queues.entity_queues.databus_queue import DatabusQueue
 from databus_client.db_handler.mongoDB_handler.databus_hb_dbhandler import DatabusHeartBeatDbHandler
+from databus_client.utils.common.databus_queue_telemetry import DatabusQueueTelemetry
 from databus_client.utils.databus_utilities import DatabusUtilities
 
 
@@ -43,7 +44,13 @@ class DatabusHostsQueue(DatabusQueue):
             pass_through = NonMetricFilter.pass_non_metric_filter(source=message["source"], entity_id=entity_id,
                                                                   entity_name=message["data"]["name"] if "name" in message["data"] else None)
 
+            if type(pass_through) == str:
+                self.logger.log(self.license_plate + pass_through)
+                pass_through = True
+
             if pass_through:
+                DatabusQueueTelemetry().update_filter_telemetry(call_type="ALLOWED_BY_FILTER",
+                                                                message_group=self.message_group)
                 if entity_id in source_map:
                     # find and update
                     if self.use_mongo:
@@ -74,6 +81,8 @@ class DatabusHostsQueue(DatabusQueue):
             else:
                 self.logger.log(
                     self.license_plate + "Data was eliminated from the filter criteria. Was not pushed further downstream")
+                DatabusQueueTelemetry().update_filter_telemetry(call_type="REMOVED_BY_FILTER",
+                                                                message_group=self.message_group)
 
         while True:
             entry = None
@@ -119,3 +128,4 @@ class DatabusHostsQueue(DatabusQueue):
             except Exception as e:
                 message = "Error occured process message in DatabusHostsQueue. Trace : {}".format(traceback.format_exc())
                 self.exception_logger.log(self.license_plate + "Exception: " + message)
+                DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)
