@@ -19,7 +19,7 @@ class DatabusHostsQueue(DatabusQueue):
                                                 use_mongo=use_mongo)
         self.logger = LogQueue(num_of_worker_threads=2, message_group=DatabusMessageGroup.HOSTS.value, file_threshold=file_threshold)
         self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception", file_threshold=file_threshold)
-        self.license_plate = DatabusUtilities.get_license_plate()
+        license_plate = DatabusUtilities.get_license_plate()
 
     def start_processing_data(self):
 
@@ -40,12 +40,12 @@ class DatabusHostsQueue(DatabusQueue):
             """
             Getting filtered pass
             """
-            self.logger.log(self.license_plate + "Passing through filter.")
+            self.logger.log(license_plate + "Passing through filter.")
             pass_through = NonMetricFilter.pass_non_metric_filter(source=message["source"], entity_id=entity_id,
                                                                   entity_name=message["data"]["name"] if "name" in message["data"] else None)
 
             if type(pass_through) == str:
-                self.logger.log(self.license_plate + pass_through)
+                self.logger.log(license_plate + pass_through)
                 pass_through = True
 
             if pass_through:
@@ -57,13 +57,13 @@ class DatabusHostsQueue(DatabusQueue):
                         push_db = DatabusClientDataService.update_nonmetric_entity_message_group_data(db_entry,
                                                                                                       message_group=self.message_group)
                         if push_db[0]:
-                            self.logger.log(self.license_plate + "updated new host in mongo -> {} ".format(entity_id))
+                            self.logger.log(license_plate + "updated new host in mongo -> {} ".format(entity_id))
                         else:
                             self.logger.log(
-                                self.license_plate + "Error while pushing data to downstream: " + push_db[1])
+                                license_plate + "Error while pushing data to downstream: " + push_db[1])
                     else:
                         source_map.update({entity_id: message})
-                        self.logger.log(self.license_plate + "updated host -> {} ".format(entity_id))
+                        self.logger.log(license_plate + "updated host -> {} ".format(entity_id))
                 else:
                     # add new
                     if self.use_mongo:
@@ -71,16 +71,16 @@ class DatabusHostsQueue(DatabusQueue):
                                                                                                        message_group=self.message_group)
                         source_map[entity_id] = dict()  # for look up only, hence not saving the message
                         if push_db[0]:
-                            self.logger.log(self.license_plate + "added new host in mongo -> {} ".format(entity_id))
+                            self.logger.log(license_plate + "added new host in mongo -> {} ".format(entity_id))
                         else:
                             self.logger.log(
-                                self.license_plate + "Error while pushing data to downstream: " + push_db[1])
+                                license_plate + "Error while pushing data to downstream: " + push_db[1])
                     else:
                         source_map[entity_id] = message
-                        self.logger.log(self.license_plate + "added new host -> {} ".format(entity_id))
+                        self.logger.log(license_plate + "added new host -> {} ".format(entity_id))
             else:
                 self.logger.log(
-                    self.license_plate + "Data was eliminated from the filter criteria. Was not pushed further downstream")
+                    license_plate + "Data was eliminated from the filter criteria. Was not pushed further downstream")
                 DatabusQueueTelemetry().update_filter_telemetry(call_type="REMOVED_BY_FILTER",
                                                                 message_group=self.message_group)
 
@@ -88,14 +88,14 @@ class DatabusHostsQueue(DatabusQueue):
             entry = None
             try:
                 entry = self.queue.get(block=False)
-                self.license_plate = "[License Plate: " + self.license_plate + "] "
-                self.logger.log(self.license_plate + "Processing Request : " + str(entry))
+                license_plate = "[License Plate: " + license_plate + "] "
+                self.logger.log(license_plate + "Processing Request : " + str(entry))
 
                 _source = self.get_dict_val("source", entry)
 
                 if _source not in self.data_map:
                     self.data_map[_source] = dict()
-                    self.logger.log(self.license_plate +"---new source {} added".format(_source))
+                    self.logger.log(license_plate +"---new source {} added".format(_source))
 
                 source_map = self.data_map[_source]
 
@@ -108,7 +108,7 @@ class DatabusHostsQueue(DatabusQueue):
                 if message_type == "HEARTBEAT":
                     self.append_key_val_in_dict(header, ["timestamp"], entry)
                     self.logger.log(
-                        self.license_plate + ". Message received is identified as heartbeat. Bypassing filters")
+                        license_plate + ". Message received is identified as heartbeat. Bypassing filters")
                     DatabusHeartBeatDbHandler.get_instance(logger=self.logger, ex_log=self.exception_logger).add_to_queue(header)
                 else:
 
@@ -127,5 +127,5 @@ class DatabusHostsQueue(DatabusQueue):
                 sleep(1)
             except Exception as e:
                 message = "Error occured process message in DatabusHostsQueue. Trace : {}".format(traceback.format_exc())
-                self.exception_logger.log(self.license_plate + "Exception: " + message)
+                self.exception_logger.log(license_plate + "Exception: " + message)
                 DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)

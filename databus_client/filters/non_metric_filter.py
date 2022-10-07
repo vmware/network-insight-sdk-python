@@ -12,12 +12,12 @@ class NonMetricFilter:
         else:
             if source + ":" + entity_id + ":databus" in filter_table:
                 ret_flag = NonMetricFilter.check_match_unmatch(data_pass=True)
-            elif entity_name:
-                if source + ":" + entity_name + ":databus" in filter_table:
-                    ret_flag = NonMetricFilter.check_match_unmatch(data_pass=True)
+            elif entity_name and source + ":" + entity_name + ":databus" in filter_table:
+                ret_flag = NonMetricFilter.check_match_unmatch(data_pass=True)
+            elif source + ":databus:databus" in filter_table:
+                ret_flag = NonMetricFilter.check_match_unmatch(data_pass=True)
             else:
                 ret_flag = NonMetricFilter.check_match_unmatch(data_pass=False)
-
         return ret_flag
 
     @staticmethod

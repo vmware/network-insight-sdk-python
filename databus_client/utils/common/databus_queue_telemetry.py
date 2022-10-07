@@ -57,6 +57,10 @@ class DatabusQueueTelemetry:
         self._update_status(call_type="GET", message_group=info_data_dict["message_group"], status=status)
         self._update_summary(call_type="GET", message_group=info_data_dict["message_group"])
 
+    def update_put_telemetry(self, status=None, info_data_dict=None):
+        self._update_status(call_type="PUT", message_group=info_data_dict["message_group"], status=status)
+        self._update_summary(call_type="PUT", message_group=info_data_dict["message_group"])
+
     def update_delete_telemetry(self, status=None, info_data_dict=None):
         self._update_status(call_type="DELETE", message_group=info_data_dict["message_group"], status=status)
         self._update_summary(call_type="DELETE", message_group=info_data_dict["message_group"])
@@ -109,7 +113,8 @@ class DatabusQueueTelemetry:
             "SUMMARY": self.summary_dict,
             "REQUEST_STATUS": self.status_dict,
             "EXCEPTION": self.exception,
-            "ENTITY_COUNT": DatabusMessageEntityCountRecorder.get_instance().get_data()
+            # Below is to record the data received previous 5 minutes
+            # "ENTITY_COUNT": DatabusMessageEntityCountRecorder.get_instance().get_data()
         }
 
         if as_json:

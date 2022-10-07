@@ -81,9 +81,7 @@ class DatabusQueue:
             return entry[key]
         else:
             message = "$$$$$$$$ Key: {} not found in {} $$$$$$$$$$".format(key, entry)
-            print(message)
-            print("Exception: " + message)
-            return None
+            raise Exception(message)
 
     def append_key_val_in_dict(self, target_dict, keys, source_dict):
 

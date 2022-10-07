@@ -19,25 +19,25 @@ class DatabusMetricsQueue(DatabusQueue):
                                                   num_of_worker_threads=2, use_mongo=use_mongo)
         self.logger = LogQueue(num_of_worker_threads=2, message_group=self.message_group, file_threshold=file_threshold)
         self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception", file_threshold=file_threshold)
-        self.license_plate = ""
+        license_plate = ""
         self.source_entity_id_lookup = dict()
 
     def start_processing_data(self):
 
         while True:
-            self.license_plate = "[License Plate: " + DatabusUtilities.get_license_plate() + "] "
+            license_plate = "[License Plate: " + DatabusUtilities.get_license_plate() + "] "
             entry = None
             try:
                 entry = self.queue.get(block=False)
                 message = dict()
-                self.logger.log(self.license_plate + "Processing Request : " + str(entry))
+                self.logger.log(license_plate + "Processing Request : " + str(entry))
 
                 token = self.get_dict_val("token", entry)
                 source = message["source"] = self.get_dict_val("source", entry)
 
                 if source not in self.data_map:
                     self.data_map[source] = dict()
-                    self.logger.log(self.license_plate + "\n---new source {} added".format(source))
+                    self.logger.log(license_plate + "\n---new source {} added".format(source))
 
                 source_map = self.data_map[source]
 
@@ -48,24 +48,24 @@ class DatabusMetricsQueue(DatabusQueue):
                 if message["type"] == "HEARTBEAT":
                     self.append_key_val_in_dict(message, ["status", "timestamp"], entry)
                     self.logger.log(
-                        self.license_plate + ". Message received is identified as heartbeat. Bypassing filters")
+                        license_plate + ". Message received is identified as heartbeat. Bypassing filters")
                     DatabusHeartBeatDbHandler.get_instance().add_to_queue(message)
                 else:
                     """
                     Getting filtered pass
                     """
-                    self.logger.log(self.license_plate + "Passing through filter.")
+                    self.logger.log(license_plate + "Passing through filter.")
                     pass_through, resp = MetricFilter.pass_metric_filter(source=source, entry=entry, message_group=self.message_group)
 
                     if type(resp) == str:
-                        self.logger.log(self.license_plate + resp)
+                        self.logger.log(license_plate + resp)
                     else:
                         entry = resp
 
                     if pass_through:
                         DatabusQueueTelemetry().update_filter_telemetry(call_type="ALLOWED_BY_FILTER", message_group=self.message_group)
                         data = self.get_dict_val("data", entry)
-                        self.logger.log(self.license_plate + "\n---data -- type {}---{}".format(type(data), data))
+                        self.logger.log(license_plate + "\n---data -- type {}---{}".format(type(data), data))
 
                         metric_unit = self.get_dict_val("unit", data)
                         metric_entity_type = self.get_dict_val("entity_type", data)
@@ -74,7 +74,7 @@ class DatabusMetricsQueue(DatabusQueue):
                         metric_timestamp = self.get_dict_val("timestamp", data)
                         metric_points = self.get_dict_val("points", data)
 
-                        self.logger.log(self.license_plate +
+                        self.logger.log(license_plate +
                                         "\n---metric_points -- type {}---{}".format(type(metric_points), metric_points))
 
                         self.count += len(metric_points)
@@ -99,7 +99,7 @@ class DatabusMetricsQueue(DatabusQueue):
                                 })
 
                                 DatabusMetricDbHandler.get_instance().add_to_queue(metric_data, self.message_group)
-                                self.logger.log(self.license_plate +
+                                self.logger.log(license_plate +
                                                 "added new entity_id and metric in mongo -> {} ".format(entity_id))
                             else:
                                 if entity_id in source_map:
@@ -107,7 +107,7 @@ class DatabusMetricsQueue(DatabusQueue):
                                         source_map[entity_id][metric_name].update({
                                             metric_timestamp: metric_value,
                                         })
-                                        self.logger.log(self.license_plate +
+                                        self.logger.log(license_plate +
                                                         "added new timestamp on metric-> {} ".format(entity_id))
                                     else:
                                         source_map[entity_id].update({
@@ -119,7 +119,7 @@ class DatabusMetricsQueue(DatabusQueue):
                                             }
                                         })
                                         self.logger.log(
-                                            self.license_plate + "added new metric -> {} ".format(entity_id))
+                                            license_plate + "added new metric -> {} ".format(entity_id))
                                 else:
                                     source_map[entity_id] = {
                                         metric_name: {
@@ -130,10 +130,10 @@ class DatabusMetricsQueue(DatabusQueue):
                                         }
                                     }
                                     self.logger.log(
-                                        self.license_plate + "added new entity_id and metric -> {} ".format(entity_id))
+                                        license_plate + "added new entity_id and metric -> {} ".format(entity_id))
                     else:
                         self.logger.log(
-                            self.license_plate + "Data was eliminated from the filter criteria. Was not pushed further downstream")
+                            license_plate + "Data was eliminated from the filter criteria. Was not pushed further downstream")
                         DatabusQueueTelemetry().update_filter_telemetry(call_type="REMOVED_BY_FILTER",
                                                                         message_group=self.message_group)
                 self.queue.task_done()
@@ -142,7 +142,7 @@ class DatabusMetricsQueue(DatabusQueue):
             except Exception as e:
                 message = "Error occured process message in DatabusMetricsQueue. Trace : {}".format(
                     traceback.format_exc())
-                self.exception_logger.log(self.license_plate + "Exception: " + message)
+                self.exception_logger.log(license_plate + "Exception: " + message)
                 DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)
 
     def get_filtered_data(self, request_filter_dict=None):
@@ -163,7 +163,7 @@ class DatabusMetricsQueue(DatabusQueue):
             else:
                 message = "source attribute is must. Not provided for get call message_group {}.".format(
                     self.message_group)
-                self.exception_logger.log(self.license_plate + "Exception: " + message)
+                self.exception_logger.log(license_plate + "Exception: " + message)
                 raise Exception(message)
         else:
 
@@ -214,7 +214,7 @@ class DatabusMetricsQueue(DatabusQueue):
             else:
                 message = "source attribute is must. Not provided for get call message_group {}.".format(
                     self.message_group)
-                self.exception_logger.log(self.license_plate + "Exception: " + message)
+                self.exception_logger.log(license_plate + "Exception: " + message)
                 raise Exception(message)
 
         else:

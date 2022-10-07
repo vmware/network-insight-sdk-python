@@ -59,7 +59,7 @@ class FilterManager:
             m_filters = self.get_filters()
             if m_filters is None:
                 return "Filters not configured. Set filters first"
-            m_filters = collections.namedtuple("FilterStruct", m_filters.keys())(*m_filters.values())
+            # m_filters = collections.namedtuple("FilterStruct", m_filters.keys())(*m_filters.values())
 
             if "matched_filter" in filter_dict and filter_dict["matched_filter"] is not None:
                 m_filters["matched_filter"] = filter_dict["matched_filter"]
@@ -68,51 +68,50 @@ class FilterManager:
                 m_filters["unmatched_filter"] = filter_dict["unmatched_filter"]
             source_found = True
             """Updating the non_metrics"""
-            if filter_dict["message_group"] in non_metric_message_group:
-                for i in m_filters.non_metric_filter:
+            if "message_group" in filter_dict and filter_dict["message_group"] in non_metric_message_group:
+                for i in m_filters["non_metric_filter"]:
                     i = collections.namedtuple("NonMetricStruct", i.keys())(*i.values())
-                    if i.source == filter_dict["source"]:
-                        if i.entity_type == filter_dict["message_group"]:
-                            if "entityId" in filter_dict and filter_dict["entityId"] is not None:
-                                not_found_entities = []
-                                for entry in filter_dict["entityId"]:
-                                    if filter_dict["action"] == "add":
-                                        i.entityIds.append(entry)
-                                    else:
-                                        if entry in i.entityIds:
-                                            i.entityIds.remove()
-                                        else:
-                                            not_found_entities.append(entry)
-                                if len(not_found_entities) > 0:
-                                    message = "EntityID {} is not present in current configuration to delete".format(
-                                        str(not_found_entities))
-                                    update_message["Issue in Non Metric Entity ID Update: "] = message
+                    if i.source == filter_dict["source"] and i.entity_type == filter_dict["message_group"]:
+                        if i.entityIds and "entityId" in filter_dict and filter_dict["entityId"] is not None:
+                            not_found_entities = []
+                            for entry in filter_dict["entityId"]:
+                                if filter_dict["action"] == "add":
+                                    i.entityIds.append(entry)
                                 else:
-                                    m_dict = self.my_dict(m_filters)
-                                    self.set_filters(m_dict)
-                                    message = "EntityID {} added to source {}".format(str(filter_dict["entityId"]),
-                                                                                      filter_dict["source"])
-                                    update_message["Non Metric Entity ID Update: "] = message
-                            if "entityName" in filter_dict and filter_dict["entityName"] is not None:
-                                not_found_entities = []
-                                for entry in filter_dict["entityName"]:
-                                    if filter_dict["action"] == "add":
-                                        i.entityNames.append(entry)
+                                    if entry in i.entityIds:
+                                        i.entityIds.remove(entry)
                                     else:
-                                        if entry in i.entityNames:
-                                            i.entityNames.remove()
-                                        else:
-                                            not_found_entities.append(entry)
-                                if len(not_found_entities) > 0:
-                                    message = "EntityName {} is not present in current configuration to delete".format(
-                                        str(not_found_entities))
-                                    update_message["Issue in Non Metric Entity Name Update: "] = message
+                                        not_found_entities.append(entry)
+                            if len(not_found_entities) > 0:
+                                message = "EntityID {} is not present in current configuration to delete".format(
+                                    str(not_found_entities))
+                                update_message["Issue in Non Metric Entity ID Update: "] = message
+                            else:
+                                # m_dict = self.my_dict(m_filters)
+                                self.set_filters(m_filters)
+                                message = "EntityID {} added to source {}".format(str(filter_dict["entityId"]),
+                                                                                  filter_dict["source"])
+                                update_message["Non Metric Entity ID Update: "] = message
+                        if "entityName" in filter_dict and filter_dict["entityName"] is not None:
+                            not_found_entities = []
+                            for entry in filter_dict["entityName"]:
+                                if filter_dict["action"] == "add":
+                                    i.entityNames.append(entry)
                                 else:
-                                    m_dict = self.my_dict(m_filters)
-                                    self.set_filters(m_dict)
-                                    message = "EntityName {} added to source {}".format(str(filter_dict["entityName"]),
-                                                                                        filter_dict["source"])
-                                    update_message["Non Metric Entity Name Update: "] = message
+                                    if entry in i.entityNames:
+                                        i.entityNames.remove(entry)
+                                    else:
+                                        not_found_entities.append(entry)
+                            if len(not_found_entities) > 0:
+                                message = "EntityName {} is not present in current configuration to delete".format(
+                                    str(not_found_entities))
+                                update_message["Issue in Non Metric Entity Name Update: "] = message
+                            else:
+                                # m_dict = self.my_dict(m_filters)
+                                self.set_filters(m_filters)
+                                message = "EntityName {} added to source {}".format(str(filter_dict["entityName"]),
+                                                                                    filter_dict["source"])
+                                update_message["Non Metric Entity Name Update: "] = message
                     else:
                         source_found = False
 
@@ -126,14 +125,14 @@ class FilterManager:
                     if filter_dict["entityName"] is not "" or filter_dict["entityName"] is not None:
                         upd_dict["entityNames"] = filter_dict["entityName"]
                     upd_list = [upd_dict]
-                    m_filters.non_metric_filter.extend(upd_list)
-                    m_dict = self.my_dict(m_filters)
-                    self.set_filters(m_dict)
+                    m_filters["non_metric_filter"].extend(upd_list)
+                    # m_dict = self.my_dict(m_filters)
+                    self.set_filters(m_filters)
                     source_found = True
 
-            elif filter_dict["message_group"] in sub_metrics_message_group:
+            elif "message_group" in filter_dict and filter_dict["message_group"] in sub_metrics_message_group:
                 """Updating the sub_metrics"""
-                for i in m_filters.sub_metric_filter:
+                for i in m_filters["sub_metric_filter"]:
                     i = collections.namedtuple("SubMetricStruct", i.keys())(*i.values())
                     if i.source == filter_dict["source"]:
                         if i.entity_type == filter_dict["message_group"]:
@@ -144,7 +143,7 @@ class FilterManager:
                                         i.entityIds.append(entry)
                                     else:
                                         if entry in i.entityIds:
-                                            i.entityIds.remove()
+                                            i.entityIds.remove(entry)
                                         else:
                                             not_found_entities.append(entry)
                                 if len(not_found_entities) > 0:
@@ -152,8 +151,8 @@ class FilterManager:
                                         str(not_found_entities))
                                     update_message["Issue in Sub metric EntityId update: "] = message
                                 else:
-                                    m_dict = self.my_dict(m_filters)
-                                    self.set_filters(m_dict)
+                                    # m_dict = self.my_dict(m_filters)
+                                    self.set_filters(m_filters)
                                     message = "EntityID {} added to source {}".format(str(filter_dict["entityId"]),
                                                                                       filter_dict["source"])
                                     update_message["Sub metric EntityId update: "] = message
@@ -164,7 +163,7 @@ class FilterManager:
                                         i.metrics.append(entry)
                                     else:
                                         if entry in i.metrics:
-                                            i.metrics.remove()
+                                            i.metrics.remove(entry)
                                         else:
                                             not_found_entities.append(entry)
                                 if len(not_found_entities) > 0:
@@ -172,8 +171,8 @@ class FilterManager:
                                         str(not_found_entities))
                                     update_message["Issue in Sub metric update: "] = message
                                 else:
-                                    m_dict = self.my_dict(m_filters)
-                                    self.set_filters(m_dict)
+                                    # m_dict = self.my_dict(m_filters)
+                                    self.set_filters(m_filters)
                                     message = "Metric {} added to source {}".format(str(filter_dict["metric"]),
                                                                                     filter_dict["source"])
                                     update_message["Sub metric update: "] = message
@@ -190,13 +189,13 @@ class FilterManager:
                     if filter_dict["entityName"] is not "" or filter_dict["entityName"] is not None:
                         upd_dict["entityNames"] = filter_dict["entityName"]
                     upd_list = [upd_dict]
-                    m_filters.non_metric_filter.extend(upd_list)
-                    m_dict = self.my_dict(m_filters)
-                    self.set_filters(m_dict)
+                    m_filters["non_metric_filter"].extend(upd_list)
+                    # m_dict = self.my_dict(m_filters)
+                    self.set_filters(m_filters)
                     source_found = True
 
-            else:
-                for i in m_filters.sub_metric_filter:
+            elif "message_group" in filter_dict:
+                for i in m_filters["sub_metric_filter"]:
                     i = collections.namedtuple("MetricStruct", i.keys())(*i.values())
                     if i.source == filter_dict["source"]:
                         if i.entity_type == filter_dict["metric_entity"]:
@@ -207,7 +206,7 @@ class FilterManager:
                                         i.entityIds.append(entry)
                                     else:
                                         if entry in i.entityIds:
-                                            i.entityIds.remove()
+                                            i.entityIds.remove(entry)
                                         else:
                                             not_found_entities.append(entry)
                                 if len(not_found_entities) > 0:
@@ -215,8 +214,8 @@ class FilterManager:
                                         str(not_found_entities))
                                     update_message["Issue in Metric EntityId update: "] = message
                                 else:
-                                    m_dict = self.my_dict(m_filters)
-                                    self.set_filters(m_dict)
+                                    # m_dict = self.my_dict(m_filters)
+                                    self.set_filters(m_filters)
                                     message = "EntityID {} added to source {}".format(str(filter_dict["entityId"]),
                                                                                       filter_dict["source"])
                                     update_message["Metric EntityId update: "] = message
@@ -227,7 +226,7 @@ class FilterManager:
                                         i.metrics.append(entry)
                                     else:
                                         if entry in i.entityIds:
-                                            i.metrics.remove()
+                                            i.metrics.remove(entry)
                                         else:
                                             not_found_metrics.append(entry)
                                 if len(not_found_metrics) > 0:
@@ -235,8 +234,8 @@ class FilterManager:
                                         str(not_found_metrics))
                                     update_message["Issue in Metric update: "] = message
                                 else:
-                                    m_dict = self.my_dict(m_filters)
-                                    self.set_filters(m_dict)
+                                    # m_dict = self.my_dict(m_filters)
+                                    self.set_filters(m_filters)
                                     message = "Metrics {} added to source {}".format(str(filter_dict["metric"]),
                                                                                      filter_dict["source"])
                                     update_message["Metric update: "] = message
@@ -253,12 +252,16 @@ class FilterManager:
                     if filter_dict["entityName"] is not "" or filter_dict["entityName"] is not None:
                         upd_dict["entityNames"] = filter_dict["entityName"]
                     upd_list = [upd_dict]
-                    m_filters.non_metric_filter.extend(upd_list)
-                    m_dict = self.my_dict(m_filters)
-                    self.set_filters(m_dict)
+                    m_filters["non_metric_filter"].extend(upd_list)
+                    # m_dict = self.my_dict(m_filters)
+                    self.set_filters(m_filters)
                     source_found = True
 
-            return update_message
+            self.set_filters(m_filters)
+            if update_message:
+                return update_message
+            else:
+                return {"Update process": "Done"}
         except Exception as e:
             raise Exception
 
@@ -267,7 +270,10 @@ class FilterManager:
         if full_filters is None:
             return False
         full_filters = collections.namedtuple("FilterStruct", full_filters.keys())(*full_filters.values())
-        if source:
+        if source == "all":
+            self.set_filters(None)
+            return True
+        else:
             m_filter = self.get_filters(source=source)
             if m_filter:
                 m_filter = collections.namedtuple("FilterStruct", m_filter.keys())(*m_filter.values())
@@ -286,8 +292,6 @@ class FilterManager:
             m_dict = self.my_dict(full_filters)
             self.set_filters(m_dict)
             return True
-        else:
-            return False
 
     def get_filters(self, source=None):
         # use_local fetches data from local file, else from db

@@ -23,23 +23,23 @@ class DatabusApplicationQueue(DatabusQueue):
                                file_threshold=file_threshold)
         self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception",
                                          file_threshold=file_threshold)
-        self.license_plate = ""
+        # self.license_plate = ""
 
     def start_processing_data(self):
 
         while True:
-            self.license_plate = "[License Plate: " + DatabusUtilities.get_license_plate() + "] "
+            license_plate = "[License Plate: " + DatabusUtilities.get_license_plate() + "] "
             entry = None
             try:
                 entry = self.queue.get(block=False)
                 message = dict()
-                self.logger.log(self.license_plate + "Processing Request : " + str(entry))
+                self.logger.log(license_plate + "Processing Request : " + str(entry))
 
                 token = self.get_dict_val("token", entry)
                 source = message["source"] = self.get_dict_val("source", entry)
                 if source not in self.data_map:
                     self.data_map[source] = dict()
-                    self.logger.log(self.license_plate + "---new source {} added".format(source))
+                    self.logger.log(license_plate + "---new source {} added".format(source))
 
                 source_map = self.data_map[source]
 
@@ -49,8 +49,7 @@ class DatabusApplicationQueue(DatabusQueue):
                 # if heart beat message
                 if message["type"] == "HEARTBEAT":
                     self.append_key_val_in_dict(message, ["timestamp"], entry)
-                    self.logger.log(
-                        self.license_plate + ". Message received is identified as heartbeat. Bypassing filters")
+                    self.logger.log(license_plate + ". Message received is identified as heartbeat. Bypassing filters")
                     DatabusHeartBeatDbHandler.get_instance(logger=self.logger,
                                                            ex_log=self.exception_logger).add_to_queue(message)
                 else:
@@ -70,7 +69,7 @@ class DatabusApplicationQueue(DatabusQueue):
                     """
                     Getting filtered pass
                     """
-                    self.logger.log(self.license_plate + "Passing through filter.")
+                    self.logger.log(license_plate + "Passing through filter.")
 
                     pass_through = NonMetricFilter.pass_non_metric_filter(source=source, entity_id=entity_id,
                                                                           entity_name=message["data"][
@@ -78,28 +77,26 @@ class DatabusApplicationQueue(DatabusQueue):
                                                                               "data"] else None)
 
                     if type(pass_through) == str:
-                        self.logger.log(self.license_plate + pass_through)
+                        self.logger.log(license_plate + pass_through)
                         pass_through = True
 
                     if pass_through:
                         DatabusQueueTelemetry().update_filter_telemetry(call_type="ALLOWED_BY_FILTER",
                                                                         message_group=self.message_group)
-                        self.logger.log(self.license_plate + "Got pass through from filter. Pushing data to downstream")
+                        self.logger.log(license_plate + "Got pass through from filter. Pushing data to downstream")
                         if entity_id in source_map:
                             # find and update
                             if self.use_mongo:
                                 push_db = DatabusClientDataService.update_nonmetric_entity_message_group_data(db_entry,
                                                                                                               message_group=self.message_group)
                                 if push_db[0]:
-                                    self.logger.log(
-                                        self.license_plate + "updated new application in mongo -> {} ".format(
+                                    self.logger.log(license_plate + "updated new application in mongo -> {} ".format(
                                             entity_id))
                                 else:
-                                    self.logger.log(
-                                        self.license_plate + "Error while pushing data to downstream: " + push_db[1])
+                                    self.logger.log(license_plate + "Error while pushing data to downstream: " + push_db[1])
                             else:
                                 source_map.update({entity_id: message})
-                                self.logger.log(self.license_plate + "updated application -> {} ".format(entity_id))
+                                self.logger.log(license_plate + "updated application -> {} ".format(entity_id))
                         else:
                             # add new
                             if self.use_mongo:
@@ -107,19 +104,17 @@ class DatabusApplicationQueue(DatabusQueue):
                                                                                                                message_group=self.message_group)
                                 source_map[entity_id] = dict()  # for look up only, hence not saving the message
                                 if push_db[0]:
-                                    self.logger.log(self.license_plate +
+                                    self.logger.log(license_plate +
                                                     "added new application in mongo -> {} ".format(entity_id))
                                 else:
-                                    self.logger.log(
-                                        self.license_plate + "Error while pushing data to downstream: " + push_db[1])
+                                    self.logger.log(license_plate + "Error while pushing data to downstream: " + push_db[1])
                             else:
                                 source_map[entity_id] = message
-                                self.logger.log(self.license_plate + "added new application-> {} ".format(entity_id))
+                                self.logger.log(license_plate + "added new application-> {} ".format(entity_id))
                         self.queue.task_done()
                     else:
-                        self.logger.log(
-                            self.license_plate + "Data was eliminated from the filter criteria. Was not pushed "
-                                                 "further downstream")
+                        self.logger.log(license_plate + "Data was eliminated from the filter criteria. Was not pushed "
+                                        "further downstream")
                         DatabusQueueTelemetry().update_filter_telemetry(call_type="REMOVED_BY_FILTER",
                                                                         message_group=self.message_group)
             except queue.Empty as e:
@@ -127,5 +122,5 @@ class DatabusApplicationQueue(DatabusQueue):
             except Exception as e:
                 message = "Error occured process message in DatabusApplicationQueue. Trace : {}".format(
                     traceback.format_exc())
-                self.exception_logger.log(self.license_plate + "Exception: " + message)
+                self.exception_logger.log(license_plate + "Exception: " + message)
                 DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)

@@ -435,13 +435,16 @@ class DatabusClientDataService(object):
 
     @classmethod
     def put_filters(cls, data):
-        db_entry = DatabusClientFilterData(matched_filter=data[DatabusMongo.MATCHED_FILTER],
-                                           unmatched_filter=data[DatabusMongo.UNMATCHED_FILTER],
-                                           non_metric_filter=data[DatabusMongo.NON_METRIC_FILTER],
-                                           metric_filter=data[DatabusMongo.METRIC_FILTER],
-                                           sub_metric_filter=data[DatabusMongo.SUB_METRIC_FILTER]
-                                           )
-        db_entry.save()
+        if data:
+            db_entry = DatabusClientFilterData(matched_filter=data[DatabusMongo.MATCHED_FILTER],
+                                               unmatched_filter=data[DatabusMongo.UNMATCHED_FILTER],
+                                               non_metric_filter=data[DatabusMongo.NON_METRIC_FILTER] if DatabusMongo.NON_METRIC_FILTER in data else [],
+                                               metric_filter=data[DatabusMongo.METRIC_FILTER] if DatabusMongo.METRIC_FILTER in data else [],
+                                               sub_metric_filter=data[DatabusMongo.SUB_METRIC_FILTER] if DatabusMongo.SUB_METRIC_FILTER in data else []
+                                               )
+            db_entry.save()
+        else:
+            DatabusClientFilterData.drop_collection()
         return
 
     @classmethod

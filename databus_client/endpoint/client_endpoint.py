@@ -9,6 +9,7 @@ import traceback
 from datetime import datetime
 from json.decoder import JSONDecodeError
 import ssl
+import socket
 
 import pytz
 from flask import Flask, Response
@@ -161,6 +162,7 @@ def databus_filedumpfrequency():
 
 @app.route("/filters", methods=["POST", "GET", "PUT", "DELETE"])
 def filters():
+    request_status = None
     try:
         if request.method == 'POST':
             filter_dict = dict()
@@ -180,8 +182,12 @@ def filters():
                 result = FilterManager().get_filters(source=source)
             else:
                 result = FilterManager().get_filters(source=None)
-            request_status = 200
-            return Response(json.dumps(result), content_type=json)
+            if result is None:
+                request_status = 204
+                return Response("No Filters configured found", request_status)
+            else:
+                request_status = 200
+                return Response(json.dumps(result), content_type=json)
 
         elif request.method == 'PUT':
             filter_dict = dict()
@@ -398,6 +404,13 @@ def do_copy(queue_processor=None, message_group=None):
         if enable_telemetry: telemetry.update_copy_telemetry(status=request_status, info_data_dict=info_dict)
 
 
+def get_ip_address():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    # this is some random ip address
+    s.connect(("8.8.8.8", 80))
+    return s.getsockname()[0]
+
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description="HTTP server end point configuration for databus")
     parser.add_argument("--host", default="0.0.0.0", action="store", dest="host")
@@ -433,13 +446,17 @@ if __name__ == "__main__":
     enable_telemetry = bool(distutils.util.strtobool(args.enable_telemetry))
     bringup_https = bool(distutils.util.strtobool(args.https))
     file_threshold = args.file_threshold
+    mongo_server_ip = args.mongo_server_ip
+
+    if mongo_server_ip == "":
+        mongo_server_ip = get_ip_address() + ":27017"
 
     if not use_mongo:
         FilterManager().set_use_local(flag=True)
         print("******************Starting in NO Mongo mode*******************")
     else:
         print("*******************Connecting to MONGO************************")
-        MongoDBConnection(server_url=args.mongo_server_ip,
+        MongoDBConnection(server_url=mongo_server_ip,
                           database_name="databus_client_data",
                           alias='databus_client_data')
         FilterManager()
