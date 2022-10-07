@@ -417,7 +417,7 @@ def parse_arguments():
     parser.add_argument("--port", default="5001", action="store", dest="port")
     parser.add_argument("--enable_telemetry", default="True", action="store")
     parser.add_argument("--use_mongo", default="True", action="store")
-    parser.add_argument("--mongo_server_ip", default="10.89.69.157:27017,10.89.69.154:27017,10.89.69.156:27017,10.89.69.153:27017,10.89.69.155:27017", action="store")
+    parser.add_argument("--mongo_server_ip", default="0.0.0.0:27017", action="store")
     parser.add_argument("--https", default="False", action="store")
     parser.add_argument("--cert_file_path", default="", action="store")
     parser.add_argument("--key_file_path", default="", action="store")
