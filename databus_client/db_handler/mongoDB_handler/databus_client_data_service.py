@@ -1,4 +1,5 @@
 import json
+import traceback
 
 from databus_client.db_handler.mongoDB_handler.connection import MongoDBConnection
 from databus_client.db_handler.utils.mongodb_models import *
@@ -442,7 +443,14 @@ class DatabusClientDataService(object):
                                                metric_filter=data[DatabusMongo.METRIC_FILTER] if DatabusMongo.METRIC_FILTER in data else [],
                                                sub_metric_filter=data[DatabusMongo.SUB_METRIC_FILTER] if DatabusMongo.SUB_METRIC_FILTER in data else []
                                                )
-            db_entry.save()
+            try:
+                exist_fil = DatabusClientFilterData.objects(None)
+                processed_data = cls.process_filter_data(exist_fil)
+                if processed_data:
+                    exist_fil.delete()
+                db_entry.save()
+            except Exception as e:
+                cls.exception_logger.log(cls.license_plate + "Exception: Error pushing filter to mongo. {}".format(traceback.format_exc()))
         else:
             DatabusClientFilterData.drop_collection()
         return

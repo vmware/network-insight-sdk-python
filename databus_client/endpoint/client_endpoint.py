@@ -201,7 +201,7 @@ def filters():
                 request_status = 500
                 return Response("Source is required.", request_status)
             request_status = 200
-            message = FilterManager().update_filters(filter_dict=filter_dict)
+            message = FilterManager().update_filters(update_dict=filter_dict)
             return Response(json.dumps(message), content_type=json)
 
         elif request.method == 'DELETE':
@@ -417,7 +417,7 @@ def parse_arguments():
     parser.add_argument("--port", default="5001", action="store", dest="port")
     parser.add_argument("--enable_telemetry", default="True", action="store")
     parser.add_argument("--use_mongo", default="True", action="store")
-    parser.add_argument("--mongo_server_ip", default="0.0.0.0:27017", action="store")
+    parser.add_argument("--mongo_server_ip", default="", action="store")
     parser.add_argument("--https", default="False", action="store")
     parser.add_argument("--cert_file_path", default="", action="store")
     parser.add_argument("--key_file_path", default="", action="store")
