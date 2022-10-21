@@ -26,7 +26,7 @@ class DatabusHeartBeatDbHandler:
 
     def __init__(self, logger=None, ex_log=None):
         self.logger = logger
-        self.license_plate = DatabusUtilities.get_license_plate()
+        self.license_plate = "[License Plate: " + DatabusUtilities.get_license_plate() + "]"
         self.exception_logger = ex_log
         for i in range(self.num_of_worker_threads):
             t = threading.Thread(target=self.start_processing_data)

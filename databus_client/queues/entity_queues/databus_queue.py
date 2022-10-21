@@ -75,8 +75,6 @@ class DatabusQueue:
             self.data_map.clear()
 
     def get_dict_val(self, key, entry):
-        # TODO: Enable when debug mode added in logs
-        # self.logger.log(self.license_plate + "fetch key {} in entry type {}".format(key, type(entry)))
         if key in entry:
             return entry[key]
         else:

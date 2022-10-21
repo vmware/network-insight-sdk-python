@@ -19,11 +19,10 @@ class DatabusHostsQueue(DatabusQueue):
                                                 use_mongo=use_mongo)
         self.logger = LogQueue(num_of_worker_threads=2, message_group=DatabusMessageGroup.HOSTS.value, file_threshold=file_threshold)
         self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception", file_threshold=file_threshold)
-        license_plate = DatabusUtilities.get_license_plate()
 
     def start_processing_data(self):
 
-        def update_message(message, data):
+        def update_message(message, data, license_plate):
 
             self.count += 1  # 1 entity per entry
             token = message["token"] = self.get_dict_val("token", entry)
@@ -85,6 +84,7 @@ class DatabusHostsQueue(DatabusQueue):
                                                                 message_group=self.message_group)
 
         while True:
+            license_plate = DatabusUtilities.get_license_plate()
             entry = None
             try:
                 entry = self.queue.get(block=False)
@@ -117,10 +117,10 @@ class DatabusHostsQueue(DatabusQueue):
                     if type(host_data) == list:
                         self.count += len(host_data)
                         for host in host_data:
-                            update_message(header, host)
+                            update_message(header, host, license_plate)
                     else:
                         self.count += 1  # 1 entity per entry
-                        update_message(header, host_data)
+                        update_message(header, host_data, license_plate)
 
                 self.queue.task_done()
             except queue.Empty as e:

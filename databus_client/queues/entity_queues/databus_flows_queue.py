@@ -19,11 +19,11 @@ class DatabusFlowsQueue(DatabusQueue):
                                                 use_mongo=use_mongo)
         self.logger = LogQueue(num_of_worker_threads=2, message_group=DatabusMessageGroup.FLOWS.value, file_threshold=file_threshold)
         self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception", file_threshold=file_threshold)
-        license_plate = DatabusUtilities.get_license_plate()
 
     def start_processing_data(self):
 
         while True:
+            license_plate = DatabusUtilities.get_license_plate()
             entry = None
             try:
                 entry = self.queue.get(block=False)

@@ -18,13 +18,12 @@ class DatabusVmsQueue(DatabusQueue):
         super(DatabusVmsQueue, self).__init__(message_group=DatabusMessageGroup.VMS.value, num_of_worker_threads=1,
                                               use_mongo=use_mongo)
 
-        self.logger = LogQueue(num_of_worker_threads=2, message_group=DatabusMessageGroup.APPLICATIONS.value, file_threshold=file_threshold)
+        self.logger = LogQueue(num_of_worker_threads=2, message_group=DatabusMessageGroup.VMS.value, file_threshold=file_threshold)
         self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception", file_threshold=file_threshold)
-        license_plate = DatabusUtilities.get_license_plate()
 
     def start_processing_data(self):
 
-        def update_message(message, data):
+        def update_message(message, data, license_plate):
 
             entity_id = data["entity_id"]
             message["data"] = data
@@ -82,6 +81,7 @@ class DatabusVmsQueue(DatabusQueue):
                 DatabusQueueTelemetry().update_filter_telemetry(call_type="REMOVED_BY_FILTER",
                                                                 message_group=self.message_group)
         while True:
+            license_plate = DatabusUtilities.get_license_plate()
             entry = None
             try:
                 entry = self.queue.get(block=False)
@@ -113,10 +113,10 @@ class DatabusVmsQueue(DatabusQueue):
                     if type(vm_data) == list:
                         self.count += len(vm_data)
                         for vm in vm_data:
-                            update_message(header, vm)
+                            update_message(header, vm, license_plate)
                     else:
                         self.count += 1  # 1 entity per entry
-                        update_message(header, vm_data)
+                        update_message(header, vm_data, license_plate)
 
                 self.queue.task_done()
             except queue.Empty as e:

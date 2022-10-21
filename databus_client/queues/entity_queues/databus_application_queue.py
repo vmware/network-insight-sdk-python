@@ -23,7 +23,6 @@ class DatabusApplicationQueue(DatabusQueue):
                                file_threshold=file_threshold)
         self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception",
                                          file_threshold=file_threshold)
-        # self.license_plate = ""
 
     def start_processing_data(self):
 

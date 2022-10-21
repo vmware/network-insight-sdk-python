@@ -19,7 +19,6 @@ class DatabusMetricsQueue(DatabusQueue):
                                                   num_of_worker_threads=2, use_mongo=use_mongo)
         self.logger = LogQueue(num_of_worker_threads=2, message_group=self.message_group, file_threshold=file_threshold)
         self.exception_logger = LogQueue(num_of_worker_threads=1, message_group="exception", file_threshold=file_threshold)
-        license_plate = ""
         self.source_entity_id_lookup = dict()
 
     def start_processing_data(self):
@@ -49,7 +48,7 @@ class DatabusMetricsQueue(DatabusQueue):
                     self.append_key_val_in_dict(message, ["status", "timestamp"], entry)
                     self.logger.log(
                         license_plate + ". Message received is identified as heartbeat. Bypassing filters")
-                    DatabusHeartBeatDbHandler.get_instance().add_to_queue(message)
+                    DatabusHeartBeatDbHandler.get_instance(logger=self.logger, ex_log=self.exception_logger).add_to_queue(message)
                 else:
                     """
                     Getting filtered pass
@@ -146,6 +145,7 @@ class DatabusMetricsQueue(DatabusQueue):
                 DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)
 
     def get_filtered_data(self, request_filter_dict=None):
+        license_plate = "[License Plate: " + DatabusUtilities.get_license_plate() + "] "
         if self.use_mongo:
             if "source" in request_filter_dict:
                 source = request_filter_dict["source"]
@@ -163,7 +163,7 @@ class DatabusMetricsQueue(DatabusQueue):
             else:
                 message = "source attribute is must. Not provided for get call message_group {}.".format(
                     self.message_group)
-                self.exception_logger.log(license_plate + "Exception: " + message)
+                self.exception_logger.log(license_plate + "Exception in fetching data: " + message)
                 raise Exception(message)
         else:
 
@@ -196,6 +196,7 @@ class DatabusMetricsQueue(DatabusQueue):
 
     # Getting data as non-metric group to get raw data
     def get_non_filtered_data(self, request_filter_dict=None):
+        license_plate = "[License Plate: " + DatabusUtilities.get_license_plate() + "] "
         print("Reached to get non filtered data")
         data_dict = dict()
         if self.use_mongo:
@@ -214,7 +215,7 @@ class DatabusMetricsQueue(DatabusQueue):
             else:
                 message = "source attribute is must. Not provided for get call message_group {}.".format(
                     self.message_group)
-                self.exception_logger.log(license_plate + "Exception: " + message)
+                self.exception_logger.log(license_plate + "Exception in fetching data: " + message)
                 raise Exception(message)
 
         else:
