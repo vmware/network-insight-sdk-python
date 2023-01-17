@@ -222,8 +222,6 @@ class DatabusClientDataService(object):
 
         result = MESSAGE_GRP_DB_SCHEMA[message_group].objects(**params).delete()
 
-        cls.exception_logger.log(cls.license_plate + result)
-
         return True
 
     @classmethod
@@ -232,8 +230,6 @@ class DatabusClientDataService(object):
         params = cls.get_query_params(source, message_group, entity_id=entity_id)
 
         result = DatabusClientHeartBeatData.objects(**params).delete()
-
-        cls.exception_logger.log(cls.license_plate + result)
 
         return True
 
