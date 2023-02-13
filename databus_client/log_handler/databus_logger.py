@@ -59,3 +59,11 @@ class DatabusLoggerHandler:
     @staticmethod
     def set_file_path(message_group=None, file_path=None):
         DatabusLoggerHandler.paths_dict[message_group] = file_path
+
+    @staticmethod
+    def get_file_folder(message_group=None):
+        if os.path.exists(path + '/' + DatabusLoggerHandler.main_folder):
+            sub_path = os.path.abspath(os.path.join(path + '/' + DatabusLoggerHandler.main_folder))
+            pre_name = sub_path + '/' + message_group
+            if os.path.exists(pre_name):
+                return pre_name

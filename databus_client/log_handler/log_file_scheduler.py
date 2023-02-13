@@ -6,6 +6,7 @@ from time import sleep
 from datetime import datetime
 
 from databus_client.log_handler.databus_logger import DatabusLoggerHandler
+from databus_client.log_handler.file_cleanup import DatabusLogFileCleanup
 from databus_client.log_handler.file_handler import DatabusLogFileHandler
 
 
@@ -32,6 +33,7 @@ class DatabusLogFileScheduler:
         self.file_threshold = file_threshold
         self.file_log_handler = file_log_handler
         self.file_path = DatabusLoggerHandler.get_file_path(message_group=message_group)
+        self.file_cleanup = DatabusLogFileCleanup(message_group=message_group)
         t = threading.Thread(target=self.start_periodic_schedule)
         t.start()
 
