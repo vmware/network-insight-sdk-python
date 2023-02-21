@@ -70,6 +70,6 @@ class DatabusMetricDbHandler:
             except queue.Empty as e:
                 sleep(1)
             except Exception as e:
-                message = "Error occured process message in DatabusMetricDbHandler. Trace : {}".format(
+                message = "Error occurred process message in DatabusMetricDbHandler. Trace : {}".format(
                     traceback.format_exc())
                 cls.exception_logger.log("Exception in Metrics DB handler: " + message)

@@ -44,7 +44,7 @@ class DatabusMetricsQueue(DatabusQueue):
                 self.append_key_val_in_dict(message, ["id", "type", "specversion", "message_group", "token"], entry)
 
                 # if heart beat message
-                if message["type"] == "HEARTBEAT":
+                if ("type" in message and message["type"] == "HEARTBEAT") or ("type" in entry and entry["type"] == "HEARTBEAT"):
                     self.append_key_val_in_dict(message, ["status", "timestamp"], entry)
                     self.logger.log(
                         license_plate + ". Message received is identified as heartbeat. Bypassing filters")
@@ -139,9 +139,9 @@ class DatabusMetricsQueue(DatabusQueue):
             except queue.Empty as e:
                 sleep(1)
             except Exception as e:
-                message = "Error occured process message in DatabusMetricsQueue. Trace : {}".format(
+                message = "Error occurred process message in DatabusMetricsQueue. Trace : {}".format(
                     traceback.format_exc())
-                self.exception_logger.log(license_plate + "Exception: " + message)
+                self.exception_logger.log(license_plate + "Exception: " + message + "Entry: {}".format(entry))
                 DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)
 
     def get_filtered_data(self, request_filter_dict=None):

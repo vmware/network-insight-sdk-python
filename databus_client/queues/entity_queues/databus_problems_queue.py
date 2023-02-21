@@ -114,7 +114,7 @@ class DatabusProblemsQueue(DatabusQueue):
             except queue.Empty as e:
                 sleep(1)
             except Exception as e:
-                message = "Error occured process message in DatabusProblemsQueue. Trace : {}".format(
+                message = "Error occurred process message in DatabusProblemsQueue. Trace : {}".format(
                     traceback.format_exc())
                 self.exception_logger.log(license_plate + "Exception: " + message)
                 DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)
