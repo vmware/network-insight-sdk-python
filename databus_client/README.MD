@@ -9,7 +9,7 @@ Checkout repo
 
 Then install the prerequisites with: pip install -r databus_client/requirements.txt
 
-Get the latest docker image from databus_client/dockerImages/
+Get the latest docker image from "_vrni-eso.artifactory.eng.vmware.com/vrni_databus_client_"
 
 1. Start docker container with the image:
 
@@ -34,14 +34,103 @@ Get the latest docker image from databus_client/dockerImages/
    * If source is not provided, then cleanup will be done for complete collection
 
 
-3. For using client, filters are to be configured first:
+ For using client, filters are to be configured first:
 
-   Set filters:
+   Filters:
+   
+   |Method| URL                                                               | Description                                               |
+   |-------------------------------------------------------------------|-----------------------------------------------------------|-----------|
+   |POST| /filters| Create the filters, with default accept all or reject all |
+   |GET| /filters| Get the configured filters                                        |
+   |PUT| /filters| Update the filtres                                                |
+   |DELETE| /filters| Delete the configured filter                                      |
 
-   API : 
+   **Note: By default receiver will come up with accept all config, i.e., accept all incoming data**
+
+   Subscriptions:
+   While adding subscriptions to vRNI, use below endpoints
+
+   | Receiver endpoint URL | vRNI Message group     |
+-----------------------|------------------------|
+   | /applications         | applications           |
+   | /vms                  | vms                    |
+   | /flows                | flows                  |
+   | /hosts                | hosts                  |
+   | /problems             | problems, intents      |
+   | /metrics              | for all entity metrics |
+   | /vms-metrics          | vms-metrics            |
+   | /hosts-metrics        | hosts-metrics          |
+   | /nics-metrics         | nics-metrics           |
+   | /switchports-metrics  | switchports-metrics    |
+   | /flows-metrics        | flows-metrics          |
+
+   **To get heartbeat data: Do GET /heartbeat**
+
+
 
 ## Examples
-The **examples/** directory is full of examples that use the Network Insight Python SDK and inspires you to contribute to the project.
+Filter API Sample packet:
+
+```commandline
+{
+    "matched_filter": "reject",
+    "unmatched_filter": "accept",
+    "non_metric_filter": [{
+            "source": "CKRtEgdEUjNITU1P",
+            "entity_type": "applications",
+            "entityIds": ["13988:561:2096623162362547537", "v2"],
+            "entityNames": ["n1", "n2"]
+        },
+        {
+            "source": "CNeJARIHRDRBR1U5TQ==",
+            "entity_type": "applications",
+            "entityNames": ["DATABUS_APP_TEST_01"]
+        }
+    ],
+    "metric_filter": [{
+            "source": "CJWMARIHDSJHRkRYTw==",
+            "entity_type": "Host",
+            "metrics": ["net.usage.delta.summation.kiloBytes"],
+            "entityIds": ["17941:4:3519141807154183312"]
+        },
+        {
+            "source": "CJBOEgdSFHDdSDSFcUVT",
+            "entity_type": "VirtualMachine",
+            "metrics": ["cpu.usage.rate.average.percent", "three"],
+            "entityIds": ["v7", "v6"]
+        },
+        {
+            "source": "CJBadfgdSFHDddhcUVT",
+            "entity_type": "Hosts",
+            "metrics": ["cpu.usage.rate.average.percent"],
+            "entityIds": ["10000:515:3516501221883531122", "10000:515:74840761443449837"]
+        }
+    ],
+    "sub_metric_filter": [{
+            "source": "CJBOEgdSFHDddhcUVT",
+            "entity_type": "vms-metrics",
+            "metrics": ["cpu.usage.rate.average.percent", "two"],
+            "entityIds": ["10000:515:3516501221883531223", "10000:515:7484076144344179229"]
+        },
+        {
+            "source": "CJBOEgdSFHDdCQUVT",
+            "entity_type": "flows-metrics",
+            "metrics": ["cpu.usage.rate.average.percent", "flow.totalBytes.delta.summation.bytes"],
+            "entityIds": ["10000:515:3516501221883531266", "10000:515:7484076144344179859", "10000:515:1823077571592235831"]
+        }
+    ]
+}
+```
+Here:
+1. Source is Service Tag
+2. Entity_type is the message group
+3. Entity name is name of entity [Array]
+4. In Metrics and sub-metrics filters:
+   a. Metrics is the metric name
+   b. EntityIds is the model key of entity
+
+**Please note that filtering works based on Source/Service_tag, hence it's a mandatory parameter**
+
 
 ## Contributing
 
