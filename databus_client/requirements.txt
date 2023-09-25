@@ -6,7 +6,7 @@ Flask-PyMongo==2.3.0
 pymongo==3.11.2
 mongoengine==0.23.1
 jsonpickle==1.1
-PyJWT==1.7.1
+PyJWT==2.4.0
 pyaml==18.11.0
 requests==2.25.0
 urllib3==1.25.3
