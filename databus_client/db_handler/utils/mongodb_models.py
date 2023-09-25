@@ -4,6 +4,14 @@ import mongoengine
 Mondo DB schema/models
 """
 
+"""
+Here:
+1. source is service_tag - complete operation of data feed and retrival is based in source
+2. entity_id ID - model key of entity
+3. message is the message received from vRNI
+4. token - this is the authentication bearer token received from vRNI which can be used to determine the sender is vRNI
+"""
+
 
 class DatabusClientApplicationsMessageGroupData(mongoengine.Document):
     source = mongoengine.StringField() # setup platform customer_id
