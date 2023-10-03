@@ -15,6 +15,7 @@ class DatabusOnSystemMongoCleanup:
         'metrics': 'metrics_message_group',
         'vms-metrics': 'vms_metrics_message_group',
         'hosts-metrics': 'hosts_metrics_message_group',
+        'nsxt-edge-node-metrics': 'nsxt_edge_node_message_group',
         'flows-metrics': 'flows_metrics_message_group',
         'nics-metrics': 'nics_metrics_message_group',
         'switchport-metrics': 'switchports_metrics_message_group',
