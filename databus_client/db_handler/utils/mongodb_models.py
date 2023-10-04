@@ -180,7 +180,7 @@ class DatabusClientNsxtEdgeNodeMetricsMessageGroupData(mongoengine.Document):
         ]
     }
 
-    class DatabusClientFlowsMetricsMessageGroupData(mongoengine.Document):
+class DatabusClientFlowsMetricsMessageGroupData(mongoengine.Document):
     source = mongoengine.StringField()  # setup platform customer_id
     entity_id = mongoengine.StringField()
     metric_name = mongoengine.StringField()
