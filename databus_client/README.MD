@@ -10,6 +10,7 @@ Checkout repo
 Then install the prerequisites with: pip install -r databus_client/requirements.txt
 
 Get the latest docker image from "_vrni-eso.artifactory.eng.vmware.com/vrni_databus_client_"
+Note: For local testing, DockerFile has been attached to create image
 
 1. Start docker container with the image:
 
