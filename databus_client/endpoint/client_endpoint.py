@@ -96,6 +96,9 @@ def databus_switchports_metrics():
 def databus_flows():
     return databus_queue_processor(request=request, message_group=DatabusMessageGroup.FLOWS.value)
 
+@app.route('/' + DatabusMessageGroup.FLOWS.value + "-filter", methods=['GET', 'POST', 'DELETE', 'COPY'])
+def databus_filtered_flows():
+   return databus_queue_processor(request=request, message_group=DatabusMessageGroup.FLOWS.value)
 
 @app.route('/' + DatabusMessageGroup.VMS.value, methods=['GET', 'POST', 'DELETE', 'COPY'])
 def databus_vms():

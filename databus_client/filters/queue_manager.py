@@ -3,6 +3,7 @@ import threading
 
 from databus_client.queues.entity_queues.databus_application_queue import DatabusApplicationQueue
 from databus_client.queues.entity_queues.databus_flows_queue import DatabusFlowsQueue
+from databus_client.queues.entity_queues.databus_filtered_flows_queue import DatabusFilteredFlowsQueue
 from databus_client.queues.entity_queues.databus_hosts_queue import DatabusHostsQueue
 from databus_client.queues.entity_queues.databus_problems_queue import DatabusProblemsQueue
 from databus_client.queues.entity_queues.databus_vms_queue import DatabusVmsQueue
@@ -21,6 +22,7 @@ class DatabusQueueManager:
         "applications": DatabusApplicationQueue,
         "problems": DatabusProblemsQueue,
         "flows": DatabusFlowsQueue,
+        "flows-filter": DatabusFilteredFlowsQueue,
         "vms": DatabusVmsQueue,
         "hosts": DatabusHostsQueue,
         "metrics": DatabusMetricsQueue,
