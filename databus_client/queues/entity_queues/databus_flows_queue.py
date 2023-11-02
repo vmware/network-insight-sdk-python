@@ -29,6 +29,7 @@ class DatabusFlowsQueue(DatabusQueue):
                 entry = self.queue.get(block=False)
                 token = self.get_dict_val("token", entry)
                 _source = self.get_dict_val("source", entry)
+                is_filtered = self.get_dict_val("is_filtered", entry)
                 license_plate = "[License Plate: " + license_plate + "] "
                 self.logger.log(license_plate + "Processing Request : " + str(entry))
 
@@ -70,7 +71,8 @@ class DatabusFlowsQueue(DatabusQueue):
                             "source": _source,
                             "entity_id": entity_id,
                             "message": message,
-                            "token": token})
+                            "token": token,
+                            "isFilteredFlow": is_filtered})
 
                         """
                         Getting filtered pass

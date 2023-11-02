@@ -98,7 +98,7 @@ def databus_flows():
 
 @app.route('/' + DatabusMessageGroup.FLOWS.value + "-filter", methods=['GET', 'POST', 'DELETE', 'COPY'])
 def databus_filtered_flows():
-   return databus_queue_processor(request=request, message_group=DatabusMessageGroup.FLOWS.value)
+   return databus_queue_processor(request=request, message_group=DatabusMessageGroup.FLOWS.value, is_filtered=True)
 
 @app.route('/' + DatabusMessageGroup.VMS.value, methods=['GET', 'POST', 'DELETE', 'COPY'])
 def databus_vms():
@@ -289,11 +289,11 @@ def get_entity_filter():
         DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)
 
 
-def databus_queue_processor(request=None, message_group=None):
+def databus_queue_processor(request=None, message_group=None, is_filtered=None):
     try:
         queue_processor = dbclient_queue_handler.get_qp(message_group)
         if request.method == 'POST':
-            return do_post(queue_processor=queue_processor, message_group=message_group)
+            return do_post(queue_processor=queue_processor, message_group=message_group, is_filtered=is_filtered)
         elif request.method == 'GET':
             return do_get(queue_processor=queue_processor, message_group=message_group)
         elif request.method == 'DELETE':
@@ -306,11 +306,13 @@ def databus_queue_processor(request=None, message_group=None):
         raise Exception("EXCEPTION IN {} REQUEST".format(request.method))
 
 
-def do_post(queue_processor=None, message_group=None):
+def do_post(queue_processor=None, message_group=None, is_filtered=None):
     request_status = 200
     info_dict = {"message_group": message_group}
     try:
         data = request.json
+        if is_filtered is True:
+            data['is_filtered'] = True
         """Adding token to list"""
         token = None
         if request.headers['Authorization']:
