@@ -94,7 +94,7 @@ def databus_switchports_metrics():
 
 @app.route('/' + DatabusMessageGroup.FLOWS.value, methods=['GET', 'POST', 'DELETE', 'COPY'])
 def databus_flows():
-    return databus_queue_processor(request=request, message_group=DatabusMessageGroup.FLOWS.value)
+    return databus_queue_processor(request=request, message_group=DatabusMessageGroup.FLOWS, is_filtered=False)
 
 @app.route('/' + DatabusMessageGroup.FLOWS.value + "-filter", methods=['GET', 'POST', 'DELETE', 'COPY'])
 def databus_filtered_flows():
@@ -311,8 +311,13 @@ def do_post(queue_processor=None, message_group=None, is_filtered=None):
     info_dict = {"message_group": message_group}
     try:
         data = request.json
-        if is_filtered is True:
-            data['is_filtered'] = True
+        if is_filtered:
+            if type(data) is dict:
+                data['is_filtered'] = is_filtered
+            else:
+                """If data is list type"""
+                for entry in data:
+                    entry['is_filtered'] = is_filtered
         """Adding token to list"""
         token = None
         if request.headers['Authorization']:

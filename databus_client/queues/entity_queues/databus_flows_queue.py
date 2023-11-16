@@ -46,7 +46,7 @@ class DatabusFlowsQueue(DatabusQueue):
                     heart_beat = dict()
                     self.append_key_val_in_dict(heart_beat,
                                                 ["id", "type", "specversion", "source", "message_group", "status",
-                                                 "timestamp", "token"], entry)
+                                                 "timestamp", "token", "is_filtered"], entry)
                     self.logger.log(
                         license_plate + ". Message received is identified as heartbeat. Bypassing filters")
                     DatabusHeartBeatDbHandler.get_instance(logger=self.logger,
@@ -60,7 +60,7 @@ class DatabusFlowsQueue(DatabusQueue):
                     for flow in flow_data:
                         message = dict()
                         self.append_key_val_in_dict(message,
-                                                    ["id", "type", "specversion", "source", "message_group", "token"],
+                                                    ["id", "type", "specversion", "source", "message_group", "token", "is_filtered"],
                                                     entry)
 
                         entity_id = flow["entity_id"]
@@ -72,7 +72,7 @@ class DatabusFlowsQueue(DatabusQueue):
                             "entity_id": entity_id,
                             "message": message,
                             "token": token,
-                            "isFilteredFlow": is_filtered})
+                            "is_filtered": is_filtered})
 
                         """
                         Getting filtered pass
