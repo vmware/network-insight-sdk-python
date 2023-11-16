@@ -421,7 +421,7 @@ class DatabusClientDataService(object):
 
     @classmethod
     def put_new_nsxt_edge_node_metric_data_point(cls, data):
-        db_entry = DatabusClientSwitchPortsMetricsMessageGroupData(source=data[DatabusMongo.SOURCE],
+        db_entry = DatabusClientNsxtEdgeNodeMetricsMessageGroupData(source=data[DatabusMongo.SOURCE],
                                                                    entity_id=data[DatabusMongo.ENTITY_ID],
                                                                    metric_name=data[DatabusMongo.METRIC_NAME],
                                                                    metric_unit=data[DatabusMongo.METRIC_UNIT],
