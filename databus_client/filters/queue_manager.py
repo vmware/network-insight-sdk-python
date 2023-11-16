@@ -30,7 +30,8 @@ class DatabusQueueManager:
         "hosts-metrics": DatabusHostsMetricsQueue,
         "flows-metrics": DatabusFlowsMetricsQueue,
         "nics-metrics": DatabusNicsMetricsQueue,
-        "switchports-metrics": DatabusSwitchPortsMetricsQueue
+        "switchports-metrics": DatabusSwitchPortsMetricsQueue,
+        "nsxt-edge-node-metrics": DatabusNsxtEdgeNodeMetricsQueue
     }
 
     def __init__(self,

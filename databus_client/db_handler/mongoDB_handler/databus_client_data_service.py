@@ -420,6 +420,23 @@ class DatabusClientDataService(object):
         return
 
     @classmethod
+        def put_new_nsxt_edge_node_metric_data_point(cls, data):
+            db_entry = DatabusClientSwitchPortsMetricsMessageGroupData(source=data[DatabusMongo.SOURCE],
+                                                                       entity_id=data[DatabusMongo.ENTITY_ID],
+                                                                       metric_name=data[DatabusMongo.METRIC_NAME],
+                                                                       metric_unit=data[DatabusMongo.METRIC_UNIT],
+                                                                       metric_interval=data[DatabusMongo.METRIC_INTERVAL],
+                                                                       metric_entity_type=data[
+                                                                           DatabusMongo.METRIC_ENTITY_TYPE],
+                                                                       metric_timestamp=data[DatabusMongo.METRIC_TIMESTAMP],
+                                                                       metric_value=data[DatabusMongo.METRIC_VALUE],
+                                                                       token=data[DatabusMongo.TOKEN]
+                                                                       )
+
+            db_entry.save()
+            return
+
+    @classmethod
     def put_new_heartbeat_data_point(cls, data):
         db_entry = DatabusClientHeartBeatData(source=data[DatabusMongo.SOURCE],
                                               message_group=data[DatabusMongo.MESSAGE_GROUP],

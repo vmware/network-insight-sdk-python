@@ -64,7 +64,7 @@ class DatabusMetricDbHandler:
                 elif message_group == DatabusMessageGroup.SWITCHPORTS_METRICS.value:
                     DatabusClientDataService.put_new_switchports_metric_data_point(metric_data)
                 elif message_group == DatabusMessageGroup.NSXT_EDGE_NODE_METRICS.value:
-                    DatabusClientDataService.put_new_switchports_metric_data_point(metric_data)
+                    DatabusClientDataService.put_new_nsxt_edge_node_metric_data_point(metric_data)
                 else:
                     message = "message_group {} NOT_SUPPORTED".format(message_group)
                     cls.exception_logger.log("Exception in Metrics DB handle: " + message)
