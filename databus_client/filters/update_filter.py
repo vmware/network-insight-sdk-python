@@ -5,7 +5,7 @@ import databus_client
 
 non_metric_message_group = ["applications", "vms", "flows", "hosts", "problems"]
 sub_metrics_message_group = ["vms-metrics", "hosts-metrics", "flows-metrics", "hosts-metrics", "nics-metrics",
-                             "switchports-metrics"]
+                             "switchports-metrics", "nsxt-edge-node-metrics"]
 
 
 class UpdateFilter:

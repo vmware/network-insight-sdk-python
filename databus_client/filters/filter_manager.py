@@ -12,7 +12,7 @@ f = open(path)
 
 non_metric_message_group = ["applications", "vms", "flows", "hosts", "problems"]
 sub_metrics_message_group = ["vms-metrics", "hosts-metrics", "flows-metrics", "hosts-metrics", "nics-metrics",
-                             "switchports-metrics"]
+                             "switchports-metrics", "nsxt-edge-node-metrics"]
 
 
 def singleton(class_):
@@ -180,6 +180,11 @@ class FilterManager:
         hosts_metrics_filter = self.extract_sub_metric_filter(entity="hosts-metrics", source=source)
         print("hosts-metric filters fetched: " + json.dumps(hosts_metrics_filter))
         return hosts_metrics_filter
+
+    def get_nsxt_edge_node_metrics_filter(self, source=None):
+        nsxt_edge_node_metrics_filter = self.extract_sub_metric_filter(entity="nsxt-edge-node-metrics", source=source)
+        print("nsxt-edge-node-metric filters fetched: " + json.dumps(nsxt_edge_node_metrics_filter))
+        return nsxt_edge_node_metrics_filter
 
     def get_flows_metrics_filter(self, source=None):
         flows_metrics_filter = self.extract_sub_metric_filter(entity="flows-metrics", source=source)

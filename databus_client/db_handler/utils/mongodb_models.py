@@ -161,7 +161,28 @@ class DatabusClientHostsMetricsMessageGroupData(mongoengine.Document):
     }
 
 
-class DatabusClientFlowsMetricsMessageGroupData(mongoengine.Document):
+class DatabusClientNsxtEdgeNodeMetricsMessageGroupData(mongoengine.Document):
+    source = mongoengine.StringField()  # setup platform customer_id
+    entity_id = mongoengine.StringField()
+    metric_name = mongoengine.StringField()
+    metric_unit = mongoengine.StringField()
+    metric_interval = mongoengine.IntField()
+    metric_entity_type = mongoengine.StringField()
+    metric_timestamp = mongoengine.IntField()
+    metric_value = mongoengine.FloatField()
+    token = mongoengine.StringField()
+    meta = {
+        'db_alias': 'databus_client_data',
+        'collection': 'nsxt_edge_node_metrics_message_group',
+        'indexes': [
+            'source',
+            'entity_id',
+            'metric_name',
+            'token'
+        ]
+    }
+
+    class DatabusClientFlowsMetricsMessageGroupData(mongoengine.Document):
     source = mongoengine.StringField()  # setup platform customer_id
     entity_id = mongoengine.StringField()
     metric_name = mongoengine.StringField()

@@ -76,6 +76,9 @@ def databus_vms_metrics():
 def databus_hosts_metrics():
     return databus_queue_processor(request=request, message_group=DatabusMessageGroup.HOSTS_METRICS.value)
 
+@app.route('/' + DatabusMessageGroup.NSXT_EDGE_NODE_METRICS.value, methods=['GET', 'POST', 'DELETE', 'COPY'])
+def databus_nsxt_edge_node_metrics():
+    return databus_queue_processor(request=request, message_group=DatabusMessageGroup.NSXT_EDGE_NODE_METRICS.value)
 
 @app.route('/' + DatabusMessageGroup.FLOWS_METRICS.value, methods=['GET', 'POST', 'DELETE', 'COPY'])
 def databus_flows_metrics():
@@ -279,6 +282,8 @@ def get_entity_filter():
                 result = FilterManager().get_nics_metrics_filter(source=source)
             elif request_filter_dict["entity"] == 'switchports-metrics':
                 result = FilterManager().get_switchport_metrics_filter(source=source)
+            elif request_filter_dict["entity"] == 'nsxt-edge-node-metrics':
+                request = FilterManager().get_nsxt_edge_node_metrics_filter(source=source)
         else:
             return Response("Entity is required.", 500)
 

@@ -21,7 +21,8 @@ MESSAGE_GRP_DB_SCHEMA = {
     DatabusMessageGroup.HOSTS_METRICS.value: DatabusClientHostsMetricsMessageGroupData,
     DatabusMessageGroup.FLOWS_METRICS.value: DatabusClientFlowsMetricsMessageGroupData,
     DatabusMessageGroup.NICS_METRICS.value: DatabusClientNicsMetricsMessageGroupData,
-    DatabusMessageGroup.SWITCHPORTS_METRICS.value: DatabusClientSwitchPortsMetricsMessageGroupData
+    DatabusMessageGroup.SWITCHPORTS_METRICS.value: DatabusClientSwitchPortsMetricsMessageGroupData,
+    DatabusMessageGroup.NSXT_EDGE_NODE_METRICS.value: DatabusClientNsxtEdgeNodeMetricsMessageGroupData
 }
 
 NON_METRIC_MSG_GRPS = [
@@ -38,7 +39,8 @@ METRIC_MSG_GRPS = [
     DatabusMessageGroup.HOSTS_METRICS.value,
     DatabusMessageGroup.FLOWS_METRICS.value,
     DatabusMessageGroup.NICS_METRICS.value,
-    DatabusMessageGroup.SWITCHPORTS_METRICS.value
+    DatabusMessageGroup.SWITCHPORTS_METRICS.value,
+    DatabusMessageGroup.NSXT_EDGE_NODE_METRICS.value
 ]
 
 
