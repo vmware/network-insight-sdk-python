@@ -324,8 +324,6 @@ def do_post(queue_processor=None, message_group=None, is_filtered=None):
                     if type(entry) is dict:
                         entry['is_filtered'] = is_filtered
                     else:
-                        # Handling the case where an entry in the list is not a dictionary
-                        # We might want to log a warning or handle it according to our requirements
                         pass
         """Adding token to list"""
         token = None
