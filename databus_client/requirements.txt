@@ -9,7 +9,7 @@ jsonpickle==1.1
 PyJWT==2.4.0
 pyaml==18.11.0
 requests==2.31.0
-urllib3==1.26.17
+urllib3==1.26.18
 pytest==3.0.6
 pytest-html==1.12.0
 PyYAML~=6.0
@@ -18,7 +18,7 @@ pytz~=2022.2.1
 six~=1.16.0
 certifi~=2023.7.22
 jinja2==3.0.3
-werkzeug==2.2.3
+werkzeug==3.0.1
 itsdangerous==2.0.1
 pytest==3.0.6
 pytest-timeout==1.2.1
