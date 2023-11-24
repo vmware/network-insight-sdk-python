@@ -22,6 +22,7 @@ class DatabusLoggerHandler:
                          "nics-metrics": "nics-metrics",
                          "flows-metrics": "flows-metrics",
                          "switchports-metrics": "switchports-metrics",
+                         "nsxt-edge-node-metrics": "nsxt-edge-node-metrics",
                          "exception": "exception"}
     paths_dict = dict()
     lock = Lock()

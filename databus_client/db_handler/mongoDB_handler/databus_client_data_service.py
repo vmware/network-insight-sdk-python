@@ -21,7 +21,8 @@ MESSAGE_GRP_DB_SCHEMA = {
     DatabusMessageGroup.HOSTS_METRICS.value: DatabusClientHostsMetricsMessageGroupData,
     DatabusMessageGroup.FLOWS_METRICS.value: DatabusClientFlowsMetricsMessageGroupData,
     DatabusMessageGroup.NICS_METRICS.value: DatabusClientNicsMetricsMessageGroupData,
-    DatabusMessageGroup.SWITCHPORTS_METRICS.value: DatabusClientSwitchPortsMetricsMessageGroupData
+    DatabusMessageGroup.SWITCHPORTS_METRICS.value: DatabusClientSwitchPortsMetricsMessageGroupData,
+    DatabusMessageGroup.NSXT_EDGE_NODE_METRICS.value: DatabusClientNsxtEdgeNodeMetricsMessageGroupData
 }
 
 NON_METRIC_MSG_GRPS = [
@@ -38,7 +39,8 @@ METRIC_MSG_GRPS = [
     DatabusMessageGroup.HOSTS_METRICS.value,
     DatabusMessageGroup.FLOWS_METRICS.value,
     DatabusMessageGroup.NICS_METRICS.value,
-    DatabusMessageGroup.SWITCHPORTS_METRICS.value
+    DatabusMessageGroup.SWITCHPORTS_METRICS.value,
+    DatabusMessageGroup.NSXT_EDGE_NODE_METRICS.value
 ]
 
 
@@ -403,6 +405,23 @@ class DatabusClientDataService(object):
     @classmethod
     def put_new_switchports_metric_data_point(cls, data):
         db_entry = DatabusClientSwitchPortsMetricsMessageGroupData(source=data[DatabusMongo.SOURCE],
+                                                                   entity_id=data[DatabusMongo.ENTITY_ID],
+                                                                   metric_name=data[DatabusMongo.METRIC_NAME],
+                                                                   metric_unit=data[DatabusMongo.METRIC_UNIT],
+                                                                   metric_interval=data[DatabusMongo.METRIC_INTERVAL],
+                                                                   metric_entity_type=data[
+                                                                       DatabusMongo.METRIC_ENTITY_TYPE],
+                                                                   metric_timestamp=data[DatabusMongo.METRIC_TIMESTAMP],
+                                                                   metric_value=data[DatabusMongo.METRIC_VALUE],
+                                                                   token=data[DatabusMongo.TOKEN]
+                                                                   )
+
+        db_entry.save()
+        return
+
+    @classmethod
+    def put_new_nsxt_edge_node_metric_data_point(cls, data):
+        db_entry = DatabusClientNsxtEdgeNodeMetricsMessageGroupData(source=data[DatabusMongo.SOURCE],
                                                                    entity_id=data[DatabusMongo.ENTITY_ID],
                                                                    metric_name=data[DatabusMongo.METRIC_NAME],
                                                                    metric_unit=data[DatabusMongo.METRIC_UNIT],

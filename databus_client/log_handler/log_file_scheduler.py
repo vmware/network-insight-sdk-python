@@ -26,6 +26,7 @@ class DatabusLogFileScheduler:
                   "nics-metrics": 0,
                   "flows-metrics": 0,
                   "switchports-metrics": 0,
+                  "nsxt-edge-node-metrics": 0,
                   "exception": 0}
 
     def __init__(self, message_group=None, file_threshold=None, file_log_handler=None):

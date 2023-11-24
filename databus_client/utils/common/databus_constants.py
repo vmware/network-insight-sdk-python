@@ -49,3 +49,4 @@ class DatabusMessageGroup(enum.Enum):
     FLOWS = "flows"
     VMS = "vms"
     HOSTS = "hosts"
+    NSXT_EDGE_NODE_METRICS = "nsxt-edge-node-metrics"
