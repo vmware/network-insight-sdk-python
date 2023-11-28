@@ -46,7 +46,7 @@ class DatabusFlowsQueue(DatabusQueue):
                     heart_beat = dict()
                     self.append_key_val_in_dict(heart_beat,
                                                 ["id", "type", "specversion", "source", "message_group", "status",
-                                                 "timestamp", "token", "is_filtered"], entry)
+                                                 "timestamp", "token"], entry)
                     self.logger.log(
                         license_plate + ". Message received is identified as heartbeat. Bypassing filters")
                     DatabusHeartBeatDbHandler.get_instance(logger=self.logger,
@@ -59,21 +59,32 @@ class DatabusFlowsQueue(DatabusQueue):
 
                     for flow in flow_data:
                         message = dict()
-                        self.append_key_val_in_dict(message,
+                        if is_filtered is not None:
+                            self.append_key_val_in_dict(message,
                                                     ["id", "type", "specversion", "source", "message_group", "token", "is_filtered"],
+                                                    entry)
+                        else
+                            self.append_key_val_in_dict(message,
+                                                    ["id", "type", "specversion", "source", "message_group", "token"],
                                                     entry)
 
                         entity_id = flow["entity_id"]
                         message["data"] = flow
 
                         db_entry = dict()
-                        db_entry.update({
-                            "source": _source,
-                            "entity_id": entity_id,
-                            "message": message,
-                            "token": token,
-                            "is_filtered": is_filtered})
-
+                        if is_filtered is not None:
+                            db_entry.update({
+                                "source": _source,
+                                "entity_id": entity_id,
+                                "message": message,
+                                "token": token,
+                                "is_filtered": is_filtered})
+                        else
+                            db_entry.update({
+                                "source": _source,
+                                "entity_id": entity_id,
+                                "message": message,
+                                "token": token})
                         """
                         Getting filtered pass
                         """
