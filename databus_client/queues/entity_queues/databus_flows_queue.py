@@ -53,7 +53,7 @@ class DatabusFlowsQueue(DatabusQueue):
                     except Exception as e:
                         print(f"An unexpected heartbeat error occurred: {e}")
                     else:
-                        print("Heartbeat Code executed successfully.")
+                        pass
                     self.logger.log(
                         license_plate + ". Message received is identified as heartbeat. Bypassing filters")
                     DatabusHeartBeatDbHandler.get_instance(logger=self.logger,
@@ -86,7 +86,7 @@ class DatabusFlowsQueue(DatabusQueue):
                         except Exception as e:
                             print(f"An unexpected error occurred: {e}")
                         else:
-                            print("Code executed successfully.")
+                            pass
 
                         """
                         Getting filtered pass
