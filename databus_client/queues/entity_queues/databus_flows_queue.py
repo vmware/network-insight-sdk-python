@@ -29,6 +29,7 @@ class DatabusFlowsQueue(DatabusQueue):
                 entry = self.queue.get(block=False)
                 token = self.get_dict_val("token", entry)
                 _source = self.get_dict_val("source", entry)
+                is_filtered = self.get_dict_val("is_filtered", entry)
                 license_plate = "[License Plate: " + license_plate + "] "
                 self.logger.log(license_plate + "Processing Request : " + str(entry))
 
@@ -43,9 +44,16 @@ class DatabusFlowsQueue(DatabusQueue):
                 # if heart beat message
                 if message_type == "HEARTBEAT":
                     heart_beat = dict()
-                    self.append_key_val_in_dict(heart_beat,
+                    try:
+                        self.append_key_val_in_dict(heart_beat,
                                                 ["id", "type", "specversion", "source", "message_group", "status",
                                                  "timestamp", "token"], entry)
+                    except KeyError as e:
+                        print(f"Heartbeat Error: {e} not found in dictionary.")
+                    except Exception as e:
+                        print(f"An unexpected heartbeat error occurred: {e}")
+                    else:
+                        pass
                     self.logger.log(
                         license_plate + ". Message received is identified as heartbeat. Bypassing filters")
                     DatabusHeartBeatDbHandler.get_instance(logger=self.logger,
@@ -57,20 +65,28 @@ class DatabusFlowsQueue(DatabusQueue):
                     self.count += len(flow_data)
 
                     for flow in flow_data:
-                        message = dict()
-                        self.append_key_val_in_dict(message,
-                                                    ["id", "type", "specversion", "source", "message_group", "token"],
+                        try:
+                            message = dict()
+                            self.append_key_val_in_dict(message,
+                                                    ["id", "type", "specversion", "source", "message_group", "token", "is_filtered"],
                                                     entry)
 
-                        entity_id = flow["entity_id"]
-                        message["data"] = flow
+                            entity_id = flow["entity_id"]
+                            message["data"] = flow
 
-                        db_entry = dict()
-                        db_entry.update({
-                            "source": _source,
-                            "entity_id": entity_id,
-                            "message": message,
-                            "token": token})
+                            db_entry = dict()
+                            db_entry.update({
+                                "source": _source,
+                                "entity_id": entity_id,
+                                "message": message,
+                                "token": token,
+                                "is_filtered": is_filtered})
+                        except KeyError as e:
+                            print(f"Error: {e} not found in dictionary.")
+                        except Exception as e:
+                            print(f"An unexpected error occurred: {e}")
+                        else:
+                            pass
 
                         """
                         Getting filtered pass

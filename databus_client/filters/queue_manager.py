@@ -22,6 +22,7 @@ class DatabusQueueManager:
         "applications": DatabusApplicationQueue,
         "problems": DatabusProblemsQueue,
         "flows": DatabusFlowsQueue,
+        "flows-filter": DatabusFlowsQueue,
         "vms": DatabusVmsQueue,
         "hosts": DatabusHostsQueue,
         "metrics": DatabusMetricsQueue,

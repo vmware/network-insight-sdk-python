@@ -82,13 +82,15 @@ class DatabusClientFlowsMessageGroupData(mongoengine.Document):
     entity_id = mongoengine.StringField()
     message = mongoengine.DictField()
     token = mongoengine.StringField()
+    is_filtered = mongoengine.StringField()
     meta = {
         'db_alias': 'databus_client_data',
         'collection': 'flows_message_group',
         'indexes': [
             'source',
             'entity_id',
-            'token'
+            'token',
+            'is_filtered'
         ]
     }
 
