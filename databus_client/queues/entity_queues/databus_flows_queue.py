@@ -67,14 +67,9 @@ class DatabusFlowsQueue(DatabusQueue):
                     for flow in flow_data:
                         try:
                             message = dict()
-                            if is_filtered is not None:
-                                self.append_key_val_in_dict(message,
-                                                        ["id", "type", "specversion", "source", "message_group", "token", "is_filtered"],
-                                                        entry)
-                            else:
-                                self.append_key_val_in_dict(message,
-                                                        ["id", "type", "specversion", "source", "message_group", "token"],
-                                                        entry)
+                            self.append_key_val_in_dict(message,
+                                                    ["id", "type", "specversion", "source", "message_group", "token", "is_filtered"],
+                                                    entry)
 
                             entity_id = flow["entity_id"]
                             message["data"] = flow
