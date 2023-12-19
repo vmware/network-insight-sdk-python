@@ -316,7 +316,7 @@ def do_post(queue_processor=None, message_group=None, is_filtered=None):
     info_dict = {"message_group": message_group}
     try:
         data = request.json
-        if is_filtered:
+        if is_filtered is not None:
             if type(data) is dict:
                 data['is_filtered'] = is_filtered
             elif type(data) is list:
