@@ -316,15 +316,14 @@ def do_post(queue_processor=None, message_group=None, is_filtered=False):
     info_dict = {"message_group": message_group}
     try:
         data = request.json
-        if is_filtered:
-            if type(data) is dict:
-                data['is_filtered'] = is_filtered
-            elif type(data) is list:
-                for entry in data:
-                    if type(entry) is dict:
-                        entry['is_filtered'] = is_filtered
-                    else:
-                        pass
+        if type(data) is dict:
+            data['is_filtered'] = is_filtered
+        elif type(data) is list:
+            for entry in data:
+                if type(entry) is dict:
+                    entry['is_filtered'] = is_filtered
+                else:
+                    pass
         """Adding token to list"""
         token = None
         if request.headers['Authorization']:
