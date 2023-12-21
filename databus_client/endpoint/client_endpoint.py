@@ -294,7 +294,7 @@ def get_entity_filter():
         DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)
 
 
-def databus_queue_processor(request=None, message_group=None, is_filtered=None):
+def databus_queue_processor(request=None, message_group=None, is_filtered=False):
     try:
         queue_processor = dbclient_queue_handler.get_qp(message_group)
         if request.method == 'POST':
@@ -311,20 +311,19 @@ def databus_queue_processor(request=None, message_group=None, is_filtered=None):
         raise Exception("EXCEPTION IN {} REQUEST".format(request.method))
 
 
-def do_post(queue_processor=None, message_group=None, is_filtered=None):
+def do_post(queue_processor=None, message_group=None, is_filtered=False):
     request_status = 200
     info_dict = {"message_group": message_group}
     try:
         data = request.json
-        if is_filtered:
-            if type(data) is dict:
-                data['is_filtered'] = is_filtered
-            elif type(data) is list:
-                for entry in data:
-                    if type(entry) is dict:
-                        entry['is_filtered'] = is_filtered
-                    else:
-                        pass
+        if type(data) is dict:
+            data['is_filtered'] = is_filtered
+        elif type(data) is list:
+            for entry in data:
+                if type(entry) is dict:
+                    entry['is_filtered'] = is_filtered
+                else:
+                    pass
         """Adding token to list"""
         token = None
         if request.headers['Authorization']:

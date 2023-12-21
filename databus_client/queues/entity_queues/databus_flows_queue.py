@@ -29,7 +29,6 @@ class DatabusFlowsQueue(DatabusQueue):
                 entry = self.queue.get(block=False)
                 token = self.get_dict_val("token", entry)
                 _source = self.get_dict_val("source", entry)
-                is_filtered = self.get_dict_val("is_filtered", entry)
                 license_plate = "[License Plate: " + license_plate + "] "
                 self.logger.log(license_plate + "Processing Request : " + str(entry))
 
@@ -59,7 +58,7 @@ class DatabusFlowsQueue(DatabusQueue):
                     DatabusHeartBeatDbHandler.get_instance(logger=self.logger,
                                                            ex_log=self.exception_logger).add_to_queue(heart_beat)
                 else:
-
+                    is_filtered = self.get_dict_val("is_filtered", entry)
                     flow_data = self.get_dict_val("data", entry)
 
                     self.count += len(flow_data)
