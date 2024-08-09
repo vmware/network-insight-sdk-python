@@ -24,7 +24,6 @@ class DatabusClientApplicationsMessageGroupData(mongoengine.Document):
         'indexes': [
             'source',
             'entity_id',
-            'token'
         ]
     }
 
@@ -56,7 +55,6 @@ class DatabusClientHostsMessageGroupData(mongoengine.Document):
         'indexes': [
             'source',
             'entity_id',
-            'token'
         ]
     }
 
@@ -72,7 +70,6 @@ class DatabusClientVmsMessageGroupData(mongoengine.Document):
         'indexes': [
             'source',
             'entity_id',
-            'token'
         ]
     }
 
@@ -89,7 +86,6 @@ class DatabusClientFlowsMessageGroupData(mongoengine.Document):
         'indexes': [
             'source',
             'entity_id',
-            'token',
             'is_filtered'
         ]
     }
@@ -112,7 +108,6 @@ class DatabusClientMetricsMessageGroupData(mongoengine.Document):
             'source',
             'entity_id',
             'metric_name',
-            'token'
         ]
     }
 
@@ -134,7 +129,6 @@ class DatabusClientVmsMetricsMessageGroupData(mongoengine.Document):
             'source',
             'entity_id',
             'metric_name',
-            'token'
         ]
     }
 
@@ -156,7 +150,6 @@ class DatabusClientHostsMetricsMessageGroupData(mongoengine.Document):
             'source',
             'entity_id',
             'metric_name',
-            'token'
         ]
     }
 
@@ -178,7 +171,6 @@ class DatabusClientNsxtEdgeNodeMetricsMessageGroupData(mongoengine.Document):
             'source',
             'entity_id',
             'metric_name',
-            'token'
         ]
     }
 
@@ -199,7 +191,6 @@ class DatabusClientFlowsMetricsMessageGroupData(mongoengine.Document):
             'source',
             'entity_id',
             'metric_name',
-            'token'
         ]
     }
 
@@ -221,7 +212,6 @@ class DatabusClientNicsMetricsMessageGroupData(mongoengine.Document):
             'source',
             'entity_id',
             'metric_name',
-            'token'
         ]
     }
 
@@ -243,7 +233,6 @@ class DatabusClientSwitchPortsMetricsMessageGroupData(mongoengine.Document):
             'source',
             'entity_id',
             'metric_name',
-            'token'
         ]
     }
 
@@ -261,7 +250,6 @@ class DatabusClientHeartBeatData(mongoengine.Document):
         'indexes': [
             'source',
             'message_group',
-            'token'
         ]
     }
 
@@ -275,4 +263,15 @@ class DatabusClientFilterData(mongoengine.Document):
     meta = {
         'db_alias': 'databus_client_data',
         'collection': 'filter_configuration',
+    }
+
+
+class DatabusBearerTokenData(mongoengine.Document):
+    source = mongoengine.StringField()
+    token_key = mongoengine.StringField()
+    token = mongoengine.StringField()
+    timestamp = mongoengine.IntField()
+    meta = {
+        'db_alias': 'databus_client_data',
+        'collection': 'bearer_tokens',
     }

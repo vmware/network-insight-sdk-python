@@ -283,7 +283,7 @@ def get_entity_filter():
             elif request_filter_dict["entity"] == 'switchports-metrics':
                 result = FilterManager().get_switchport_metrics_filter(source=source)
             elif request_filter_dict["entity"] == 'nsxt-edge-node-metrics':
-                request = FilterManager().get_nsxt_edge_node_metrics_filter(source=source)
+                result = FilterManager().get_nsxt_edge_node_metrics_filter(source=source)
         else:
             return Response("Entity is required.", 500)
 
@@ -292,6 +292,24 @@ def get_entity_filter():
         message = "Exception occurred in entity_filters -" + format(traceback.format_exc())
         exception_logger.log(license_plate + message)
         DatabusQueueTelemetry().update_exception_telemetry(exe_type=type(e).__name__)
+
+
+@app.route("/token", methods=["GET"])
+def get_bearer_token():
+    request_filter_dict = dict()
+    for key, value in request.get_json().items():
+        request_filter_dict[key] = value
+    token_key = str
+    if "token_key" in request_filter_dict:
+        token_key = request_filter_dict["token_key"]
+    else:
+        return Response("token_key is required.", 500)
+
+    token = DatabusClientDataService.get_bearer_token(token_key);
+    if token:
+        return Response(json.dumps(token), content_type="json", status=200)
+    else:
+        return Response("No token found present for token_key: {}".format(token_key), status=204)
 
 
 def databus_queue_processor(request=None, message_group=None, is_filtered=False):
@@ -433,7 +451,7 @@ def parse_arguments():
     parser.add_argument("--port", default="5001", action="store", dest="port")
     parser.add_argument("--enable_telemetry", default="True", action="store")
     parser.add_argument("--use_mongo", default="True", action="store")
-    parser.add_argument("--mongo_server_ip", default="", action="store")
+    parser.add_argument("--mongo_server_ip", default="10.196.167.141:27017", action="store")
     parser.add_argument("--https", default="False", action="store")
     parser.add_argument("--cert_file_path", default="", action="store")
     parser.add_argument("--key_file_path", default="", action="store")

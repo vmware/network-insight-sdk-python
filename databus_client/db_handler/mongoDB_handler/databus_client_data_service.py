@@ -4,7 +4,7 @@ import traceback
 from databus_client.db_handler.mongoDB_handler.connection import MongoDBConnection
 from databus_client.db_handler.utils.mongodb_models import *
 from databus_client.log_handler.log_queue import LogQueue
-from databus_client.utils.common.databus_constants import DatabusMongo, DatabusMessageGroup
+from databus_client.utils.common.databus_constants import DatabusMongo, DatabusMessageGroup, DatabusSupportConstants
 from databus_client.db_handler.utils.utilities import MandatoryParameterMissing
 from databus_client.db_handler.utils import utilities
 
@@ -22,7 +22,8 @@ MESSAGE_GRP_DB_SCHEMA = {
     DatabusMessageGroup.FLOWS_METRICS.value: DatabusClientFlowsMetricsMessageGroupData,
     DatabusMessageGroup.NICS_METRICS.value: DatabusClientNicsMetricsMessageGroupData,
     DatabusMessageGroup.SWITCHPORTS_METRICS.value: DatabusClientSwitchPortsMetricsMessageGroupData,
-    DatabusMessageGroup.NSXT_EDGE_NODE_METRICS.value: DatabusClientNsxtEdgeNodeMetricsMessageGroupData
+    DatabusMessageGroup.NSXT_EDGE_NODE_METRICS.value: DatabusClientNsxtEdgeNodeMetricsMessageGroupData,
+    DatabusSupportConstants.BEARER_TOKEN.value: DatabusBearerTokenData
 }
 
 NON_METRIC_MSG_GRPS = [
@@ -321,6 +322,45 @@ class DatabusClientDataService(object):
             return False, message
 
         return True, None
+
+
+    @classmethod
+    def update_bearer_token(cls, data):
+        try:
+            existing_entry = (MESSAGE_GRP_DB_SCHEMA[DatabusSupportConstants.BEARER_TOKEN.value]
+            .objects(token_key=data[DatabusMongo.TOKEN_KEY], token=data[DatabusMongo.TOKEN]).first())
+
+            if not existing_entry:
+                new_entry = DatabusBearerTokenData(
+                    source=data[DatabusMongo.SOURCE],
+                    token_key=data[DatabusMongo.TOKEN_KEY],
+                    token=data[DatabusMongo.TOKEN],
+                    timestamp=data[DatabusMongo.TIMESTAMP]
+                )
+                new_entry.save()
+
+        except Exception as e:
+            cls.exception_logger.log(cls.license_plate + "Exception: Error pushing token to mongo")
+            return False, "Exception: Error pushing token to mongo"
+
+        return True, None
+
+
+    @classmethod
+    def get_bearer_token(cls, token_key):
+        params = {
+            "token_key": token_key
+        }
+        data = MESSAGE_GRP_DB_SCHEMA[DatabusSupportConstants.BEARER_TOKEN.value].objects(**params)
+        if data is None:
+            return None
+        else:
+            result = []
+            for x in data:
+                entry_data = json.loads(json.dumps(x, cls=utilities.MongoEncoder))
+                result.append({"token": entry_data[DatabusMongo.TOKEN],
+                               "timestamp": entry_data[DatabusMongo.TIMESTAMP]})
+            return {"result": result}
 
     """
     METRICS MESSAGE GROUP METHODS

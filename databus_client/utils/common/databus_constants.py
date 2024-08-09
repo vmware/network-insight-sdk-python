@@ -23,6 +23,7 @@ class DatabusMongo(DatabusConstants):
     TYPE = 'type'
     CLIENT_KEY = 'client_key'
     TOKEN = 'token'
+    TOKEN_KEY = 'token_key'
     MATCHED_FILTER = 'matched_filter'
     UNMATCHED_FILTER = 'unmatched_filter'
     NON_METRIC_FILTER = 'non_metric_filter'
@@ -50,3 +51,6 @@ class DatabusMessageGroup(enum.Enum):
     VMS = "vms"
     HOSTS = "hosts"
     NSXT_EDGE_NODE_METRICS = "nsxt-edge-node-metrics"
+
+class DatabusSupportConstants(enum.Enum):
+    BEARER_TOKEN = "bearer_tokens"

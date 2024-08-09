@@ -1,3 +1,4 @@
+import datetime
 import queue
 import traceback
 from time import sleep
@@ -6,8 +7,9 @@ from databus_client.db_handler.mongoDB_handler.databus_client_data_service impor
 from databus_client.log_handler.log_queue import LogQueue
 
 from databus_client.filters.non_metric_filter import NonMetricFilter
+from databus_client.queues.other_queues.databus_bearer_token_queue import DatabusBearerTokens
 from databus_client.utils.common.databus_constants import DatabusMessageGroup
-from databus_client.queues.entity_queues.databus_queue import DatabusQueue
+from databus_client.queues.databus_queue import DatabusQueue
 from databus_client.db_handler.mongoDB_handler.databus_hb_dbhandler import DatabusHeartBeatDbHandler
 from databus_client.utils.common.databus_queue_telemetry import DatabusQueueTelemetry
 from databus_client.utils.databus_utilities import DatabusUtilities
@@ -53,6 +55,17 @@ class DatabusApplicationQueue(DatabusQueue):
                                                            ex_log=self.exception_logger).add_to_queue(message)
                 else:
                     # if data message
+                    token_key = source + ":" + DatabusMessageGroup.APPLICATIONS.value
+                    DatabusBearerTokens.get_instance(logger=self.logger,
+                                                     ex_log=self.exception_logger).add_to_queue({"source": source,
+                                                                                                 "token_key": token_key,
+                                                                                                 "token": token,
+                                                                                                 "timestamp": entry[
+                                                                                                     "timestamp"] if "timestamp" in entry else int(
+                                                                                                     datetime.datetime.now().timestamp())})
+
+                    # Replacing token value with token_key in message
+                    entry["token"] = token_key
                     self.append_key_val_in_dict(message, ["data"], entry)
                     entity_id = message["data"]["entity_id"]
 
@@ -63,7 +76,7 @@ class DatabusApplicationQueue(DatabusQueue):
                         "source": source,
                         "entity_id": entity_id,
                         "message": message,
-                        "token": token})
+                        "token": token_key})
 
                     """
                     Getting filtered pass

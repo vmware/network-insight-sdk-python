@@ -1,13 +1,15 @@
 import queue
 import traceback
+import datetime
 from time import sleep
 
 from databus_client.db_handler.mongoDB_handler.databus_client_data_service import DatabusClientDataService
 from databus_client.db_handler.mongoDB_handler.databus_metric_db_handler import DatabusMetricDbHandler
 from databus_client.log_handler.log_queue import LogQueue
 from databus_client.filters.metric_filter import MetricFilter
-from databus_client.queues.entity_queues.databus_queue import DatabusQueue
+from databus_client.queues.databus_queue import DatabusQueue
 from databus_client.db_handler.mongoDB_handler.databus_hb_dbhandler import DatabusHeartBeatDbHandler
+from databus_client.queues.other_queues.databus_bearer_token_queue import DatabusBearerTokens
 from databus_client.utils.common.databus_queue_telemetry import DatabusQueueTelemetry
 from databus_client.utils.databus_utilities import DatabusUtilities
 
@@ -53,6 +55,17 @@ class DatabusMetricsQueue(DatabusQueue):
                     """
                     Getting filtered pass
                     """
+                    token_key = source + ":" + self.message_group
+                    DatabusBearerTokens.get_instance(logger=self.logger,
+                                                     ex_log=self.exception_logger).add_to_queue({"source": source,
+                                                                                                 "token_key": token_key,
+                                                                                                 "token": token,
+                                                                                                 "timestamp": entry[
+                                                                                                     "timestamp"] if "timestamp" in entry else int(
+                                                                                                     datetime.datetime.now().timestamp())})
+                    # Replacing token value with token_key in message
+                    entry["token"] = token_key
+
                     self.logger.log(license_plate + "Passing through filter.")
                     pass_through, resp = MetricFilter.pass_metric_filter(source=source, entry=entry, message_group=self.message_group)
 
@@ -94,7 +107,7 @@ class DatabusMetricsQueue(DatabusQueue):
                                     "metric_entity_type": metric_entity_type,
                                     "metric_timestamp": metric_timestamp,
                                     "metric_value": metric_value,
-                                    "token": token
+                                    "token": token_key
                                 })
 
                                 DatabusMetricDbHandler.get_instance().add_to_queue(metric_data, self.message_group)

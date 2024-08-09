@@ -1,12 +1,14 @@
 import queue
 import traceback
+import datetime
 from time import sleep
 
 from databus_client.db_handler.mongoDB_handler.databus_client_data_service import DatabusClientDataService
 from databus_client.log_handler.log_queue import LogQueue
 from databus_client.filters.non_metric_filter import NonMetricFilter
+from databus_client.queues.other_queues.databus_bearer_token_queue import DatabusBearerTokens
 from databus_client.utils.common.databus_constants import DatabusMessageGroup
-from databus_client.queues.entity_queues.databus_queue import DatabusQueue
+from databus_client.queues.databus_queue import DatabusQueue
 from databus_client.db_handler.mongoDB_handler.databus_hb_dbhandler import DatabusHeartBeatDbHandler
 from databus_client.utils.common.databus_queue_telemetry import DatabusQueueTelemetry
 from databus_client.utils.databus_utilities import DatabusUtilities
@@ -25,16 +27,25 @@ class DatabusHostsQueue(DatabusQueue):
         def update_message(message, data, license_plate):
 
             self.count += 1  # 1 entity per entry
-            token = message["token"] = self.get_dict_val("token", entry)
+            token = self.get_dict_val("token", entry)
             entity_id = data["entity_id"]
             message["data"] = data
+            # Replacing token value with token_key in message
+            token_key = message["source"] + ":" + DatabusMessageGroup.HOSTS.value
+            DatabusBearerTokens.get_instance(logger=self.logger,
+                                             ex_log=self.exception_logger).add_to_queue({"source": message["source"],
+                                                                                         "token_key": token_key,
+                                                                                         "token": token,
+                                                                                         "timestamp": entry["timestamp"] if "timestamp" in entry else int(datetime.datetime.now().timestamp())});
+
+            message["token"] = token_key
 
             db_entry = dict()
             db_entry.update({
                 "source": message["source"],
                 "entity_id": entity_id,
                 "message": message,
-                "token": token})
+                "token": token_key})
 
             """
             Getting filtered pass
