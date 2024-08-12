@@ -1,3 +1,4 @@
+import datetime
 import queue
 import threading
 import traceback
@@ -5,6 +6,8 @@ from time import sleep
 
 from databus_client.db_handler.mongoDB_handler.databus_client_data_service import DatabusClientDataService
 from databus_client.log_handler.log_queue import LogQueue
+from databus_client.queues.other_queues.databus_bearer_token_queue import DatabusBearerTokens
+from databus_client.utils.common.databus_constants import DatabusMongo
 from databus_client.utils.common.databus_queue_telemetry import DatabusQueueTelemetry
 from databus_client.utils.databus_utilities import DatabusUtilities
 
@@ -47,6 +50,18 @@ class DatabusHeartBeatDbHandler:
             heartbeat_data = None
             try:
                 heartbeat_data = self._queue.get(block=False)
+
+                #Setting token to token key and mapping to bearer token collection
+                token_key = heartbeat_data[DatabusMongo.SOURCE] + ":" + heartbeat_data[DatabusMongo.MESSAGE_GROUP]
+                DatabusBearerTokens.get_instance(logger=self.logger,
+                                                 ex_log=self.exception_logger).add_to_queue(
+                    {"source": heartbeat_data[DatabusMongo.SOURCE],
+                     "token_key": token_key,
+                     "token": heartbeat_data[DatabusMongo.TOKEN],
+                     "timestamp": heartbeat_data[DatabusMongo.TIMESTAMP] if "timestamp" in heartbeat_data else int(
+                         datetime.datetime.now().timestamp())})
+
+                heartbeat_data[DatabusMongo.TOKEN] = token_key
                 self.logger.log(self.license_plate + "Pushing HEARTBEAT to downstream")
                 DatabusClientDataService.put_new_heartbeat_data_point(heartbeat_data)
                 self.logger.log(self.license_plate + "HEARTBEAT pushed to downstream")
