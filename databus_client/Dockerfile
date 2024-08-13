@@ -2,8 +2,8 @@
 FROM python:3.7-slim-buster
 WORKDIR /code
 
-COPY . .
-RUN pip install -r /code/network-insight-sdk-python/databus_client/requirements.txt
+COPY . /code/databus_client/.
+RUN pip install -r /code/databus_client/requirements.txt
 
-ENV PYTHONPATH "${PYTHONPATH}:/code/network-insight-sdk-python/"
-ENTRYPOINT ["python3", "/code/network-insight-sdk-python/databus_client/endpoint/client_endpoint.py"]
+ENV PYTHONPATH "${PYTHONPATH}:/code/databus_client/"
+ENTRYPOINT ["python3", "/code/databus_client/endpoint/client_endpoint.py"]
